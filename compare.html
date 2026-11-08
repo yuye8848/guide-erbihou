@@ -58,9 +58,6 @@ function docName(doc) {
   var d = (DOCS || []).filter(function (x) { return x.doc === doc; })[0];
   return d ? d.guideline + ' (' + d.year + ')' : doc;
 }
-function dirsHTML(ds) {
-  return ds.length ? ds.map(function (d) { return GC.dirHTML(d); }).join(' ') : '<span class="muted">' + GC.t('no stance', '未表态') + '</span>';
-}
 function membersHTML(ms) {
   return ms.map(function (m) {
     var iv = m.intervention || '';
