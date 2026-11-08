@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L3 · Citation archaeology — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag">Layer 3 · <span data-en="Citation archaeology" data-zh="引文考古">Citation archaeology</span></p>
+  <h1 data-en="Which single study actually carries each recommendation?" data-zh="到底是哪一篇研究在撑着每条推荐？">Which single study actually carries each recommendation?</h1>
+  <p class="lede" data-en="For every recommendation we traced its full citation list (11,567 attachments) and identified, by a frozen rule, its pivotal study: the first on-question systematic review/meta-analysis or randomised trial in the order the guideline presents its evidence — or the first primary study if neither exists. Each pivotal was then graded on design, total sample size, applicability to the recommendation's exact question, and whether its endpoint is a surrogate."
+     data-zh="对每条推荐，我们追溯了它完整的引文清单（11,567 条附件），并按冻结规则定出其关键研究：按指南呈现证据的顺序，第一个对题的系统综述/荟萃分析或随机试验——两者皆无时取第一个原始研究。随后逐篇评定关键研究的设计、总样本量、对推荐确切问题的适用性，以及其终点是否为替代终点。">For every recommendation we traced its full citation list and identified its pivotal study.</p>
+  <div class="kpis" id="kpis"></div>
+  <h2 data-en="What the pivotals are made of" data-zh="关键研究的构成">What the pivotals are made of</h2>
+  <div class="chartbox"><div id="chart-piv"></div>
+    <p class="small muted" data-en="Design class of the pivotal study for the 805 recommendations. 46 recommendations have no on-question pivotal at all." data-zh="805 条推荐的关键研究设计类别。46 条推荐根本没有对题的关键研究。">Design class of the pivotal study.</p></div>
+  <h2 data-en="Thin ice" data-zh="薄冰">Thin ice</h2>
+  <p data-en="A recommendation is fragile when its pivotal is a single RCT, or any pivotal with fewer than 400 participants — under a pre-specified composite. On this census, that is not the exception but close to half of all pivotal-bearing recommendations."
+     data-zh="当一条推荐的关键研究只是单篇随机试验、或样本量不足 400 人时（预设复合标准），它即属脆弱。在本普查中，这不是例外，而是接近所有带关键研究推荐的一半。">A recommendation is fragile when its pivotal is a single RCT, or any pivotal with fewer than 400 participants.</p>
+  <div class="kpis" id="kpis2"></div>
+  <p><a href="thin-ice.html" data-en="Browse the fragile set →" data-zh="浏览脆弱集 →">Browse the fragile set →</a> ·
+     <a href="lookup.html" data-en="Reverse-lookup a study by PMID →" data-zh="按 PMID 反查研究 →">Reverse-lookup a study by PMID →</a></p>
+  <h2 data-en="Per-guideline pivotal anatomy" data-zh="逐指南关键研究解剖">Per-guideline pivotal anatomy</h2>
+  <div id="doc-table"></div>
+  <div class="note" data-en="Layer 3 is the most heavily audited layer of the census: an independent audit found errors, a full remediation re-resolved every flagged citation under frozen strict gates, a second blind re-check passed within pre-stated limits, and every numeric pivotal sample size was then swept value by value. See the verification centre." data-zh="第三层是本普查被审计最重的层：独立审计查出错误，完整整改在冻结的严格门槛下逐条重解了每个被标记的引文，第二次盲法复检在预设限内通过，随后每一个关键研究样本量都逐值扫查。见核查中心。">Layer 3 is the most heavily audited layer of the census.</div>
+  <p><a href="downloads.html" data-en="Download the frozen L3 dataset →" data-zh="下载冻结的 L3 数据集 →">Download the frozen L3 dataset →</a></p>
+</main>
+<script>
+var S = null;
+function render() {
+  if (!S) return;
+  var l3 = S.l3;
+  var withPiv = S.corpus.items_current - l3.pivotal_composition.none;
+  document.getElementById('kpis').innerHTML = [
+    [l3.attachments.toLocaleString(), GC.t('citation attachments in the L3 library', 'L3 文库的引文附件')],
+    [withPiv + ' / ' + S.corpus.items_current, GC.t('recommendations with an identifiable pivotal', '可定出关键研究的推荐')],
+    [l3.pivotal_n_median, GC.t('median pivotal sample size', '关键研究样本量中位数')],
+    [GC.pct(l3.applicability.indirect / S.corpus.items_current), GC.t('pivotals indirect to the exact question (' + l3.applicability.indirect + ' items)', '对确切问题属间接证据的关键研究（' + l3.applicability.indirect + ' 条）')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  var pc = l3.pivotal_composition;
+  GC.stackBar(document.getElementById('chart-piv'), [
+    { label: GC.t('Systematic review / meta-analysis', '系统综述 / 荟萃分析'), value: pc['SR/MA'], color: '#0f766e' },
+    { label: GC.t('Randomised trial', '随机试验'), value: pc['RCT'], color: '#3d9a8f' },
+    { label: GC.t('Other primary study', '其他原始研究'), value: pc.primary, color: '#94a3b8' },
+    { label: GC.t('No pivotal', '无关键研究'), value: pc.none, color: '#cbd5e1' }
+  ]);
+  document.getElementById('kpis2').innerHTML = [
+    [l3.fragile_n, GC.t('fragile recommendations (composite)', '脆弱推荐（复合标准）')],
+    [l3.fragile_single_rct, GC.t('whose pivotal set holds a single RCT', '关键研究集仅含单篇 RCT')],
+    [l3.pivotal_n_lt400 + ' / ' + l3.pivotal_n_numeric, GC.t('numeric pivotals with N < 400', '样本量 < 400 的数值型关键研究')],
+    [l3.surrogate_n, GC.t('pivotals with a surrogate endpoint', '终点为替代终点的关键研究')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  var rows = l3.per_doc.map(function (v) {
+    var none = v.rows - ((v.piv['SR/MA'] || 0) + (v.piv['RCT'] || 0) + (v.piv.primary || 0));
+    return '<tr><td>' + GC.esc(v.guideline) + ' (' + v.year + ')</td><td class="num">' + v.rows + '</td><td class="num">' + v.att +
+      '</td><td class="num">' + (v.piv['SR/MA'] || 0) + '</td><td class="num">' + (v.piv['RCT'] || 0) +
+      '</td><td class="num">' + (v.piv.primary || 0) + '</td><td class="num">' + none + '</td></tr>';
+  }).join('');
+  document.getElementById('doc-table').innerHTML = '<table><thead><tr><th>' + GC.t('Guideline', '指南') + '</th><th class="num">' +
+    GC.t('Items', '条目') + '</th><th class="num">' + GC.t('Attachments', '附件') + '</th>' +
+    '<th class="num">' + GC.t('SR/MA pivotal', 'SR/MA 关键') + '</th><th class="num">' + GC.t('RCT pivotal', 'RCT 关键') + '</th>' +
+    '<th class="num">' + GC.t('Primary pivotal', '原始研究关键') + '</th><th class="num">' + GC.t('None', '无') +
+    '</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+GC.load('stats.json').then(function (s) { S = s; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

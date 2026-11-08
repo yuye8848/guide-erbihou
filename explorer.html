@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recommendations explorer — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Data explorer" data-zh="数据浏览器">Data explorer</p>
+  <h1 data-en="All 805 current recommendations" data-zh="全部 805 条现行推荐">All 805 current recommendations</h1>
+  <p class="lede" data-en="Every recommendation of the frozen census, with its unified evidence tier (U), strength (S), direction — and, from Layer 3, the anatomy of the pivotal study that carries it. Click a row to open the full record."
+     data-zh="冻结普查的每条推荐：统一证据等级（U）、强度（S）、方向——以及来自第三层的、撑着它的关键研究的解剖。点击任意一行展开完整记录。">Every recommendation of the frozen census, with the anatomy of its pivotal study.</p>
+  <div class="filters">
+    <label><span data-en="Search text" data-zh="全文检索">Search text</span>
+      <input type="search" id="f-q" size="26" data-en-ph="statement, guideline, ID…" data-zh-ph="陈述、指南、编号…"></label>
+    <label><span data-en="Guideline" data-zh="指南">Guideline</span><select id="f-doc"></select></label>
+    <label><span data-en="Society / family" data-zh="学会 / 家族">Society / family</span><select id="f-soc"></select></label>
+    <label><span data-en="Intervention type" data-zh="干预类型">Intervention type</span><select id="f-topic"></select></label>
+    <label><span data-en="Unified tier" data-zh="统一等级">Unified tier</span><select id="f-tier"></select></label>
+    <label><span data-en="Strength" data-zh="强度">Strength</span><select id="f-str"></select></label>
+    <label><span data-en="Direction" data-zh="方向">Direction</span><select id="f-dir"></select></label>
+    <label><span data-en="Pivotal design" data-zh="关键研究设计">Pivotal design</span><select id="f-piv"></select></label>
+  </div>
+  <p class="small muted" id="count"></p>
+  <div id="list"></div>
+  <div class="pager"><button id="prev">←</button><span id="pinfo"></span><button id="next">→</button></div>
+</main>
+<script>
+var ITEMS = null, page = 0, PER = 40;
+function opt(sel, values, allLabel) {
+  var el = document.getElementById(sel);
+  el.innerHTML = '<option value="">' + allLabel + '</option>' + values.map(function (v) {
+    return '<option value="' + GC.esc(v[0]) + '">' + GC.esc(v[1]) + '</option>';
+  }).join('');
+}
+function setup() {
+  var docs = {}, socs = {}, topics = {};
+  ITEMS.forEach(function (i) {
+    docs[i.doc] = i.guideline + ' (' + i.year + ')'; socs[i.society] = i.society;
+    if (i.topic) topics[i.topic] = GC.lang === 'zh' ? i.topic : (i.topic_en || i.topic);
+  });
+  opt('f-doc', Object.keys(docs).sort().map(function (d) { return [d, docs[d]]; }), GC.t('All guidelines', '全部指南'));
+  opt('f-soc', Object.keys(socs).sort().map(function (s) { return [s, s]; }), GC.t('All', '全部'));
+  opt('f-topic', Object.keys(topics).map(function (t) { return [t, topics[t]]; }), GC.t('All types', '全部类型'));
+  opt('f-tier', [['U1', 'U1'], ['U2', 'U2'], ['U3', 'U3'], ['U4', 'U4'], ['none', GC.t('(no tier)', '（无等级）')]], GC.t('All tiers', '全部等级'));
+  opt('f-str', [['S', GC.t('Strong', '强')], ['M', GC.t('Moderate', '中')], ['W', GC.t('Weak', '弱')], ['NONE', GC.t('None stated', '未明示')]], GC.t('All strengths', '全部强度'));
+  opt('f-dir', [['for', GC.t('For', '支持')], ['against', GC.t('Against', '反对')], ['none', GC.t('No stance', '未表态')]], GC.t('All directions', '全部方向'));
+  opt('f-piv', [['SR/MA', 'SR/MA'], ['RCT', 'RCT'], ['primary', GC.t('Other primary', '其他原始研究')], ['none', GC.t('No pivotal', '无关键研究')]], GC.t('All designs', '全部设计'));
+  ['f-q', 'f-doc', 'f-soc', 'f-topic', 'f-tier', 'f-str', 'f-dir', 'f-piv'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { page = 0; render(); });
+  });
+  document.getElementById('prev').addEventListener('click', function () { if (page > 0) { page--; render(); } });
+  document.getElementById('next').addEventListener('click', function () { page++; render(); });
+}
+function filtered() {
+  var q = document.getElementById('f-q').value.trim().toLowerCase(),
+    doc = document.getElementById('f-doc').value, soc = document.getElementById('f-soc').value,
+    top = document.getElementById('f-topic').value, tier = document.getElementById('f-tier').value,
+    str = document.getElementById('f-str').value, dir = document.getElementById('f-dir').value,
+    piv = document.getElementById('f-piv').value;
+  return ITEMS.filter(function (i) {
+    if (doc && i.doc !== doc) return false;
+    if (soc && i.society !== soc) return false;
+    if (top && i.topic !== top) return false;
+    if (tier && (i.U || 'none') !== tier) return false;
+    if (str && (i.S || 'NONE') !== str) return false;
+    if (dir && (i.direction || 'none') !== dir) return false;
+    if (piv && (i.pivotal_design || 'none') !== piv) return false;
+    if (q) {
+      var hay = (i.statement + ' ' + i.guideline + ' ' + i.rec + ' ' + (i.population || '')).toLowerCase();
+      if (hay.indexOf(q) < 0) return false;
+    }
+    return true;
+  });
+}
+function pivN(i) {
+  if (i.pivotal_n != null) return String(i.pivotal_n);
+  return i.pivotal_n_raw || '—';
+}
+function itemHTML(i) {
+  var chips = '<span class="chip acc">' + GC.esc(i.U || '—') + '</span>' +
+    '<span class="chip">' + GC.t('Strength ', '强度 ') + GC.esc(i.S || '—') + '</span>' +
+    '<span class="chip">' + GC.t('Pivotal: ', '关键研究：') + GC.esc(i.pivotal_design || 'none') +
+    (i.pivotal_n != null ? ' · N=' + i.pivotal_n : '') + '</span>' +
+    (i.fragile ? '<span class="chip warn">' + GC.t('thin ice', '薄冰') + '</span>' : '');
+  var body = '<div class="body">' +
+    '<p class="stmt">' + GC.esc(i.statement) + '</p>' +
+    '<table><tbody>' +
+    '<tr><th>' + GC.t('Direction', '方向') + '</th><td>' + GC.dirHTML(i.direction) + '</td></tr>' +
+    '<tr><th>' + GC.t('Unified tier / strength', '统一等级 / 强度') + '</th><td>' + GC.esc(i.U || '—') + ' / ' + GC.esc(i.S || '—') +
+      ' <span class="muted">(' + GC.t('as stated: ', '原文：') + GC.esc(i.grade || '—') + ' · ' + GC.esc(i.tier || '—') + ')</span></td></tr>' +
+    '<tr><th>' + GC.t('Intervention type', '干预类型') + '</th><td>' + GC.esc(GC.lang === 'zh' ? i.topic : (i.topic_en || i.topic)) +
+      ' · ' + GC.esc(GC.lang === 'zh' ? i.rtype : (i.rtype_en || i.rtype)) + '</td></tr>' +
+    '<tr><th>' + GC.t('Citations attached', '所附引文数') + '</th><td>' + i.citations_n +
+      ' (' + i.srma_n + ' SR/MA · ' + i.rct_n + ' RCT)</td></tr>' +
+    '<tr><th>' + GC.t('Pivotal study', '关键研究') + '</th><td>' +
+      (i.pivotal_design ? GC.esc(i.pivotal_design) + GC.t(', reference #', '，指南文献表第 ') + GC.esc(i.pivotal_ref || '—') + GC.t(' in the guideline\u2019s list', ' 条') : GC.t('(no on-question pivotal)', '（无对题关键研究）')) +
+      (i.pivotal_pmid ? ' · <a href="https://pubmed.ncbi.nlm.nih.gov/' + i.pivotal_pmid + '/" target="_blank" rel="noopener">PMID ' + i.pivotal_pmid + '</a>' : '') + '</td></tr>' +
+    '<tr><th>' + GC.t('Pivotal sample size', '关键研究样本量') + '</th><td>' + GC.esc(pivN(i)) + '</td></tr>' +
+    '<tr><th>' + GC.t('Applicability', '适用性') + '</th><td>' + GC.esc(i.applicability || '—') + '</td></tr>' +
+    '<tr><th>' + GC.t('Surrogate endpoint', '替代终点') + '</th><td>' + GC.esc(i.surrogate || '—') + '</td></tr>' +
+    '<tr><th>' + GC.t('L4 questions', 'L4 问题') + '</th><td>' + (i.questions.length ? i.questions.map(function (qn) {
+      return '<a href="questions.html#' + qn + '">' + qn + '</a>';
+    }).join(' · ') : '—') + '</td></tr>' +
+    '</tbody></table></div>';
+  return '<details class="item"><summary><b>' + GC.esc(i.rec) + '</b> · ' + GC.esc(i.guideline) + ' — ' +
+    GC.esc((i.statement || '').slice(0, 110)) + ((i.statement || '').length > 110 ? '…' : '') + '<br>' + chips + '</summary>' + body + '</details>';
+}
+function render() {
+  if (!ITEMS) return;
+  var rows = filtered(), pages = Math.max(1, Math.ceil(rows.length / PER));
+  if (page >= pages) page = pages - 1;
+  document.getElementById('count').textContent = GC.t(rows.length + ' recommendations match', '共 ' + rows.length + ' 条推荐符合条件');
+  document.getElementById('list').innerHTML = rows.slice(page * PER, page * PER + PER).map(itemHTML).join('') ||
+    '<p class="muted">' + GC.t('No recommendations match these filters.', '没有符合筛选条件的推荐。') + '</p>';
+  document.getElementById('pinfo').textContent = GC.t('Page ', '第 ') + (page + 1) + ' / ' + pages + (GC.lang === 'zh' ? ' 页' : '');
+}
+GC.load('items.json').then(function (d) { ITEMS = d; setup(); render(); });
+window.onLangChange = function () { if (ITEMS) { setup(); render(); } };
+</script>
+</body>
+</html>

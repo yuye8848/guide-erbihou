@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GuideCensus — The evidence beneath ENT guideline recommendations</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="A five-layer evidence census · Frozen 2026-11-08" data-zh="五层证据普查 · 2026-11-08 冻结">A five-layer evidence census · Frozen 2026-11-08</p>
+  <h1 data-en="Recommendations are stable. Their evidence is not." data-zh="推荐本身很稳定，撑着它们的证据却不是。">Recommendations are stable. Their evidence is not.</h1>
+  <p class="lede" data-en="We took every current recommendation in 31 ENT (otolaryngology) guideline documents — plus their prior versions and seven NICE guidelines — and audited, layer by layer, what actually carries each recommendation: its assigned evidence tier, its agreement with its own strength, the individual studies it cites, what other guidelines say about the same question, and what survived when the guideline was last revised."
+     data-zh="我们把 31 部耳鼻喉科指南现行版本的每一条推荐——连同它们的前版与 7 部 NICE 指南——逐层审计了一遍：每条推荐被赋予的证据等级、等级与推荐强度是否相符、它实际引用的每一篇研究、其他指南对同一问题的说法，以及指南上次修订时它是否活了下来。">We took every current recommendation in 31 ENT guideline documents and audited, layer by layer, what actually carries each recommendation.</p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <h2 data-en="The five layers" data-zh="五层结构">The five layers</h2>
+  <div class="cards" id="layers"></div>
+
+  <h2 data-en="Headline findings" data-zh="头条结论">Headline findings</h2>
+  <div id="findings"></div>
+
+  <h2 data-en="Start exploring" data-zh="开始探索">Start exploring</h2>
+  <div class="cards">
+    <div class="card"><h3 data-en="Recommendations explorer" data-zh="推荐浏览器">Recommendations explorer</h3>
+      <p class="small" data-en="Search and filter all 805 current recommendations, with the pivotal-study anatomy of each." data-zh="检索、筛选全部 805 条现行推荐，含每条的关键研究解剖。">Search and filter all 805 current recommendations.</p>
+      <p><a href="explorer.html" data-en="Open the explorer →" data-zh="打开浏览器 →">Open the explorer →</a></p></div>
+    <div class="card"><h3 data-en="Citation reverse-lookup" data-zh="引文反查">Citation reverse-lookup</h3>
+      <p class="small" data-en="Enter a PubMed ID and see which recommendations cite that study — and which ones rest on it as their pivotal study." data-zh="输入 PubMed 编号，查看哪些推荐引用了这篇研究、哪些把它当作关键研究。">Enter a PubMed ID and see which recommendations cite that study.</p>
+      <p><a href="lookup.html" data-en="Look up a PMID →" data-zh="反查 PMID →">Look up a PMID →</a></p></div>
+    <div class="card"><h3 data-en="How reliable is this census?" data-zh="这份普查有多可靠？">How reliable is this census?</h3>
+      <p class="small" data-en="Four rounds of independent audit, measured error rates, a full remediation — the verification record is published, not asserted." data-zh="四轮独立审计、实测的错误率、一次完整整改——核查记录是公开摆出来的，不是嘴上声称的。">Four rounds of independent audit, with measured error rates.</p>
+      <p><a href="verification.html" data-en="Visit the verification centre →" data-zh="进入核查中心 →">Visit the verification centre →</a></p></div>
+  </div>
+
+  <div class="note" data-en="How to cite this dataset: see the Downloads page. The frozen data, audit packs and correction logs are public; the protocol and all amendments were registered on OSF (10.17605/OSF.IO/9VMFJ) before the data they govern were touched."
+       data-zh="数据集引用方式见下载页。冻结数据、审计包与更正日志全部公开；协议及全部修正案均在其所辖数据动手之前注册于 OSF（10.17605/OSF.IO/9VMFJ）。">How to cite this dataset: see the Downloads page.</div>
+</main>
+<script>
+var S = null;
+function render() {
+  if (!S) return;
+  var c = S.corpus, l1 = S.l1, l2 = S.l2, l3 = S.l3, l5 = S.l5;
+  var kpis = [
+    [c.docs_all, GC.t('guideline documents censused (46 = 31 current + 15 prior)', '纳入普查的指南文件（46 = 31 现行 + 15 前版）')],
+    [c.items_current, GC.t('current recommendations audited', '受审计的现行推荐')],
+    [l3.attachments.toLocaleString(), GC.t('citation attachments traced (L3 library)', '追溯到的引文附件（L3 文库）')],
+    [S.l4.universe_questions, GC.t('union clinical questions (L4, incl. NICE)', '并集临床问题（L4，含 NICE）')],
+    [l5.transitions, GC.t('version transitions tracked (L5)', '追踪的版本更替（L5）')]
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(function (k) {
+    return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>';
+  }).join('');
+  var layers = [
+    ['l1.html', 'L1', GC.t('Composition', '构成'), GC.t('What evidence tier does each recommendation carry — and how much of the corpus rests on the lowest tiers?', '每条推荐带着什么证据等级——整个语料有多少站在最低等级上？'), GC.t('Top tier (U1) pooled share ', '最高等级（U1）合并占比 ') + l1.U1_pooled],
+    ['l2.html', 'L2', GC.t('Discordance', '不一致'), GC.t('Does recommendation strength agree with the evidence tier underneath it?', '推荐强度与它脚下的证据等级相符吗？'), GC.t('Strength–tier concordance ', '强度—等级一致率 ') + l2.concordance + ' · κ ' + l2.kappa],
+    ['l3.html', 'L3', GC.t('Citation archaeology', '引文考古'), GC.t('Which single study, if any, actually carries each recommendation — how big, how direct, still alive?', '到底是哪一篇研究（如果有的话）在撑着每条推荐——多大、多对题、还活着吗？'), l3.pivotal_composition['SR/MA'] + ' / ' + l3.pivotal_composition['RCT'] + ' / ' + l3.pivotal_composition.primary + ' / ' + l3.pivotal_composition.none + ' ' + GC.t('(SR/MA / RCT / primary / none)', '（综述 / 随机试验 / 原始研究 / 无）')],
+    ['l4.html', 'L4', GC.t('Concordance', '跨指南一致性'), GC.t('When two guidelines answer the same clinical question, do they agree?', '两部指南回答同一个临床问题时，说法一致吗？'), GC.t('Partial-overlap concordance ', '部分重叠一致率 ') + S.l4.partial.concordant + '/' + S.l4.partial.both_stanced + ' = ' + GC.pct(S.l4.partial.concordant / S.l4.partial.both_stanced)],
+    ['l5.html', 'L5', GC.t('Version dynamics', '版本动态'), GC.t('When a guideline is revised, what survives — the wording, or the evidence?', '指南修订时，活下来的是措辞，还是证据？'), GC.t('Survival ', '存续率 ') + l5.survival_num + '/' + l5.survival_den + ' · ' + GC.t('pivotal persistence ', '关键研究存续 ') + l5.persistence_v25.num + '/' + l5.persistence_v25.den]
+  ];
+  document.getElementById('layers').innerHTML = layers.map(function (L) {
+    return '<div class="card"><p class="tag">' + L[1] + ' · ' + L[2] + '</p><p class="small">' + L[3] + '</p>' +
+      '<p class="big" style="font-size:16px">' + L[4] + '</p><p><a href="' + L[0] + '">' + GC.t('Layer page →', '本层页面 →') + '</a></p></div>';
+  }).join('');
+  var f = [
+    GC.t('Only <b>' + l1.U1_pooled + '</b> of recommendations sit on the highest unified evidence tier — and the share is radically uneven: drug recommendations reach 46.7% (162/347) while surgical recommendations reach just 3.4% (3/88).', '只有 <b>' + l1.U1_pooled + '</b> 的推荐站在统一标尺的最高证据等级上——而且极不均匀：药物推荐达 46.7%（162/347），手术推荐只有 3.4%（3/88）。'),
+    GC.t('Strength and evidence agree only loosely: overall concordance <b>' + l2.concordance + '</b>, Cohen\u2019s κ <b>' + l2.kappa + '</b>. Among strong recommendations, barely more than half rest on strong evidence.', '强度与证据只是松耦合：总体一致率 <b>' + l2.concordance + '</b>，Cohen κ 仅 <b>' + l2.kappa + '</b>。强推荐里，只有一半多一点真正站在强证据上。'),
+    GC.t('<b>' + l3.fragile_n + '</b> recommendations stand on thin ice: their pivotal study is a single RCT or a study of fewer than 400 participants (median pivotal N = ' + l3.pivotal_n_median + ').', '<b>' + l3.fragile_n + '</b> 条推荐站在薄冰上：其关键研究或只是单篇随机试验，或样本量不足 400 人（关键研究样本量中位数 = ' + l3.pivotal_n_median + '）。'),
+    GC.t('Guidelines that answer the same question almost never contradict each other on direction when they fully overlap (24/24), and agree 86.3% of the time on partial overlap — disagreements track gaps in the evidence tier each panel assigned, not guideline age.', '回答同一问题的指南在完全重叠时方向上几乎从不打架（24/24)，部分重叠时一致率 86.3%——分歧跟着各家评定的证据等级差走，与指南新旧无关。'),
+    GC.t('Across revisions, <b>' + l5.survival_num + '/' + l5.survival_den + '</b> recommendations survive and only ' + l5.flips_num + '/' + l5.flips_den + ' flip direction — but two-thirds of the citations in a new version are new, and only <b>' + l5.persistence_v25.num + '/' + l5.persistence_v25.den + '</b> of carried recommendations keep the same pivotal study.', '跨版本看，<b>' + l5.survival_num + '/' + l5.survival_den + '</b> 的推荐活了下来，方向翻转只有 ' + l5.flips_num + '/' + l5.flips_den + '——但新版引文有三分之二是新的，活下来的推荐里只有 <b>' + l5.persistence_v25.num + '/' + l5.persistence_v25.den + '</b> 还用同一篇关键研究。'),
+    GC.t('Zombie citations are rare but real: 2 current recommendations rest on a pivotal study that had already been withdrawn when the guideline was published.', '僵尸引文罕见但真实存在：2 条现行推荐的关键研究在指南出版时就已被撤回。')
+  ];
+  document.getElementById('findings').innerHTML = '<ul>' + f.map(function (x) { return '<li style="margin:8px 0">' + x + '</li>'; }).join('') + '</ul>';
+}
+GC.load('stats.json').then(function (s) { S = s; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

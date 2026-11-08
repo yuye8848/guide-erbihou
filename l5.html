@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L5 · Version dynamics — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag">Layer 5 · <span data-en="Version dynamics" data-zh="版本动态">Version dynamics</span></p>
+  <h1 data-en="When a guideline is revised, what survives — the wording, or the evidence?" data-zh="指南修订时，活下来的是措辞，还是证据？">When a guideline is revised, what survives — the wording, or the evidence?</h1>
+  <p class="lede" data-en="Fifteen prior-version documents (380 recommendations, including one census omission admitted to this layer only, under a registered amendment) were aligned against their current successors across 16 transitions in 14 guideline families. Layer 5 measures recommendation survival and direction flips, then opens the citation apparatus underneath: how much of a new version's reference list is genuinely new, whether the pivotal study of a surviving recommendation is still the same study, and whether anything withdrawn or retracted is still being cited."
+     data-zh="15 部前版文件（380 条推荐，其中一条普查漏项经注册修正案仅纳入本层）与各自的现行后继版本在 14 个指南家族、16 次更替中逐条对齐。第五层先测推荐的存续与方向翻转，再打开其下的引文机器：新版参考文献表里有多少是真的新、活下来的推荐关键研究是否还是同一篇、以及是否还有已被撤回或撤稿的文献仍在被引用。">Fifteen prior documents were aligned against their current successors across 16 transitions.</p>
+  <div class="kpis" id="kpis"></div>
+  <h2 data-en="Survival, by transition" data-zh="逐更替存续">Survival, by transition</h2>
+  <div class="chartbox"><div id="chart-surv"></div>
+    <p class="small muted" data-en="Share of prior-version recommendations carried into the current version (identical or modified). The ARIA transition is always reported separately: ARIA 2020 carries no item-level apparatus, so its turnover is not measurable on the same footing." data-zh="前版推荐被带入现行版本（原样或修改）的占比。ARIA 更替永远单独报告：ARIA 2020 没有条目级引文装置，其更替无法在同一 footing 上测量。">Share of prior recommendations carried into the current version.</p></div>
+  <h2 data-en="Underneath the wording" data-zh="措辞之下">Underneath the wording</h2>
+  <div class="kpis" id="kpis2"></div>
+  <p data-en="Citation turnover is reported as a range, not a point: identity coverage differs between prior (88.8% PMID-resolved) and current (60.0%) sides, and a PMID-only sensitivity analysis bounds the frozen figures from below. The frozen values are upper bounds."
+     data-zh="引文更替以区间而非点值报告：前版侧（88.8% 可 PMID 定名）与现行侧（60.0%）的身份覆盖不同，仅-PMID 敏感性分析从下方界定了冻结数值。冻结值为上界。">Citation turnover is reported as a range, not a point.</p>
+  <p><a href="dynamics.html" data-en="Per-family timelines →" data-zh="逐家族时间线 →">Per-family timelines →</a> ·
+     <a href="zombies.html" data-en="Zombie watch: withdrawn studies still cited →" data-zh="僵尸观察：仍在被引的已撤回研究 →">Zombie watch →</a></p>
+  <div class="note" data-en="Phase 2 of this layer ran without the second (LLM) verification channel used elsewhere — a scope difference disclosed in the freeze report; identity and design rates were instead controlled by full recounts and a stratified re-classification with written adjudications." data-zh="本层第二阶段未使用其他层用过的第二（LLM）核查通道——这一范围差异已在冻结报告中披露；其身份与设计错误率改由全量复计与分层重分类加书面裁定来控制。">Phase 2 ran without the second verification channel — disclosed in the freeze report.</div>
+  <p><a href="downloads.html" data-en="Download the frozen L5 dataset →" data-zh="下载冻结的 L5 数据集 →">Download the frozen L5 dataset →</a></p>
+</main>
+<script>
+var S = null, DYN = null;
+function render() {
+  if (!S || !DYN) return;
+  var l5 = S.l5;
+  document.getElementById('kpis').innerHTML = [
+    [l5.survival_num + '/' + l5.survival_den, GC.t('prior recommendations survive revision (' + GC.pct(l5.survival_num / l5.survival_den) + ')', '前版推荐在修订后存续（' + GC.pct(l5.survival_num / l5.survival_den) + '）')],
+    [l5.flips_num + '/' + l5.flips_den, GC.t('direction flips among determinable survivors', '可判定存续者中的方向翻转')],
+    [l5.transitions, GC.t('version transitions in 14 families', '14 个家族中的版本更替')],
+    [l5.persistence_v25.num + '/' + l5.persistence_v25.den, GC.t('carried recommendations keeping the same pivotal study', '存续推荐仍用同一关键研究')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  var rows = DYN.filter(function (t) { return t.transition !== 'T15' && t.prior_n > 0; }).map(function (t) {
+    return { label: t.prior_name + ' (' + t.prior_doc + ' → ' + t.current_doc + ')', value: t.survival,
+             display: t.carried + '/' + t.prior_n + ' = ' + GC.pct(t.survival) };
+  }).sort(function (a, b) { return a.value - b.value; });
+  GC.barChart(document.getElementById('chart-surv'), rows, { labelWidth: 300 });
+  document.getElementById('kpis2').innerHTML = [
+    [l5.doc_turnover, GC.t('document-level citation turnover (frozen value)', '文件级引文更替（冻结值）')],
+    ['[' + l5.turnover_ranges.doc[0] + ', ' + l5.turnover_ranges.doc[1] + ']', GC.t('turnover range under the PMID-only sensitivity analysis', '仅-PMID 敏感性分析下的更替区间')],
+    [GC.pct(l5.persistence_v25.num / l5.persistence_v25.den), GC.t('pivotal persistence (' + l5.persistence_v25.num + '/' + l5.persistence_v25.den + ', v2.5 recomputation)', '关键研究存续率（' + l5.persistence_v25.num + '/' + l5.persistence_v25.den + '，v2.5 重算）')],
+    [l5.item_turnover, GC.t('item-level citation turnover (frozen value)', '条目级引文更替（冻结值）')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+}
+Promise.all([GC.load('stats.json'), GC.load('dynamics.json')]).then(function (d) { S = d[0]; DYN = d[1]; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

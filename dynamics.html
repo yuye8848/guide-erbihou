@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Version dynamics — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Layer 5 · Timelines" data-zh="第五层 · 时间线">Layer 5 · Timelines</p>
+  <h1 data-en="Sixteen revisions, fourteen families" data-zh="十六次修订，十四个家族">Sixteen revisions, fourteen families</h1>
+  <p class="lede" data-en="Each transition below aligns a prior guideline version with its current successor: how many recommendations were carried over (identical or modified), how many were dropped, how many flipped direction — and, underneath, whether the studies carrying the survivors are still the same studies."
+     data-zh="下方每一次更替都把一部指南的前版与其现行后继对齐：多少推荐被带过来（原样或修改）、多少被丢弃、多少翻转了方向——以及在其之下，撑着存续者的研究是否还是同一批研究。">Each transition aligns a prior guideline version with its current successor.</p>
+  <div id="list"></div>
+  <div class="warnbox" data-en="The EPOS 2012 → 2020 transition is the extreme case: not one of the 88 prior statements was carried over identically — all 79 survivors were modified and 9 dropped. The ARIA transition is reported separately throughout this census: ARIA 2020 carries no item-level citation apparatus, so citation-level measures do not apply to it." data-zh="EPOS 2012 → 2020 是极端案例：88 条前版陈述没有一条原样带过来——79 条存续者全被修改，9 条被丢弃。ARIA 更替在本普查中全程单独报告：ARIA 2020 没有条目级引文装置，引文层面的测度不适用于它。">The EPOS 2012 → 2020 transition is the extreme case; ARIA is reported separately.</div>
+</main>
+<script>
+var DYN = null;
+function render() {
+  if (!DYN) return;
+  document.getElementById('list').innerHTML = DYN.map(function (t) {
+    var surv = t.survival == null ? '—' : GC.pct(t.survival) + (t.survival_ci ? ' <span class="muted">[' + t.survival_ci + ']</span>' : '');
+    var pers = (t.piv_both_new && t.piv_same_new != null)
+      ? t.piv_same_new + '/' + t.piv_both_new + ' (' + GC.pct(t.piv_same_new / t.piv_both_new, 0) + ')' : '—';
+    var turn = t.doc_turnover == null ? '—' : Number(t.doc_turnover).toFixed(3);
+    var aria = t.transition === 'T15';
+    return '<div class="card" style="margin:12px 0"><h3 style="margin:0 0 6px">' + GC.esc(t.prior_name) + '</h3>' +
+      '<p class="small" style="margin:0 0 8px"><span class="chip">' + GC.esc(t.prior_doc) + '</span> → <span class="chip acc">' + GC.esc(t.current_doc) + '</span>' +
+      ' <span class="muted">' + t.transition + ' · ' + t.interval_y + GC.t(' y apart', ' 年间隔') + '</span>' +
+      (aria ? ' <span class="chip warn">' + GC.t('reported separately', '单独报告') + '</span>' : '') + '</p>' +
+      '<table><tbody><tr>' +
+      '<td><b>' + t.prior_n + '</b> <span class="muted">' + GC.t('prior recommendations', '前版推荐') + '</span></td>' +
+      '<td><b>' + t.carried + '</b> <span class="muted">' + GC.t('carried into current version', '带入现行版本') + '</span></td>' +
+      '<td><b>' + t.dropped + '</b> <span class="muted">' + GC.t('dropped', '丢弃') + '</span></td>' +
+      '<td><b>' + surv + '</b> <span class="muted">' + GC.t('survival', '存续率') + '</span></td></tr><tr>' +
+      '<td><b>' + t.flips + '/' + t.both_stanced + '</b> <span class="muted">' + GC.t('direction flips among both-stanced pairs', '双方表态配对中的方向翻转') + '</span></td>' +
+      '<td><b>' + t.new_n + '/' + t.current_n + '</b> <span class="muted">' + GC.t('current items that are new', '现行条目中的新增') + '</span></td>' +
+      '<td><b>' + pers + '</b> <span class="muted">' + GC.t('same pivotal kept (v2.5)', '保留同一关键研究（v2.5）') + '</span></td>' +
+      '<td><b>' + turn + '</b> <span class="muted">' + GC.t('document citation turnover', '文件引文更替') + '</span></td>' +
+      '</tr></tbody></table></div>';
+  }).join('');
+}
+GC.load('dynamics.json').then(function (d) { DYN = d; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

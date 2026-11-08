@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PMID reverse lookup — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Layer 3 · Citation reverse-lookup" data-zh="第三层 · 引文反查">Layer 3 · Citation reverse-lookup</p>
+  <h1 data-en="Which recommendations cite this study?" data-zh="哪些推荐引用了这篇研究？">Which recommendations cite this study?</h1>
+  <p class="lede" data-en="Enter a PubMed ID (PMID). The lookup covers the Layer-3 citation library: every recommendation whose reference list contains the study, and — highlighted — the recommendations for which it is the pivotal study."
+     data-zh="输入 PubMed 编号（PMID）。本反查覆盖第三层引文文库：参考文献表中含这篇研究的每条推荐，以及——高亮标出——以它为关键研究的推荐。">Enter a PubMed ID to see which recommendations cite the study.</p>
+  <div class="filters">
+    <label><span>PMID</span>
+      <input type="text" id="q" size="18" data-en-ph="e.g. 30199594" data-zh-ph="例：30199594"></label>
+    <button class="btn" id="go" data-en="Look up" data-zh="查询">Look up</button>
+  </div>
+  <div id="coverage"></div>
+  <div id="result"></div>
+  <h2 data-en="Most-cited pivotal studies" data-zh="被引最多的关键研究">Most-cited pivotal studies</h2>
+  <p class="small muted" data-en="Studies that serve as the pivotal study for the largest number of recommendations in the resolved index." data-zh="在已定名索引中，为最多推荐充当关键研究的研究。">Studies pivotal for the largest number of recommendations.</p>
+  <div id="top"></div>
+</main>
+<script>
+var IDX = null, COV = null, ITEMS = {};
+function run() {
+  var q = document.getElementById('q').value.trim().replace(/\D/g, '');
+  var box = document.getElementById('result');
+  if (!IDX) return;
+  if (!q) { box.innerHTML = ''; return; }
+  var v = IDX[q];
+  if (!v) {
+    box.innerHTML = '<div class="warnbox">' + GC.t('PMID ' + q + ' is not in the resolved index. That means one of three things: the study is not cited by any current recommendation in the library; its citation could not be resolved to a PMID from the frozen artefacts (see coverage note above); or the ID is mistyped.', 'PMID ' + q + ' 不在已定名索引中。可能有三种情况：该研究未被文库中任何现行推荐引用；其引文无法从冻结工件定名到 PMID（见上方覆盖说明）；或编号输入有误。') + '</div>';
+    return;
+  }
+  var pivFor = {};
+  v.pivotal_for.forEach(function (r) { pivFor[r] = 1; });
+  var rows = v.cites.map(function (r) {
+    var i = ITEMS[r] || {};
+    return '<tr><td><b>' + GC.esc(r) + '</b>' + (pivFor[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') +
+      '</td><td>' + GC.esc(i.guideline || '') + '</td><td>' + GC.esc((i.statement || '').slice(0, 130)) + '</td><td>' + GC.dirHTML(i.direction) + '</td></tr>';
+  }).join('');
+  box.innerHTML = '<h3>' + (v.title ? GC.esc(v.title) : GC.t('(title not carried in the index)', '（索引未载标题）')) + '</h3>' +
+    '<p class="small">' + GC.t('Cited by ', '被引用于 ') + '<b>' + v.cites.length + '</b>' + GC.t(' recommendations; pivotal for ', ' 条推荐；为其中 ') + '<b>' + v.pivotal_for.length + '</b>' + GC.t('.', ' 条的关键研究。') +
+    ' <a href="https://pubmed.ncbi.nlm.nih.gov/' + q + '/" target="_blank" rel="noopener">PubMed ↗</a></p>' +
+    '<table><thead><tr><th>' + GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') + '</th><th>' + GC.t('Statement', '陈述') + '</th><th>' + GC.t('Direction', '方向') + '</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+function renderStatic() {
+  if (!COV || !IDX) return;
+  document.getElementById('coverage').innerHTML = '<div class="note">' +
+    GC.t('Coverage, stated honestly: the index resolves ', '覆盖情况，如实说明：本索引定名了 ') +
+    '<b>' + COV.attachments_resolved.toLocaleString() + ' / ' + COV.attachments_total.toLocaleString() + ' (' + GC.pct(COV.share) + ')</b>' +
+    GC.t(' of the citation attachments to a PMID (' + COV.unique_pmids.toLocaleString() + ' unique studies), using the frozen production artefacts (per-document reference resolutions, the closeout mapping, and the v2.5 corrected identities). The remaining attachments — concentrated in the ICAR consensus documents, whose evidence tables cite studies in forms the frozen artefacts do not carry a PMID for — are not in this index; absence here is not proof a study is uncited.', ' 条引文附件到 PMID（' + COV.unique_pmids.toLocaleString() + ' 篇独立研究），依据是冻结的生产工件（逐文件文献定名、收尾映射与 v2.5 更正身份）。其余附件——集中于 ICAR 共识文件，其证据表引用研究的形式在冻结工件中未载 PMID——不在本索引内；此处查不到不等于未被引用。') + '</div>';
+  var tops = Object.keys(IDX).map(function (k) { return IDX[k]; })
+    .filter(function (v) { return v.pivotal_for.length > 0; })
+    .sort(function (a, b) { return b.pivotal_for.length - a.pivotal_for.length || b.cites.length - a.cites.length; })
+    .slice(0, 15);
+  document.getElementById('top').innerHTML = '<table><thead><tr><th>PMID</th><th>' + GC.t('Study', '研究') + '</th><th class="num">' +
+    GC.t('Pivotal for', '关键于') + '</th><th class="num">' + GC.t('Cited by', '被引于') + '</th></tr></thead><tbody>' +
+    tops.map(function (v) {
+      return '<tr><td><a href="#" data-pmid="' + v.pmid + '">' + v.pmid + '</a></td><td>' + GC.esc((v.title || '').slice(0, 110)) +
+        '</td><td class="num"><b>' + v.pivotal_for.length + '</b></td><td class="num">' + v.cites.length + '</td></tr>';
+    }).join('') + '</tbody></table>';
+  document.querySelectorAll('#top a[data-pmid]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('q').value = a.getAttribute('data-pmid');
+      run(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+Promise.all([GC.load('pmid_index.json'), GC.load('pmid_coverage.json'), GC.load('items.json')]).then(function (d) {
+  IDX = d[0]; COV = d[1];
+  d[2].forEach(function (i) { ITEMS[i.rec] = i; });
+  renderStatic();
+  if (location.hash) { document.getElementById('q').value = location.hash.slice(1); run(); }
+});
+document.getElementById('go').addEventListener('click', run);
+document.getElementById('q').addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
+window.onLangChange = function () { renderStatic(); run(); };
+</script>
+</body>
+</html>

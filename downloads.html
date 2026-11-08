@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Downloads — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Data" data-zh="数据">Data</p>
+  <h1 data-en="Frozen datasets and reports" data-zh="冻结数据集与报告">Frozen datasets and reports</h1>
+  <p class="lede" data-en="Everything this site displays is generated from the files below — the whole-project freeze of 2026-11-08. If a number here and a number there ever disagree, the frozen file wins and the discrepancy is a bug worth reporting."
+     data-zh="本站展示的一切都由下方文件生成——2026-11-08 的全项目冻结。若本站某数字与文件不一致，以冻结文件为准，且该出入是值得报告的缺陷。">Everything this site displays is generated from the files below.</p>
+  <div id="files"></div>
+  <h2 data-en="How to cite this dataset" data-zh="如何引用本数据集">How to cite this dataset</h2>
+  <div class="card">
+    <p class="mono" id="citation">Lei P, Dong W, Tan J, Yang X. GuideCensus: a five-layer census of the evidence beneath ENT clinical guideline recommendations — frozen dataset (v1, 2026-11-08). Protocol and amendments: OSF 10.17605/OSF.IO/9VMFJ. https://guide.erbihou.org</p>
+    <p class="small muted" data-en="The protocol, all amendments (v1.0–v2.5) and the audit-of-record note are registered on OSF. A versioned archive DOI will be added here when the deposit is minted; until then, cite the OSF registration and this site." data-zh="协议、全部修正案（v1.0–v2.5）与记录在案审计说明注册于 OSF。版本化归档 DOI 将在存入后补在此处；在此之前，请引用 OSF 注册与本站。">The protocol and all amendments are registered on OSF.</p>
+  </div>
+  <h2 data-en="Licences" data-zh="许可">Licences</h2>
+  <p data-en="Data and documentation: CC-BY-4.0. Framework code (GuideCensus): MIT. Nothing on this site requires maintenance accounts, logins or tracking; the query features run entirely on precomputed static indexes in your browser."
+     data-zh="数据与文档：CC-BY-4.0。框架代码（GuideCensus）：MIT。本站不需要维护账号、登录或追踪；查询功能全部在您的浏览器内基于预计算静态索引运行。">Data and documentation: CC-BY-4.0. Framework code: MIT.</p>
+</main>
+<script>
+function fmtBytes(b) {
+  if (b > 1048576) return (b / 1048576).toFixed(2) + ' MB';
+  if (b > 1024) return (b / 1024).toFixed(1) + ' KB';
+  return b + ' B';
+}
+GC.load('downloads.json').then(function (d) {
+  document.getElementById('files').innerHTML = '<table><thead><tr><th>' + GC.t('File', '文件') + '</th><th>' +
+    GC.t('Frozen source', '冻结来源') + '</th><th class="num">' + GC.t('Size', '大小') + '</th><th></th></tr></thead><tbody>' +
+    d.map(function (f) {
+      return '<tr><td class="mono">' + GC.esc(f.file) + '</td><td class="mono muted">' + GC.esc(f.source) +
+        '</td><td class="num">' + fmtBytes(f.bytes) + '</td><td><a href="downloads/' + GC.esc(f.file) + '" download>' +
+        GC.t('Download', '下载') + '</a></td></tr>';
+    }).join('') + '</tbody></table>';
+});
+</script>
+</body>
+</html>

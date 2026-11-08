@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L1 · Composition — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag">Layer 1 · <span data-en="Composition" data-zh="构成">Composition</span></p>
+  <h1 data-en="What evidence tier does each recommendation carry?" data-zh="每条推荐带着什么证据等级？">What evidence tier does each recommendation carry?</h1>
+  <p class="lede" data-en="Every recommendation in the 31 current documents was placed on one unified evidence scale (U1 = highest … U4 = lowest), harmonising the very different grading systems of AAO-HNSF, EPOS, ICAR, ARIA and EAACI, and cross-tabulated against intervention type."
+     data-zh="31 部现行文件的每条推荐都被放上同一把统一证据标尺（U1 最高 … U4 最低），把 AAO-HNSF、EPOS、ICAR、ARIA、EAACI 各不相同的分级体系拉平，再与干预类型交叉列表。">Every recommendation was placed on one unified evidence scale.</p>
+  <div class="kpis" id="kpis"></div>
+  <h2 data-en="Tier distribution across the corpus" data-zh="全语料的等级分布">Tier distribution across the corpus</h2>
+  <div class="chartbox"><div id="chart-dist"></div>
+    <p class="small muted" data-en="Counts of the 805 current recommendations by unified tier. Nine recommendations carry no tier." data-zh="805 条现行推荐按统一等级的计数。9 条推荐无等级。">Counts by unified tier.</p></div>
+  <h2 data-en="Top-tier share by intervention type" data-zh="按干预类型的最高等级占比">Top-tier share by intervention type</h2>
+  <div class="chartbox"><div id="chart-topic"></div>
+    <p class="small muted" data-en="Share of recommendations on the highest tier (U1) within each intervention class. The drug–surgery gap (46.7% vs 3.4%) is the single largest structural contrast in the census." data-zh="各干预类别内站在最高等级（U1）的推荐占比。药物与手术之间 46.7% 对 3.4% 的落差，是本普查最大的结构性对照。">Share on the highest tier within each intervention class.</p></div>
+  <h2 data-en="Per-guideline composition" data-zh="逐指南构成">Per-guideline composition</h2>
+  <div id="doc-table"></div>
+  <div class="warnbox" data-en="Two mapping artefacts are disclosed, not hidden: EPOS 2020's very high U1 share (95.8%) and EAACI 2018's strong-recommendation share (60.0%) follow from those documents' own grading conventions under the harmonisation rule, and must not be read as raw evidence quality." data-zh="两个映射假象是明示披露的，不藏着：EPOS 2020 的 U1 占比极高（95.8%）与 EAACI 2018 的强推荐占比（60.0%）源于这两部文件自身分级惯例在拉平规则下的结果，不能读作原始证据质量。">Two mapping artefacts are disclosed, not hidden.</div>
+  <p><a href="downloads.html" data-en="Download the frozen L1/L2 dataset →" data-zh="下载冻结的 L1/L2 数据集 →">Download the frozen L1/L2 dataset →</a></p>
+</main>
+<script>
+var S = null;
+function render() {
+  if (!S) return;
+  var l1 = S.l1;
+  document.getElementById('kpis').innerHTML = [
+    [l1.U1_pooled, GC.t('pooled share on the highest tier (U1)', '合并最高等级（U1）占比')],
+    [GC.pct(l1.U1_median_share), GC.t('median per-guideline U1 share', '逐指南 U1 占比中位数')],
+    ['46.7%', GC.t('drug recommendations on U1 (162/347)', '药物推荐 U1 占比（162/347)')],
+    ['3.4%', GC.t('surgical recommendations on U1 (3/88)', '手术推荐 U1 占比（3/88)')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  var cols = { U1: '#0f766e', U2: '#3d9a8f', U3: '#94a3b8', U4: '#cbd5e1' };
+  GC.stackBar(document.getElementById('chart-dist'),
+    ['U1', 'U2', 'U3', 'U4'].map(function (u) { return { label: u, value: l1.dist_U[u], color: cols[u] }; }));
+  var enMap = {};
+  (window._items || []).forEach(function (i) { if (i.topic) enMap[i.topic] = i.topic_en || i.topic; });
+  var topics = Object.keys(l1.strat_topic).map(function (k) {
+    var v = l1.strat_topic[k];
+    var m = /([\d.]+)%/.exec(v.U1 || '');
+    var share = m ? parseFloat(m[1]) / 100 : 0;
+    return { label: GC.lang === 'zh' ? k : (enMap[k] || k), value: share,
+             display: v.U1 + '  / ' + v.n };
+  }).sort(function (a, b) { return b.value - a.value; });
+  GC.barChart(document.getElementById('chart-topic'), topics, { labelWidth: 150 });
+  var rows = S.corpus.docs.slice().sort(function (a, b) { return a.year - b.year || a.doc.localeCompare(b.doc); }).map(function (d) {
+    return '<tr><td>' + GC.esc(d.guideline) + '</td><td>' + GC.esc(d.society) + '</td><td class="num">' + d.year +
+      '</td><td class="num">' + d.n_items + '</td></tr>';
+  }).join('');
+  document.getElementById('doc-table').innerHTML = '<table><thead><tr><th>' + GC.t('Guideline', '指南') + '</th><th>' +
+    GC.t('Society', '学会') + '</th><th class="num">' + GC.t('Year', '年份') + '</th><th class="num">' +
+    GC.t('Recommendations', '推荐数') + '</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+Promise.all([GC.load('stats.json'), GC.load('items.json')]).then(function (d) { S = d[0]; window._items = d[1]; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

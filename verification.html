@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verification centre — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Transparency" data-zh="透明度">Transparency</p>
+  <h1 data-en="Verification centre: error rates, published" data-zh="核查中心：错误率，公开摆出来">Verification centre: error rates, published</h1>
+  <p class="lede" data-en="This census was produced with machine assistance under author-set rules, and its reliability claim is not a promise — it is a measurement record. Machines could only flag; every correction required a verbatim source quote and a database identifier, survived a second check, and landed through a registered protocol amendment. Below: every audit round, what it found, what it changed, the amendment timeline, and the freeze hashes that bind the data this site serves."
+     data-zh="本普查是在作者设定的规则下以机器辅助完成的；它的可靠性主张不是承诺，而是测量记录。机器只能标记；每一处更正都需要逐字原文引文与数据库编号、通过二次核对，并经注册的协议修正案落地。下方：每一轮审计、它的发现、它改变了什么、修正案时间线，以及绑定本站所供数据的冻结哈希。">This census's reliability claim is a measurement record, published here.</p>
+  <div class="warnbox" data-en="One limit is stated plainly: the audit of record (2026-11-06) is an independent AI audit. No human blind re-extraction exists for this census, and none is claimed anywhere in the study's outputs." data-zh="一条局限明说：记录在案的审计（2026-11-06）是独立 AI 审计。本普查不存在人工盲法重提取，本研究的任何产出中也从未如此声称。">The audit of record is an independent AI audit; no human blind re-extraction exists.</div>
+
+  <h2 data-en="The audit rounds" data-zh="审计轮次">The audit rounds</h2>
+  <div id="rounds"></div>
+
+  <h2 data-en="Amendment timeline (protocol v1.0 → v2.5)" data-zh="修正案时间线（协议 v1.0 → v2.5）">Amendment timeline (protocol v1.0 → v2.5)</h2>
+  <p class="small muted" data-en="Every amendment was filed on OSF (10.17605/OSF.IO/9VMFJ) before the data it governs were touched." data-zh="每一份修正案均在其所辖数据动手之前提交至 OSF（10.17605/OSF.IO/9VMFJ）。">Every amendment was filed on OSF before the data it governs were touched.</p>
+  <div class="timeline" id="amendments"></div>
+
+  <h2 data-en="Freeze integrity checks" data-zh="冻结完整性校验">Freeze integrity checks</h2>
+  <div id="checks"></div>
+
+  <h2 data-en="Frozen file hashes (SHA-256)" data-zh="冻结文件哈希（SHA-256）">Frozen file hashes (SHA-256)</h2>
+  <div id="hashes"></div>
+</main>
+<script>
+var V = null;
+function render() {
+  if (!V) return;
+  document.getElementById('rounds').innerHTML = V.rounds.map(function (r, i) {
+    return '<div class="card" style="margin:10px 0"><p class="tag">' + GC.t('Round ', '第 ') + (i + 1) + GC.t('', ' 轮') + ' · ' + GC.esc(r.date) + '</p>' +
+      '<h3 style="margin:4px 0">' + GC.esc(r.name) + '</h3>' +
+      '<p style="margin:6px 0"><b>' + GC.t('Found: ', '发现：') + '</b>' + GC.esc(r.finding) + '</p>' +
+      '<p style="margin:6px 0"><b>' + GC.t('Action: ', '行动：') + '</b>' + GC.esc(r.action) + '</p>' +
+      '<p class="small muted" style="margin:4px 0">' + GC.t('Record: ', '记录：') + GC.esc(r.source) + '</p></div>';
+  }).join('');
+  document.getElementById('amendments').innerHTML = V.amendments.map(function (a) {
+    return '<div class="ev"><b>' + GC.esc(a.version) + '</b> · ' + GC.esc(a.kind) +
+      ' <span class="muted">' + GC.esc(a.date) + '</span></div>';
+  }).join('');
+  var fc = V.freeze_checks;
+  document.getElementById('checks').innerHTML = '<table><tbody>' + Object.keys(fc).map(function (k) {
+    var v = fc[k];
+    return '<tr><td>' + GC.esc(k) + '</td><td>' + (v === true ? '<span class="chip acc">PASS</span>' :
+      '<span class="small">' + GC.esc(String(v)) + '</span>') + '</td></tr>';
+  }).join('') + '</tbody></table>';
+  document.getElementById('hashes').innerHTML = '<table class="hashlist"><thead><tr><th>' + GC.t('Frozen file', '冻结文件') +
+    '</th><th>' + GC.t('Layer', '层') + '</th><th>SHA-256</th></tr></thead><tbody>' +
+    V.hashes.map(function (h) {
+      return '<tr><td class="mono">' + GC.esc(h.path) + '</td><td>' + GC.esc(h.layer) + '</td><td class="mono">' + GC.esc(h.sha256) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+GC.load('verification.json').then(function (d) { V = d; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

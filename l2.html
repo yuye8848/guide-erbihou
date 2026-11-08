@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L2 · Discordance — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag">Layer 2 · <span data-en="Internal discordance" data-zh="内部不一致">Internal discordance</span></p>
+  <h1 data-en="Does the strength of a recommendation match the evidence beneath it?" data-zh="推荐的强度与它脚下的证据相符吗？">Does the strength of a recommendation match the evidence beneath it?</h1>
+  <p class="lede" data-en="Layer 2 scores every recommendation on a second axis — its stated strength (strong / moderate / weak / none) — and asks whether the two axes agree. A pre-specified concordance rule maps tier and strength onto a common footing; disagreement is not automatically an error (panels may weigh harms, costs and values), but its size and shape are measurable."
+     data-zh="第二层给每条推荐打第二根轴——它明示的强度（强 / 中 / 弱 / 无）——再看两根轴是否相符。预设的一致性规则把等级与强度拉到同一 footing 上；不一致不自动等于错误（专家组可以权衡危害、成本与价值取向），但其规模与形态是可以测量的。">Layer 2 scores every recommendation on strength and asks whether the two axes agree.</p>
+  <div class="kpis" id="kpis"></div>
+  <h2 data-en="Strength × tier cross-tabulation" data-zh="强度 × 等级交叉表">Strength × tier cross-tabulation</h2>
+  <div id="xtab"></div>
+  <h2 data-en="Direction of recommendations" data-zh="推荐方向分布">Direction of recommendations</h2>
+  <div class="chartbox"><div id="chart-dir"></div>
+    <p class="small muted" data-en="Stated direction of the 805 current recommendations. Direction is the raw material of Layer 4's cross-guideline comparison." data-zh="805 条现行推荐的明示方向。方向是第四层跨指南比较的原材料。">Stated direction of the 805 current recommendations.</p></div>
+  <div class="note" data-en="The agreement coefficient (κ) is reported in the frozen dataset and the verification centre; in the manuscript it is demoted to the supplement, because a single κ hides the asymmetric shape of the disagreement — strong-on-weak is a different phenomenon from weak-on-strong." data-zh="一致系数（κ）在冻结数据集与核查中心中报告；论文正文将其降入补充材料，因为单个 κ 会掩盖不一致的不对称形状——「强推荐弱证据」与「弱推荐强证据」是两种不同的现象。">The agreement coefficient is reported in the frozen dataset.</div>
+  <p><a href="downloads.html" data-en="Download the frozen L1/L2 dataset →" data-zh="下载冻结的 L1/L2 数据集 →">Download the frozen L1/L2 dataset →</a></p>
+</main>
+<script>
+var S = null;
+function render() {
+  if (!S) return;
+  var l2 = S.l2;
+  document.getElementById('kpis').innerHTML = [
+    [l2.concordance, GC.t('overall strength–tier concordance (of 805)', '总体强度—等级一致率（共 805）')],
+    [l2.strong_only, GC.t('of strong recommendations on strong evidence', '强推荐中站在强证据上的')],
+    ['κ ' + l2.kappa, GC.t("Cohen's κ (slight agreement)", 'Cohen κ（轻微一致）')],
+    ['[' + l2.kappa_ci.join(', ') + ']', GC.t('95% CI of κ (document-cluster bootstrap)', 'κ 的 95% CI（文件聚类自助法）')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  // Frozen table: rows = strength scale [none, weak, moderate, strong];
+  // columns = evidence [no rating, U3/U4 weak, U2 moderate, U1 strong].
+  var rowLab = [GC.t('Strong', '强'), GC.t('Moderate', '中'), GC.t('Weak', '弱'), GC.t('None', '无')];
+  var rows = '';
+  [3, 2, 1, 0].forEach(function (ri, k) {
+    var r = l2.table[ri];
+    rows += '<tr><td><b>' + rowLab[k] + '</b></td><td class="num">' + r[3] + '</td><td class="num">' + r[2] +
+      '</td><td class="num">' + r[1] + '</td><td class="num">' + r[0] + '</td></tr>';
+  });
+  document.getElementById('xtab').innerHTML = '<table><thead><tr><th>' + GC.t('Strength \\ Evidence', '强度 \\ 证据') +
+    '</th><th class="num">U1</th><th class="num">U2</th><th class="num">U3/U4</th><th class="num">' +
+    GC.t('no rating', '无评级') + '</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<p class="small muted">' + GC.t('As tabulated in the frozen analysis (strength-of-recommendation scale 0–3 × level-of-evidence groups). The bottom-right concentration — strong recommendations on U1 evidence — is the exception, not the pattern.', '按冻结分析的列表（推荐强度 0–3 级 × 证据等级分组）。右下角的集中——强推荐站在 U1 证据上——是例外而非常态。') + '</p>' +
+    '<div class="chartbox"><h3>' + GC.t('What strong recommendations actually rest on', '强推荐实际上站在什么证据上') + '</h3><div id="chart-strong"></div></div>';
+  var mix = l2.strong_LOE_mix;
+  GC.stackBar(document.getElementById('chart-strong'), [
+    { label: 'U1', value: mix['strong evidence (U1)'], color: '#0f766e' },
+    { label: 'U2', value: mix['moderate (U2)'], color: '#3d9a8f' },
+    { label: 'U3', value: mix['weak/v.weak (U3)'], color: '#94a3b8' },
+    { label: 'U4', value: mix['weak/v.weak (U4)'], color: '#cbd5e1' },
+    { label: GC.t('no rating', '无评级'), value: mix['no LOE rating'], color: '#e2e8f0' }
+  ]);
+  var d = S.l1.dist_direction;
+  GC.stackBar(document.getElementById('chart-dir'), [
+    { label: GC.t('For', '支持'), value: d['for'], color: '#047857' },
+    { label: GC.t('Against', '反对'), value: d.against, color: '#b91c1c' },
+    { label: GC.t('No stance', '未表态'), value: d.none, color: '#94a3b8' }
+  ]);
+}
+GC.load('stats.json').then(function (s) { S = s; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thin ice — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Layer 3 · Fragility" data-zh="第三层 · 脆弱性">Layer 3 · Fragility</p>
+  <h1 data-en="Recommendations standing on thin ice" data-zh="站在薄冰上的推荐">Recommendations standing on thin ice</h1>
+  <p class="lede" data-en="A recommendation is on thin ice when the single study that carries it is fragile: a lone randomised trial, any pivotal with fewer than 400 participants, a pivotal that answers the question only indirectly, or one whose endpoint is a surrogate for the clinical benefit claimed. The headline set below is the frozen Layer-3 composite (single-RCT pivotal or pivotal N < 400); the other flags can be layered on with the filters."
+     data-zh="当撑着一条推荐的那篇关键研究本身脆弱时，它就站在薄冰上：一篇孤零零的随机试验、样本量不足 400 的关键研究、只能间接回答该问题的关键研究、或终点只是所声称临床获益的替代指标。下方头条集合是第三层冻结复合标准（关键研究为单篇 RCT，或关键研究 N < 400）；其余标记可用筛选器叠加。">A recommendation is on thin ice when the single study that carries it is fragile.</p>
+  <div class="kpis" id="kpis"></div>
+  <div class="filters">
+    <label><span data-en="Fragility reason" data-zh="脆弱原因">Fragility reason</span><select id="f-reason"></select></label>
+    <label><span data-en="Guideline" data-zh="指南">Guideline</span><select id="f-doc"></select></label>
+    <label><span data-en="Intervention type" data-zh="干预类型">Intervention type</span><select id="f-topic"></select></label>
+  </div>
+  <p class="small muted" id="count"></p>
+  <div id="list"></div>
+  <div class="pager"><button id="prev">←</button><span id="pinfo"></span><button id="next">→</button></div>
+  <div class="note" data-en="Thin ice is a statement about the pivotal study, not a verdict on the recommendation: a small, direct, well-run trial can carry a recommendation better than a large indirect review. The census reports the anatomy; clinical judgement stays with clinicians." data-zh="「薄冰」说的是关键研究，不是给推荐下判决：一项小而对题、做得扎实的试验，撑起推荐的力道可以胜过一篇大而间接的综述。普查报告的是解剖；临床判断仍归临床。">Thin ice is a statement about the pivotal study, not a verdict on the recommendation.</div>
+</main>
+<script>
+var ITEMS = null, STATS = null, page = 0, PER = 40;
+function setup() {
+  var docs = {}, topics = {};
+  ITEMS.forEach(function (i) { docs[i.doc] = i.guideline + ' (' + i.year + ')'; if (i.topic) topics[i.topic] = GC.lang === 'zh' ? i.topic : (i.topic_en || i.topic); });
+  var mk = function (id, pairs, all) {
+    document.getElementById(id).innerHTML = '<option value="">' + all + '</option>' + pairs.map(function (p) {
+      return '<option value="' + GC.esc(p[0]) + '">' + GC.esc(p[1]) + '</option>';
+    }).join('');
+  };
+  mk('f-reason', [['composite', GC.t('Composite: single-RCT or N<400', '复合：单篇 RCT 或 N<400')],
+    ['single_rct', GC.t('Single-RCT pivotal', '单篇 RCT 关键')],
+    ['small_n', GC.t('Pivotal N < 400', '关键 N < 400')],
+    ['indirect', GC.t('Indirect applicability', '适用性间接')],
+    ['surrogate', GC.t('Surrogate endpoint', '替代终点')]], GC.t('Any fragility flag', '任一脆弱标记'));
+  mk('f-doc', Object.keys(docs).sort().map(function (d) { return [d, docs[d]]; }), GC.t('All guidelines', '全部指南'));
+  mk('f-topic', Object.keys(topics).map(function (t) { return [t, topics[t]]; }), GC.t('All types', '全部类型'));
+  ['f-reason', 'f-doc', 'f-topic'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { page = 0; render(); });
+  });
+  document.getElementById('prev').addEventListener('click', function () { if (page > 0) { page--; render(); } });
+  document.getElementById('next').addEventListener('click', function () { page++; render(); });
+}
+function match(i) {
+  var r = document.getElementById('f-reason').value, f = i.flags || {};
+  if (r === 'composite') return i.fragile;
+  if (r) return !!f[r];
+  return !!(f.single_rct || f.small_n || f.indirect || f.surrogate);
+}
+function render() {
+  if (!ITEMS) return;
+  if (STATS) {
+    var l3 = STATS.l3, withPiv = STATS.corpus.items_current - l3.pivotal_composition.none;
+    document.getElementById('kpis').innerHTML = [
+      [l3.fragile_n + ' / ' + withPiv, GC.t('fragile by the frozen composite (' + GC.pct(l3.fragile_n / withPiv) + ' of pivotal-bearing recommendations)', '按冻结复合标准属脆弱（占有关键研究推荐的 ' + GC.pct(l3.fragile_n / withPiv) + '）')],
+      [l3.fragile_single_rct, GC.t('pivotal sets resting on a single RCT', '关键研究集仅含单篇 RCT')],
+      [l3.pivotal_n_lt400 + ' / ' + l3.pivotal_n_numeric, GC.t('numeric pivotals with N < 400', '样本量 < 400 的数值型关键研究')],
+      [l3.indirect_n + ' · ' + l3.surrogate_n, GC.t('indirect pivotals · surrogate-endpoint pivotals', '间接关键研究 · 替代终点关键研究')]
+    ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  }
+  var doc = document.getElementById('f-doc').value, top = document.getElementById('f-topic').value;
+  var rows = ITEMS.filter(function (i) {
+    return match(i) && (!doc || i.doc === doc) && (!top || i.topic === top);
+  });
+  var pages = Math.max(1, Math.ceil(rows.length / PER));
+  if (page >= pages) page = pages - 1;
+  document.getElementById('count').textContent = GC.t(rows.length + ' recommendations shown', '共显示 ' + rows.length + ' 条推荐');
+  document.getElementById('list').innerHTML = rows.slice(page * PER, page * PER + PER).map(function (i) {
+    var f = i.flags || {}, why = [];
+    if (f.single_rct) why.push('<span class="chip warn">' + GC.t('single RCT in pivotal set', '关键集仅单篇 RCT') + '</span>');
+    if (f.small_n) why.push('<span class="chip warn">N=' + i.pivotal_n + ' &lt; 400</span>');
+    if (f.indirect) why.push('<span class="chip warn">' + GC.t('indirect', '间接') + '</span>');
+    if (f.surrogate) why.push('<span class="chip warn">' + GC.t('surrogate endpoint', '替代终点') + '</span>');
+    return '<details class="item"><summary><b>' + GC.esc(i.rec) + '</b> · ' + GC.esc(i.guideline) + ' — ' +
+      GC.esc((i.statement || '').slice(0, 100)) + '<br>' + why.join(' ') + '</summary><div class="body">' +
+      '<p class="stmt">' + GC.esc(i.statement) + '</p><table><tbody>' +
+      '<tr><th>' + GC.t('Pivotal study', '关键研究') + '</th><td>' + GC.esc(i.pivotal_design || '—') +
+      GC.t(', reference #', '，指南文献表第 ') + GC.esc(i.pivotal_ref || '—') +
+      (i.pivotal_pmid ? ' · <a href="https://pubmed.ncbi.nlm.nih.gov/' + i.pivotal_pmid + '/" target="_blank" rel="noopener">PMID ' + i.pivotal_pmid + '</a>' : '') + '</td></tr>' +
+      '<tr><th>' + GC.t('Pivotal sample size', '关键研究样本量') + '</th><td>' + GC.esc(i.pivotal_n != null ? String(i.pivotal_n) : (i.pivotal_n_raw || '—')) + '</td></tr>' +
+      '<tr><th>' + GC.t('Applicability', '适用性') + '</th><td>' + GC.esc(i.applicability || '—') + '</td></tr>' +
+      '<tr><th>' + GC.t('Unified tier / strength', '统一等级 / 强度') + '</th><td>' + GC.esc(i.U || '—') + ' / ' + GC.esc(i.S || '—') + '</td></tr>' +
+      '</tbody></table></div></details>';
+  }).join('') || '<p class="muted">' + GC.t('Nothing matches.', '无符合项。') + '</p>';
+  document.getElementById('pinfo').textContent = (page + 1) + ' / ' + pages;
+}
+Promise.all([GC.load('items.json'), GC.load('stats.json')]).then(function (d) {
+  ITEMS = d[0]; STATS = d[1]; setup(); render();
+});
+window.onLangChange = function () { if (ITEMS) { setup(); render(); } };
+</script>
+</body>
+</html>

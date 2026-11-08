@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discordant pairs — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Layer 4 · Deep dive" data-zh="第四层 · 深挖">Layer 4 · Deep dive</p>
+  <h1 data-en="The 27 pairs where guidelines point in opposite directions" data-zh="27 对方向相反的指南配对">The 27 pairs where guidelines point in opposite directions</h1>
+  <p class="lede" data-en="Of the 221 aligned pairs where both guidelines take a stance on the same (partially overlapping) question, 27 disagree on direction. They cluster on just 9 clinical questions — and in every resolvable case the two sides rest on different pivotal studies."
+     data-zh="在 221 对双方均对同一（部分重叠）问题表态的对齐配对中，27 对方向不一致。它们只集中在 9 个临床问题上——而且在每一个可定出关键研究的案例中，两边站的都是不同的关键研究。">Of the aligned pairs where both guidelines take a stance, 27 disagree on direction.</p>
+  <div class="filters">
+    <label><span data-en="Pair cluster (shared items)" data-zh="配对簇（共享条目）">Pair cluster (shared items)</span><select id="f-q"></select></label>
+  </div>
+  <p class="small muted" id="count"></p>
+  <div id="list"></div>
+</main>
+<script>
+var PAIRS = null, CLUSTERS = [];
+function sideHTML(s) {
+  return '<div class="side"><p class="tag">' + GC.esc(s.doc || '') + (s.guideline ? ' · ' + GC.esc(s.guideline) : '') + '</p>' +
+    '<p style="margin:4px 0"><b>' + GC.esc(s.item) + '</b> · ' + GC.dirHTML(s.direction) + '</p>' +
+    (s.statement ? '<p class="stmt">' + GC.esc(s.statement) + '</p>' : '') +
+    (s.intervention ? '<p class="small"><b>' + GC.t('Intervention: ', '干预：') + '</b>' + GC.esc(s.intervention) + '</p>' : '') +
+    (s.population ? '<p class="small"><b>' + GC.t('Population: ', '人群：') + '</b>' + GC.esc(s.population) + '</p>' : '') +
+    '<p class="small muted">' + GC.t('Tier ', '等级 ') + GC.esc(s.U || '—') + ' · ' + GC.t('Strength ', '强度 ') + GC.esc(s.S || '—') +
+    ' · ' + GC.t('Pivotal: ', '关键研究：') + GC.esc(s.piv_design || '—') + (s.piv_n ? ' · N=' + GC.esc(s.piv_n) : '') + '</p></div>';
+}
+function buildClusters() {
+  // Connected components over the pair graph: pairs sharing an item form one
+  // question cluster (the deep-dive groups the 27 pairs onto 9 questions).
+  var parent = {};
+  function find(x) { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+  PAIRS.forEach(function (p) {
+    [p.a.item, p.b.item].forEach(function (i) { if (!(i in parent)) parent[i] = i; });
+    var ra = find(p.a.item), rb = find(p.b.item);
+    if (ra !== rb) parent[ra] = rb;
+  });
+  var groups = {};
+  PAIRS.forEach(function (p) {
+    var r = find(p.a.item);
+    (groups[r] = groups[r] || []).push(p);
+  });
+  CLUSTERS = Object.keys(groups).map(function (r, idx) {
+    var docs = {};
+    groups[r].forEach(function (p) { docs[p.a.doc] = 1; docs[p.b.doc] = 1; });
+    return { id: 'C' + idx, pairs: groups[r], label: Object.keys(docs).sort().join(' × ') };
+  }).sort(function (a, b) { return b.pairs.length - a.pairs.length; });
+  PAIRS.forEach(function (p) {
+    var r = find(p.a.item);
+    p._cluster = CLUSTERS.filter(function (c) { return c.pairs.indexOf(p) >= 0; })[0].id;
+  });
+}
+function render() {
+  if (!PAIRS) return;
+  var q = document.getElementById('f-q').value;
+  var rows = PAIRS.filter(function (p) { return !q || p._cluster === q; });
+  document.getElementById('count').textContent = GC.t(rows.length + ' discordant pairs', '共 ' + rows.length + ' 对相左配对');
+  document.getElementById('list').innerHTML = rows.map(function (p) {
+    return '<div style="margin:22px 0"><p class="small muted" style="margin:0 0 6px">' +
+      GC.t('Partial overlap', '部分重叠') + ' · ' + GC.t('guideline years ', '指南年份 ') + GC.esc(p.pair.split(' x ')[0].slice(3, 7)) +
+      (p.shared_pivotal === 'False' ? ' · ' + GC.t('the two sides rest on different pivotal studies', '双方关键研究不同') : '') + '</p>' +
+      '<div class="vs">' + sideHTML(p.a) + '<div class="mid">≠</div>' + sideHTML(p.b) + '</div></div>';
+  }).join('') || '<p class="muted">' + GC.t('No pairs in this cluster.', '该簇无配对。') + '</p>';
+}
+GC.load('discordant.json').then(function (d) {
+  PAIRS = d;
+  buildClusters();
+  document.getElementById('f-q').innerHTML = '<option value="">' + GC.t('All clusters', '全部簇') + '</option>' +
+    CLUSTERS.map(function (c) { return '<option value="' + c.id + '">' + GC.esc(c.label) + ' (' + c.pairs.length + ')</option>'; }).join('');
+  document.getElementById('f-q').addEventListener('input', render);
+  render();
+});
+window.onLangChange = render;
+</script>
+</body>
+</html>

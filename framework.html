@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GuideCensus framework — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="The framework · Public homepage" data-zh="框架 · 公开主页">The framework · Public homepage</p>
+  <h1>GuideCensus</h1>
+  <p class="lede" data-en="A specialty-agnostic pipeline and gold standard for censusing the evidence beneath guideline recommendations. Clinical practice guidelines tell clinicians what to do; GuideCensus answers the prior question — what evidence, exactly, is each recommendation standing on, and how would you know if that answer were wrong?"
+     data-zh="一套不分专科的管线与金标准，用于普查临床指南推荐背后的证据。临床实践指南告诉临床医生该做什么；GuideCensus 回答的是它先前的问题——每条推荐究竟站在什么证据之上——而如果这个答案是错的，你如何知道？">A specialty-agnostic pipeline and gold standard for censusing the evidence beneath guideline recommendations.</p>
+  <p>
+    <a class="btn" style="display:inline-block;padding:8px 16px;border-radius:7px;background:var(--accent);color:#fff" href="https://github.com/yuye8848/guidecensus" target="_blank" rel="noopener">GitHub: yuye8848/guidecensus</a>
+    <a href="https://github.com/yuye8848/guidecensus/blob/main/README.md" target="_blank" rel="noopener" style="margin-left:14px">README (English)</a> ·
+    <a href="https://github.com/yuye8848/guidecensus/blob/main/README.zh.md" target="_blank" rel="noopener">README.zh.md（中文说明）</a> ·
+    <a href="https://github.com/yuye8848/guidecensus/blob/main/FRAMEWORK.zh.md" target="_blank" rel="noopener">FRAMEWORK.zh.md（一页纸框架摘要）</a>
+  </p>
+
+  <h2 data-en="What the framework does" data-zh="框架做什么">What the framework does</h2>
+  <p data-en="GuideCensus was built and stress-tested on a complete census of otolaryngology (ENT) guidelines — the study this website reports — and is packaged so that another specialty can run the same census by writing one document-family adapter and changing no rule. It has three parts: a frozen codebook of rules, the production pipeline that executes them, and a gold-standard benchmark against which any extractor, human or machine, can be scored."
+     data-zh="GuideCensus 在一项完整的耳鼻咽喉科（ENT）指南普查——即本站所报告的这项研究——中建成并经受了压力测试；它被打包发布，使其他专科只需编写一个文档家族适配器、无需改动任何规则，即可运行同样的普查。它由三部分组成：一部冻结的规则手册（codebook）、执行规则的生产管线（pipeline），以及一个金标准基准（benchmark）——任何提取者，无论人还是机器，都可以对着它被打分。">GuideCensus has three parts: a frozen codebook, the production pipeline, and a gold-standard benchmark.</p>
+
+  <h2 data-en="The five layers, as reusable questions" data-zh="五个层：可复用的问题">The five layers, as reusable questions</h2>
+  <table>
+    <thead><tr><th data-en="Layer" data-zh="层">Layer</th><th data-en="Question" data-zh="问题">Question</th><th data-en="Unit" data-zh="单位">Unit</th></tr></thead>
+    <tbody>
+      <tr><td><b>L1</b></td><td data-en="Composition — what evidence tiers and strengths do the recommendations carry, exactly as the guidelines grade themselves?" data-zh="构成——推荐带有怎样的证据等级与推荐强度，完全按指南自身的分级？">Composition</td><td data-en="recommendation item" data-zh="推荐条目">recommendation item</td></tr>
+      <tr><td><b>L2</b></td><td data-en="Discordance — where does a strong recommendation rest on low-tier evidence?" data-zh="不一致——哪些强推荐立在低等级证据之上？">Discordance</td><td data-en="item (strength × tier)" data-zh="条目（强度 × 等级）">item (strength × tier)</td></tr>
+      <tr><td><b>L3</b></td><td data-en="Citation archaeology — which citations carry each recommendation, and which single study (the pivotal) carries it most? Is it big enough, on-population, patient-important, still standing?" data-zh="引文考古——哪些引文支撑每条推荐，又是哪一篇单一研究（关键研究）支撑得最多？它样本量够不够、是否贴合目标人群、结局是否对患者重要、是否仍然成立？">Citation archaeology</td><td data-en="attached citation" data-zh="所附引文">attached citation</td></tr>
+      <tr><td><b>L4</b></td><td data-en="Concordance — where guidelines cover the same clinical question, do they agree? Coverage first, concordance second." data-zh="一致性——当多部指南覆盖同一临床问题时，它们的意见一致吗？先看覆盖，再看一致。">Concordance</td><td data-en="population × intervention × setting question" data-zh="人群 × 干预 × 场景构成的问题">question</td></tr>
+      <tr><td><b>L5</b></td><td data-en="Version dynamics — when a guideline is revised, what survives: the wording, or the evidence?" data-zh="版本动态——指南修订时，存活下来的是措辞，还是证据？">Version dynamics</td><td data-en="prior → current transition" data-zh="旧版 → 现行版的过渡">transition</td></tr>
+    </tbody>
+  </table>
+
+  <h2 data-en="The pipeline" data-zh="管线">The pipeline</h2>
+  <p data-en="Production runs in four stages, with an optional fifth for versioned corpora. (1) Corpus freeze: the document inventory is fixed and hashed before any data are touched. (2) Dual-channel extraction: a deterministic channel produces the dataset; an independent channel may only flag candidate errors, never edit values. (3) Pivotal selection: for each item, one frozen rule picks the pivotal study from its citation list in presentation order, after an on-question relevance screen. (4) Verification and adjudication: sampled audits measure error rates against pre-stated thresholds; crossing a threshold triggers a registered amendment and a corpus-wide remediation, not a quiet patch. (5, optional) Cross-version dynamics: prior versions are aligned and the citation apparatus underneath the wording is compared."
+     data-zh="生产分四个阶段运行，版本化语料可加第五阶段。（1）语料冻结：文档清单在接触任何数据之前先行固定并计算哈希。（2）双通道提取：确定性通道生产数据集；独立通道只能标记候选错误，永远不能改动数值。（3）关键研究选择：对每条条目，一条冻结规则在其引文清单中按呈现顺序、经对题相关性筛查后选出关键研究。（4）核查与裁定：抽样审计按预先声明的阈值测量错误率；越过阈值触发的是注册修正案与全语料整改，而不是悄悄打补丁。（5，可选）跨版本动态：对齐旧版本，并比较措辞之下的引文机器。">Production runs in four stages, with an optional fifth for versioned corpora.</p>
+
+  <h2 data-en="Five design principles" data-zh="五条设计原则">Five design principles</h2>
+  <ol>
+    <li data-en="Freeze before touch. The corpus, the rules and the analysis plan are registered and hash-bound before production begins; every later change travels as a dated, registered amendment." data-zh="先冻结，后动手。语料、规则与分析计划在生产开始前注册并以哈希绑定；此后每一处变更都以带日期、经注册的修正案形式行进。">Freeze before touch.</li>
+    <li data-en="Two channels, one adjudicator. Production and verification are independent; disagreements are settled in writing against quoted source text, not by majority vote or by re-running the same machine." data-zh="双通道，一裁定。生产与核查相互独立；分歧凭所引原文书面裁定，不靠多数票，也不靠重跑同一台机器。">Two channels, one adjudicator.</li>
+    <li data-en="The verbatim-quote gate. No value changes without a verbatim quote from the source and a database identifier for the record it describes. What cannot be verified is recorded as unverifiable — never inferred, never filled in." data-zh="逐字引文门。任何数值变更都必须附原文逐字引文及所指记录的数据库编号。无法核实的，记为无法核实——绝不推断，绝不填补。">The verbatim-quote gate.</li>
+    <li data-en="Error-rate-driven escalation. Audit samples and error thresholds are pre-stated (in the worked example: 5% for pivotal identity and design). Crossing a threshold stops production and forces a full remediation under a new amendment — the framework treats its own error rate as a result, and publishes it." data-zh="错误率驱动升级。审计抽样与错误阈值预先声明（在本实例中：关键研究身份与设计类型为 5%）。越过阈值即停产，并在新修正案下强制全量整改——框架把自身的错误率当作一项结果，并将其发表。">Error-rate-driven escalation.</li>
+    <li data-en="Hash-chained artefacts. Every production artefact carries the hash of its inputs; the final freeze binds data, codebook and audit record into one manifest that any third party can re-verify byte by byte." data-zh="哈希链工件。每件生产工件都携带其输入的哈希；最终冻结将数据、规则手册与审计记录绑成一份任何第三方都可逐字节复核的清单。">Hash-chained artefacts.</li>
+  </ol>
+
+  <h2 data-en="The gold standard: score your extractor" data-zh="金标准：给你的提取器打分">The gold standard: score your extractor</h2>
+  <p data-en="The benchmark package ships the frozen ENT Layer-3 dataset (805 items, 11,567 citation attachments, every pivotal adjudicated), the adjudication records of all four audit rounds, and a runnable scorer (benchmark/score_extractor.py). Run your own extraction pipeline — human, LLM, or hybrid — over the same guideline documents and score it against the gold standard on pivotal identity, design class, sample size, applicability and surrogate calls. The two pre-specified audit packs are included as ready-made test sets: the 81-item pack whose findings forced a full remediation, and the post-remediation 41-item blind sample."
+     data-zh="基准包含冻结的 ENT 第三层数据集（805 条条目、11,567 条引文附件、每篇关键研究均经裁定）、四轮审计的全部裁定记录，以及一个可运行的评分器（benchmark/score_extractor.py）。把你自己的提取管线——人工、LLM 或混合——跑在同一批指南文档上，即可对着金标准在关键研究身份、设计类别、样本量、适用性与替代终点判定上打分。两套预先声明的审计包作为现成测试集一并提供：那套在 81 条抽样中查出问题、迫使全量整改的审计包，以及整改后 41 条的盲样复检包。">The benchmark ships the frozen ENT Layer-3 dataset and a runnable scorer.</p>
+
+  <h2 data-en="Repository layout" data-zh="仓库结构">Repository layout</h2>
+  <table><tbody>
+    <tr><th class="mono">codebook/</th><td data-en="The frozen rule set: inclusion criteria, attachment rules, the pivotal operationalisation, applicability and surrogate definitions, the zombie definition, the verification protocol." data-zh="冻结的规则集：纳入标准、附件规则、关键研究操作化定义、适用性与替代终点定义、僵尸定义、核查协议。">The frozen rule set.</td></tr>
+    <tr><th class="mono">pipeline/</th><td data-en="The production machinery: extraction, strict-gate design classification, pivotal selection, blind audit-pack construction, freeze manifest." data-zh="生产机械：抽取、严格门设计分类、关键研究选择、盲审审计包构建、冻结清单。">The production machinery.</td></tr>
+    <tr><th class="mono">benchmark/</th><td data-en="The gold standard (frozen ENT L3 dataset), the four audit rounds' adjudication records, and the scorer." data-zh="金标准（冻结的 ENT L3 数据集）、四轮审计的裁定记录，以及评分器。">The gold standard and scorer.</td></tr>
+    <tr><th class="mono">FRAMEWORK.md / FRAMEWORK.zh.md</th><td data-en="A one-page framework summary for citation in manuscripts, in English and Chinese." data-zh="一页纸框架摘要，供稿件引用，中英双版。">One-page summary, both languages.</td></tr>
+  </tbody></table>
+
+  <h2 data-en="Anchors and licences" data-zh="锚点与许可">Anchors and licences</h2>
+  <p data-en="Protocol and amendments: OSF registration 10.17605/OSF.IO/9VMFJ (filed before the data they govern were touched). Code: MIT licence. Data and documentation: CC-BY-4.0. This website (guide.erbihou.org) is the framework's worked example and public face; the repository above is its source of truth."
+     data-zh="协议与修正案：OSF 注册 10.17605/OSF.IO/9VMFJ（均在其所辖数据动手之前提交）。代码：MIT 许可。数据与文档：CC-BY-4.0。本站（guide.erbihou.org）是该框架的实例与公开门面；上方仓库是其源头真值。">Protocol and amendments: OSF 10.17605/OSF.IO/9VMFJ. Code: MIT. Data and documentation: CC-BY-4.0.</p>
+</main>
+</body>
+</html>

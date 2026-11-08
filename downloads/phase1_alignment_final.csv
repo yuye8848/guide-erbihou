@@ -1,0 +1,395 @@
+transition,prior_rec,verdict,current_rec,basis
+T01,AAO2006AOE-01A,carried-identical,AAO2014AOE-01,"Same wording: distinguish diffuse AOE from other causes of otalgia, otorrhea, and inflammation of the ear canal ('acute otitis externa' spelled out only)."
+T01,AAO2006AOE-01B,carried-identical,AAO2014AOE-02,"Verbatim: assess the patient with diffuse AOE for management-modifying factors (nonintact TM, tympanostomy tube, diabetes, immunocompromised state, prior radiotherapy)."
+T01,AAO2006AOE-02,carried-modified,AAO2014AOE-03,Content over numbering: assess AOE patients for pain and recommend analgesic treatment based on pain severity; two sentences restructured into one.
+T01,AAO2006AOE-03,carried-modified,AAO2014AOE-05,Split: topical-preparations clause carried here (principal); systemic-antimicrobial restriction split off as AAO2014AOE-04 (against).
+T01,AAO2006AOE-04,dropped,,"Choice-of-topical-agent criteria (efficacy, low adverse events, adherence, cost) appear in no 2014 statement."
+T01,AAO2006AOE-05,carried-identical,AAO2014AOE-06,"Near-verbatim: inform patients how to administer topical drops; enhance delivery by aural toilet, wick, or both when the canal is obstructed."
+T01,AAO2006AOE-06,carried-identical,AAO2014AOE-07,"Near-verbatim: non-ototoxic topical preparation when TM perforation known/suspected, including a tympanostomy tube."
+T01,AAO2006AOE-07,carried-identical,AAO2014AOE-08,Verbatim: reassess patients failing initial therapy within 48-72 hours to confirm diffuse AOE and exclude other causes.
+T02,AAO2007SIN-01A,carried-modified,AAO2015SIN-01A,"Same ABRS diagnostic rule (>=10 days without improvement / double worsening), but the ARS symptom criteria are spelled out in detail in the 2015 wording."
+T02,AAO2007SIN-01B,carried-identical,AAO2015SIN-01B,Near-verbatim: do not obtain radiographic imaging when ARS criteria are met unless a complication or alternative diagnosis is suspected.
+T02,AAO2007SIN-02,carried-modified,AAO2015SIN-02,"Same symptomatic-relief option for VRS, with the agents now specified (analgesics, topical intranasal steroids, and/or nasal saline irrigation)."
+T02,AAO2007SIN-03A,dropped,,ABRS pain-assessment statement ('management of ABRS should include an assessment of pain') has no counterpart among the 2015 statements.
+T02,AAO2007SIN-03B,carried-modified,AAO2015SIN-03,"Same symptomatic-relief option for ABRS, with the agents now specified (analgesics, topical intranasal steroids, and/or nasal saline irrigation)."
+T02,AAO2007SIN-04,carried-modified,AAO2015SIN-04,"Same initial-management question for uncomplicated ABRS: observation recast as watchful waiting vs initial antibiotic therapy; mild-illness restriction dropped, 7-day antibiotic-start rule added."
+T02,AAO2007SIN-05,carried-modified,AAO2015SIN-05,"Same first-line rule if antibiotics are chosen, broadened from amoxicillin to amoxicillin with or without clavulanate, 5-10 days added."
+T02,AAO2007SIN-06,carried-identical,AAO2015SIN-06,"Near-verbatim: reassess by 7 days to confirm ABRS and detect complications; begin antibiotic if initially observed, change antibiotic if initially treated."
+T02,AAO2007SIN-07A,carried-identical,AAO2015SIN-07A,"Same distinction of CRS and recurrent ARS from isolated ABRS episodes; wording differs essentially by abbreviations (CRS, recurrent ARS)."
+T02,AAO2007SIN-07B,carried-modified,AAO2015SIN-08,Content over numbering: assess the CRS/recurrent ARS patient for management-modifying chronic conditions; the example list changed (asthma in; allergic rhinitis and anatomic variation out).
+T02,AAO2007SIN-08A,carried-modified,AAO2015SIN-07B,"Merged: the 'corroborate a diagnosis' duty is carried into the confirm-CRS-with-objective-documentation statement (anterior rhinoscopy, nasal endoscopy, or CT)."
+T02,AAO2007SIN-08B,carried-modified,AAO2015SIN-07B,"Merged: obtaining nasal endoscopy survives only as one enumerated method of objective documentation in 07B, no longer a standalone statement."
+T02,AAO2007SIN-08C,carried-modified,AAO2015SIN-07B,"Merged: obtaining sinus CT survives only as one enumerated method of objective documentation in 07B, no longer a standalone statement."
+T02,AAO2007SIN-08D,carried-identical,AAO2015SIN-09,Near-verbatim: the clinician may obtain testing for allergy and immune function in evaluating CRS or recurrent ARS.
+T03,AAO2015SIN-01A,carried-identical,AAO2025SIN2-1A,Same ABRS-vs-viral/noninfectious ARS distinction and diagnostic criteria (persist >=10 days without improvement / double worsening); 2025 spells out abbreviations only.
+T03,AAO2015SIN-01B,carried-identical,AAO2025SIN2-1B,Near-verbatim: do not obtain radiologic imaging when ARS criteria are met unless a complication or alternative diagnosis is suspected.
+T03,AAO2015SIN-02,carried-identical,AAO2025SIN2-02,"Same agents for symptomatic relief of VRS (analgesics, topical intranasal steroids, and/or nasal saline irrigation); 'viral rhinosinusitis' spelled out."
+T03,AAO2015SIN-03,carried-identical,AAO2025SIN2-03,"Numbering over text candidate: symptomatic relief of ABRS with identical wording (the text candidate -02 is the VRS twin, a different population)."
+T03,AAO2015SIN-04,carried-modified,AAO2025SIN2-04,"Watchful waiting for uncomplicated ABRS retained, but the equal 'either offer watchful waiting or prescribe antibiotics' framing and the 7-day start rule were dropped; duration now depends on diagnostic context."
+T03,AAO2015SIN-05,carried-modified,AAO2025SIN2-05,Same first-line amoxicillin with or without clavulanate if ABRS is treated; duration changed from 5-10 days to 5-7 days.
+T03,AAO2015SIN-06,carried-modified,AAO2025SIN2-06,Reassessment-and-change-antibiotic rule retained but narrowed to failure/worsening on an appropriate antibiotic for 3-5 days; the observation-arm branch (begin antibiotic) deleted.
+T03,AAO2015SIN-07A,carried-identical,AAO2025SIN2-7A,Same distinction of CRS and recurrent ARS/RARS from isolated ABRS episodes and other sinonasal causes; abbreviations spelled out.
+T03,AAO2015SIN-07B,carried-identical,AAO2025SIN2-7B,"Verbatim (similarity 1.0): confirm a clinical CRS diagnosis with objective documentation via anterior rhinoscopy, nasal endoscopy, or CT."
+T03,AAO2015SIN-08,carried-modified,AAO2025SIN2-08,Same assess-for-management-modifying-conditions statement in CRS/RARS; aspirin-exacerbated respiratory disease added to the example list.
+T03,AAO2015SIN-09,carried-identical,AAO2025SIN2-09,Near-verbatim: the clinician may obtain testing for allergy and immune function in evaluating CRS or RARS.
+T03,AAO2015SIN-10,carried-identical,AAO2025SIN2-10,Verbatim: the clinician should confirm the presence or absence of nasal polyps in a patient with CRS.
+T03,AAO2015SIN-11,carried-identical,AAO2025SIN2-11,"Near-verbatim: recommend saline nasal irrigation, topical intranasal corticosteroids, or both for symptomatic relief of CRS."
+T03,AAO2015SIN-12,carried-identical,AAO2025SIN2-12,Verbatim: clinicians should not prescribe topical or systemic antifungal therapy for patients with CRS.
+T04,AAO2008BPPV-01,carried-modified,AAO2017BPPV-01A,"Same Dix-Hallpike diagnosis of posterior semicircular canal BPPV; nystagmus specified as torsional/upbeating, affected-ear-down detail and repeat-with-opposite-ear step added."
+T04,AAO2008BPPV-02,carried-modified,AAO2017BPPV-01B,"Same supine roll test to assess for lateral semicircular canal BPPV; trigger reworded from a negative Dix-Hallpike to horizontal or no nystagmus, 'or refer' added."
+T04,AAO2008BPPV-03,carried-identical,AAO2017BPPV-02A,"Near-verbatim: differentiate BPPV from other causes of imbalance, dizziness, and vertigo (only 'or refer to a clinician who can' added)."
+T04,AAO2008BPPV-04,carried-identical,AAO2017BPPV-02B,"Near-verbatim: assess BPPV patients for management-modifying factors (impaired mobility/balance, CNS disorders, lack of home support, fall risk); 'question' became 'assess'."
+T04,AAO2008BPPV-05,carried-modified,AAO2017BPPV-03A,"Split: the combined no-radiographic-imaging/no-vestibular-testing statement was split into 03A (imaging, principal) and 03B (vestibular testing), each with BPPV-inconsistency exceptions."
+T04,AAO2008BPPV-06,dropped,,The 'no recommendation' statement on audiometric testing in diagnosed BPPV has no counterpart in the 2017 statement set.
+T04,AAO2008BPPV-07,carried-identical,AAO2017BPPV-04A,"Same treatment of posterior canal BPPV by repositioning; 'particle repositioning maneuver' renamed 'canalith repositioning procedure', 'or refer' added."
+T04,AAO2008BPPV-08,carried-modified,AAO2017BPPV-05,"Same offer of vestibular rehabilitation (self-administered or with a clinician), but the 'for the initial treatment' restriction was dropped, broadening its scope."
+T04,AAO2008BPPV-09,carried-modified,AAO2017BPPV-04C,Same offer of observation as initial management for BPPV; 'with assurance of follow-up' reworded to 'with follow up'.
+T04,AAO2008BPPV-10,carried-identical,AAO2017BPPV-06,Near-verbatim: do not routinely treat BPPV with vestibular suppressant medications such as antihistamines and/or benzodiazepines.
+T04,AAO2008BPPV-11,carried-modified,AAO2017BPPV-07A,Same reassessment within 1 month after observation or treatment; purpose changed from 'to confirm symptom resolution' to 'to document resolution or persistence of symptoms'.
+T04,AAO2008BPPV-12,carried-modified,AAO2017BPPV-07B,"Same evaluation of initial treatment failures, reworded as evaluating patients with persistent symptoms for unresolved BPPV and/or underlying vestibular or CNS disorders, 'or refer' added."
+T04,AAO2008BPPV-13,carried-identical,AAO2017BPPV-08,"Near-verbatim: educate/counsel patients on BPPV's impact on safety, potential for recurrence, and importance of follow-up ('counsel' became 'educate')."
+T05,AAO2008CER-01A,carried-modified,AAO2017CER-02A,"Same diagnostic criteria for cerumen impaction (accumulation associated with symptoms, prevents needed ear assessment, or both); 'as seen on otoscopy' added."
+T05,AAO2008CER-01B,carried-modified,AAO2017CER-02B,Same assess-by-history/examination for management-modifying factors; the factor list changed (prior radiation therapy to head and neck added; list reordered).
+T05,AAO2008CER-02,carried-modified,AAO2017CER-03B,"Same asymptomatic, adequately examinable cerumen question recast: 'may observe' non-impacted cerumen became 'should not routinely treat' such cerumen."
+T05,AAO2008CER-03A,carried-modified,AAO2017CER-03A,"Same treat-cerumen-impaction action, broadened from impaction causing symptoms or preventing examination to impaction 'when identified', with 'or refer' added."
+T05,AAO2008CER-03B,carried-modified,AAO2017CER-03C,"Content over numbering: promptly evaluate the need for intervention in patients who cannot express symptoms with obstructing cerumen; examples added (young children, cognitively impaired children and adults)."
+T05,AAO2008CER-04,carried-modified,AAO2017CER-04,"Same hearing-aid encounter check, reworded from 'examine patients with hearing aids for the presence of cerumen impaction' to 'perform otoscopy to detect the presence of cerumen'."
+T05,AAO2008CER-05A,carried-identical,AAO2017CER-05A,"Near-verbatim: treat cerumen impaction with cerumenolytic agents, irrigation, or manual removal ('other than irrigation' renamed 'requiring instrumentation'; 'or refer' added)."
+T05,AAO2008CER-05B,carried-identical,AAO2017CER-06,"Verbatim (text over numbering; numbering points to the ear-candling statement): may use cerumenolytic agents, including water or saline solution."
+T05,AAO2008CER-05C,carried-identical,AAO2017CER-07,Verbatim: clinicians may use irrigation in the management of cerumen impaction.
+T05,AAO2008CER-05D,carried-identical,AAO2017CER-08,Same manual-removal option carried; 'manual removal other than irrigation' renamed 'manual removal requiring instrumentation'.
+T05,AAO2008CER-06,carried-identical,AAO2017CER-09,"Near-verbatim (text over numbering): assess and document resolution at conclusion of in-office treatment; retreat if unresolved, evaluate for alternative diagnoses if symptoms persist."
+T05,AAO2008CER-07,carried-identical,AAO2017CER-11,Near-verbatim (text over numbering): may educate/counsel patients with cerumen impaction or excessive cerumen regarding control measures.
+T06,AAO2009HOARSE-01,carried-identical,AAO2018HOARSE-01,"Near-verbatim: identify/diagnose dysphonia in a patient with altered voice quality, pitch, loudness, or vocal effort that impairs communication or reduces QOL."
+T06,AAO2009HOARSE-02,carried-modified,AAO2018HOARSE-02,Split: the general history/physical-examination assessment for underlying causes and management-modifying factors carried here (principal); its enumerated expedited-evaluation factors were split off as AAO2018HOARSE-03.
+T06,AAO2009HOARSE-03A,carried-identical,AAO2018HOARSE-4A,Near-verbatim: clinicians may perform (diagnostic) laryngoscopy at any time for a patient with dysphonia/hoarseness.
+T06,AAO2009HOARSE-03B,carried-modified,AAO2018HOARSE-4B,"Same visualize-the-larynx-when-unresolved rule, found in the full 2018 list (no packet candidate); the threshold tightened from a maximum of three months to within 4 weeks."
+T06,AAO2009HOARSE-04,carried-identical,AAO2018HOARSE-05,Near-verbatim: do not obtain CT or MRI in a patient with a primary voice complaint/hoarseness prior to visualization of the larynx.
+T06,AAO2009HOARSE-05A,carried-modified,AAO2018HOARSE-06,"Same do-not-prescribe-antireflux stance, reframed: no antireflux medications for isolated dysphonia based on symptoms alone (suspected GERD/LPR) without visualization of the larynx (packet text candidate -07 is corticosteroids)."
+T06,AAO2009HOARSE-05B,dropped,,The permission to prescribe anti-reflux medication for hoarseness with signs of chronic laryngitis has no counterpart in the 2018 statements.
+T06,AAO2009HOARSE-06,carried-modified,AAO2018HOARSE-07,"Content over both packet candidates: do not routinely prescribe corticosteroids to treat dysphonia, now qualified 'prior to visualization of the larynx'."
+T06,AAO2009HOARSE-07,carried-identical,AAO2018HOARSE-08,Near-verbatim (text over numbering): clinicians should not routinely prescribe antibiotics to treat dysphonia/hoarseness.
+T06,AAO2009HOARSE-08A,carried-identical,AAO2018HOARSE-9A,"Near-verbatim, found in the full 2018 list (packet suggested dropped): perform diagnostic laryngoscopy before prescribing voice therapy and document/communicate results to the SLP."
+T06,AAO2009HOARSE-08B,carried-modified,AAO2018HOARSE-9B,Same advocate-voice-therapy action; the eligible population changed from dysphonia that reduces voice-related QOL to dysphonia from a cause amenable to voice therapy.
+T06,AAO2009HOARSE-09,carried-modified,AAO2018HOARSE-10,"Same advocate-surgery categories (suspected malignancy, benign vocal fold lesions, glottic insufficiency) reworded as conditions amenable to surgical intervention, with a conservative-management-failure qualifier."
+T06,AAO2009HOARSE-10,carried-modified,AAO2018HOARSE-11,"Content over numbering: botulinum toxin injections for spasmodic dysphonia, population broadened to SD and other types of laryngeal dystonia; 'prescribe' became 'offer'."
+T06,AAO2009HOARSE-11,carried-modified,AAO2018HOARSE-12,"Same education on control/preventive measures carried, with the modal strengthened from 'may educate/counsel' to 'should inform'."
+T07,AAO2004OME-01A,carried-modified,AAO2016OME-01A,Pneumatic-otoscopy diagnosis of OME carried here (principal); the 'OME should be distinguished from AOM' clause was dropped and the action recast as documenting middle ear effusion with pneumatic otoscopy.
+T07,AAO2004OME-01B,carried-modified,AAO2016OME-02,Tympanometry to confirm OME retained (text over numbering) but conditioned on the diagnosis being uncertain after pneumatic otoscopy.
+T07,AAO2004OME-01C,carried-modified,AAO2016OME-05,Same anti-screening stance reworded: population-based screening not recommended in healthy asymptomatic children became do not routinely screen children who are not at risk and have no attributable symptoms.
+T07,AAO2004OME-02,dropped,,"Documenting laterality, duration of effusion, and presence/severity of associated symptoms at each assessment has no 2016 counterpart (OME-13 documents resolution/hearing/QOL outcomes, a different action)."
+T07,AAO2004OME-03,carried-modified,AAO2016OME-04A,"At-risk identification carried here (principal): determine if a child with OME is at increased risk for speech, language, or learning problems because of baseline factors (Table 3); the prompt-evaluation half overlaps 04B."
+T07,AAO2004OME-04,carried-identical,AAO2016OME-07,Near-verbatim: manage the not-at-risk child with OME with watchful waiting for 3 months from effusion onset (if known) or from diagnosis (if onset unknown).
+T07,AAO2004OME-05,carried-modified,AAO2016OME-08C,"Split: the single against-drug-therapy statement was split into 08A (steroids), 08B (systemic antibiotics), and 08C (antihistamines/decongestants - the first-named class, principal)."
+T07,AAO2004OME-06,carried-modified,AAO2016OME-09,Hearing testing at 3 months' persistence retained; the trigger set changed (any-duration OME in an at-risk child) and the language-testing clause was dropped.
+T07,AAO2004OME-07,carried-modified,AAO2016OME-11,"Near-verbatim, found in the full 2016 list (both packet candidates point elsewhere): reevaluate at 3- to 6-month intervals until the effusion is gone, significant hearing loss is identified, or structural abnormalities are suspected."
+T07,AAO2004OME-08,dropped,,The referral-documentation duty (document effusion duration and specific reason for referral when referring to otolaryngology/audiology/SLP) has no counterpart in the 2016 statements.
+T07,AAO2004OME-09,carried-modified,AAO2016OME-12A,"Split by age: the tube-preferred, adenoidectomy-only-with-distinct-indication rule is carried principally into 12A (children <4 years); the 4-years-and-older arm became 12B."
+T07,AAO2004OME-10,dropped,,The 'no recommendation' statement regarding CAM as a treatment for OME has no counterpart in the 2016 statement set.
+T07,AAO2004OME-11,dropped,,The 'no recommendation' statement regarding allergy management as a treatment for OME has no counterpart in the 2016 statement set.
+T08,AAO2012SHL-01,carried-identical,AAO2019SHL-01,Near-verbatim: distinguish sensorineural from conductive hearing loss when a patient first presents with sudden hearing loss.
+T08,AAO2012SHL-02,carried-identical,AAO2019SHL-02,"Near-verbatim: assess patients with presumptive SSNHL for bilateral SHL, recurrent episodes, and/or focal neurologic findings; 'through history and physical examination' made explicit."
+T08,AAO2012SHL-03,carried-identical,AAO2019SHL-03,"Near-verbatim: do not order routine CT of the head in the initial evaluation of presumptive SSNHL ('computerized' became 'computed', 'routine' added)."
+T08,AAO2012SHL-04,carried-modified,AAO2019SHL-04,"Same slot and audiometry-to-confirm-diagnosis action, but the 30-dB-at-3-consecutive-frequencies diagnostic criteria were dropped and a within-14-days timing rule added."
+T08,AAO2012SHL-05,carried-identical,AAO2019SHL-05,Verbatim (similarity 0.993): clinicians should not obtain routine laboratory tests in patients with SSNHL (ISSNHL renamed SSNHL).
+T08,AAO2012SHL-06,carried-modified,AAO2019SHL-06,Same evaluation for retrocochlear pathology by MRI or ABR; audiometric follow-up was removed as an alternative option.
+T08,AAO2012SHL-07,carried-identical,AAO2019SHL-07,"Verbatim (similarity 0.997): educate patients with SSNHL about natural history, benefits and risks of medical interventions, and limitations of existing evidence."
+T08,AAO2012SHL-08,carried-modified,AAO2019SHL-08,Same option to offer corticosteroids as initial therapy for SSNHL; a 'within 2 weeks of symptom onset' window was added.
+T08,AAO2012SHL-09,carried-modified,AAO2019SHL-09a,"Split: the single HBOT offer (within 3 months of diagnosis) was split into 09a (HBOT combined with steroid therapy within 2 weeks, principal) and 09b (salvage within 1 month), and combination with steroids is now required."
+T08,AAO2012SHL-10,carried-modified,AAO2019SHL-11,"Text over numbering: same do-not-routinely-prescribe list (antivirals, thrombolytics, vasodilators, vasoactive substances); antioxidants were removed from the list."
+T08,AAO2012SHL-11,carried-modified,AAO2019SHL-10,Text over numbering: intratympanic steroid therapy for incomplete recovery from SSNHL retained; the timing is now specified as 2 to 6 weeks after onset.
+T08,AAO2012SHL-12,carried-modified,AAO2019SHL-12,Follow-up audiometric evaluation retained; the anchor moved from within 6 months of diagnosis to at the conclusion of treatment and within 6 months of its completion.
+T08,AAO2012SHL-13,carried-modified,AAO2019SHL-13,"Same counselling of patients with residual/incomplete hearing loss, reworded from benefits of amplification and hearing assistive technology to benefits of audiologic rehabilitation and other supportive measures (tinnitus added)."
+T09,AAO2011TONS-01,carried-identical,AAO2019TONS-01,"Near-verbatim: recommend watchful waiting for recurrent throat infection below the same frequency thresholds (<7 in past year, <5/year for 2 years, <3/year for 3 years)."
+T09,AAO2011TONS-02,carried-identical,AAO2019TONS-02,Near-verbatim: may recommend tonsillectomy at or above the same episode thresholds with per-episode documentation of sore throat plus >=1 listed feature (GABHS spelled out).
+T09,AAO2011TONS-03,carried-identical,AAO2019TONS-03,"Near-verbatim: assess children not meeting Statement 2 criteria for modifying factors (multiple antibiotic allergies/intolerance, PFAPA, >1 peritonsillar abscess)."
+T09,AAO2011TONS-04,carried-modified,AAO2019TONS-04,Same caregiver inquiry about comorbid conditions that may improve after tonsillectomy in SDB with tonsillar hypertrophy; 'obstructive' added and asthma added to the comorbidity list.
+T09,AAO2011TONS-05,carried-modified,AAO2019TONS-07,Lineage slot for the abnormal-PSG child: counselling caregivers that tonsillectomy improves health in abnormal-polysomnography/SDB children was recast as recommending tonsillectomy for OSA documented by overnight PSG.
+T09,AAO2011TONS-06,carried-identical,AAO2019TONS-08,Near-verbatim (text over numbering): counsel patients/caregivers that obstructive SDB may persist or recur after tonsillectomy and may require further management.
+T09,AAO2011TONS-07,carried-identical,AAO2019TONS-11,Verbatim (similarity 1.0; text over numbering): administer a single intraoperative dose of intravenous dexamethasone to children undergoing tonsillectomy.
+T09,AAO2011TONS-08,carried-modified,AAO2019TONS-10,"Same prohibition on perioperative antibiotics (text over numbering), with 'routinely' dropped, making the prohibition absolute."
+T09,AAO2011TONS-09,carried-modified,AAO2019TONS-09,"Same posttonsillectomy pain-management counselling, greatly expanded: perioperative education, reinforcement at the time of surgery, and reminders to anticipate, reassess, and adequately treat pain."
+T09,AAO2011TONS-10,carried-identical,AAO2019TONS-15B,Near-verbatim (text over numbering): determine one's own rate of primary and secondary posttonsillectomy bleeding at least annually ('hemorrhage' renamed 'bleeding').
+T10,AAO2013TYMP-01,carried-modified,AAO2022TYMP-01,"Same do-not-perform rule for a single episode of OME of less than 3 months' duration; a dating clause (from date of onset if known, or of diagnosis if unknown) was added."
+T10,AAO2013TYMP-02,carried-identical,AAO2022TYMP-02,Near-verbatim: obtain a hearing evaluation if OME persists for 3 months or longer or prior to surgery when the child becomes a tube candidate.
+T10,AAO2013TYMP-03,carried-identical,AAO2022TYMP-03,Near-verbatim: offer bilateral tympanostomy tube insertion for bilateral OME of 3 months or longer with documented hearing difficulties.
+T10,AAO2013TYMP-04,carried-modified,AAO2022TYMP-04,"Same may-perform option for chronic OME with attributable symptoms; attribution loosened to 'likely attributable, all or in part' and the symptom list reworded (balance (vestibular) problems)."
+T10,AAO2013TYMP-05,carried-identical,AAO2022TYMP-05,"Verbatim (similarity 0.995): reevaluate children with chronic OME who did not receive tubes at 3- to 6-month intervals until the effusion resolves, hearing loss is detected, or structural abnormalities are suspected."
+T10,AAO2013TYMP-06,carried-identical,AAO2022TYMP-06,Near-verbatim: do not perform tube insertion in recurrent AOM without middle ear effusion (MEE) in either ear at candidacy assessment.
+T10,AAO2013TYMP-07,carried-identical,AAO2022TYMP-07,Near-verbatim: offer bilateral tube insertion in recurrent AOM with unilateral or bilateral middle ear effusion at candidacy assessment.
+T10,AAO2013TYMP-08,carried-identical,AAO2022TYMP-08,"Near-verbatim: determine if a child with recurrent AOM or OME of any duration is at increased risk for speech, language, or learning problems from baseline factors (table reference dropped)."
+T10,AAO2013TYMP-09,carried-modified,AAO2022TYMP-09,Same may-perform option in at-risk children; the persistence criterion was reworded from 'unlikely to resolve quickly' to 'likely to persist' (type B tympanogram or effusion >=3 months).
+T10,AAO2013TYMP-10,carried-identical,AAO2022TYMP-12,"Verbatim (similarity 1.0; text over numbering): perioperative caregiver education on expected tube duration, follow-up schedule, and detection of complications."
+T10,AAO2013TYMP-11,carried-identical,AAO2022TYMP-14,"Near-verbatim (text over numbering): prescribe topical antibiotic ear drops only, without oral antibiotics, for uncomplicated acute tympanostomy tube otorrhea (TTO spelled out)."
+T10,AAO2013TYMP-12,carried-identical,AAO2022TYMP-15,"Near-verbatim (text over numbering): do not encourage routine, prophylactic water precautions (earplugs/headbands, avoidance of swimming) for children with tubes."
+T11,EPOS2007-01,carried-modified,EPOS2012-01,"same adult-ARS antibiotic row; label shortened 'oral antibiotic'->'antibiotic', direction for in both"
+T11,EPOS2007-02,carried-modified,EPOS2012-02,"adult-ARS topical steroid row retained; wording 'topical corticosteroid'->'topical steroid', direction for in both"
+T11,EPOS2007-03,carried-modified,EPOS2012-03,same combination reworded: 'topical steroid and oral antibiotic combined'->'addition of topical steroid to antibiotic'
+T11,EPOS2007-04,carried-modified,EPOS2012-04,"oral steroid in adult ARS retained as 'Addition of oral steroid to antibiotic', direction for in both"
+T11,EPOS2007-05,carried-modified,EPOS2012-15,oral antihistamine retained in adult-ARS block but restricted to allergic patients; direction for->none
+T11,EPOS2007-06,carried-modified,EPOS2012-05,'nasal douche' reworded 'saline irrigation' in adult-ARS block; direction none->for
+T11,EPOS2007-07,carried-modified,EPOS2012-18,standalone decongestant row retained as 'decongestion'; direction for->none
+T11,EPOS2007-08,carried-identical,EPOS2012-19,"'mucolytics' verbatim, adult-ARS block, direction none in both"
+T11,EPOS2007-09,carried-modified,EPOS2012-12,"phytotherapy row re-labelled 'herbal medicine (pelargonium sidoides, Myrtol)'; direction none->for"
+T11,EPOS2007-10,carried-modified,EPOS2012-20,"child-ARS antibiotic row; label shortened 'oral antibiotic'->'antibiotic', direction for in both"
+T11,EPOS2007-11,carried-modified,EPOS2012-21,"child-ARS topical steroid row; 'topical corticosteroid'->'topical steroid', direction for in both"
+T11,EPOS2007-12,carried-modified,EPOS2012-22,same combination reworded: 'topical steroid on top of oral antibiotic'->'addition of topical steroid to antibiotic'
+T11,EPOS2007-13,carried-modified,EPOS2012-26,"'topical decongestant' reworded 'decongestion' in child-ARS block, direction none in both"
+T11,EPOS2007-14,carried-modified,EPOS2012-24,"'saline douching' reworded 'saline irrigation' in child-ARS block, direction for in both"
+T11,EPOS2007-15,carried-modified,EPOS2012-30,"short-term oral antibiotic row retained; duration threshold changed <2 weeks-><4 weeks, direction none->for"
+T11,EPOS2007-16,carried-identical,EPOS2012-31,"long-term oral antibiotic >=12 weeks retained ('>'->'>=' symbol only), direction for in both"
+T11,EPOS2007-17,carried-identical,EPOS2012-43,'Antibiotics - topical' verbatim label but direction none->against
+T11,EPOS2007-18,carried-identical,EPOS2012-27,"'steroid - topical' verbatim, CRSsNP block, direction for in both"
+T11,EPOS2007-19,carried-identical,EPOS2012-32,"'steroid - oral' verbatim, CRSsNP block, direction none in both"
+T11,EPOS2007-20,carried-modified,EPOS2012-28,"'nasal saline douche' reworded 'nasal saline irrigation', direction for in both"
+T11,EPOS2007-21,carried-identical,EPOS2012-35,"'decongestant oral / topical' verbatim, direction none in both"
+T11,EPOS2007-22,carried-identical,EPOS2012-33,"'mucolytics' verbatim, CRSsNP block, direction none in both"
+T11,EPOS2007-23,carried-identical,EPOS2012-42,'antimycotics - systemic' verbatim label but direction none->against
+T11,EPOS2007-24,carried-identical,EPOS2012-41,'antimycotics - topical' verbatim label but direction none->against
+T11,EPOS2007-25,carried-modified,EPOS2012-37,"antihistamine row reworded 'oral antihistamine in allergic patients'->'added in allergic patients', direction none in both"
+T11,EPOS2007-26,carried-identical,EPOS2012-34,"'proton pump inhibitors' verbatim, direction none in both"
+T11,EPOS2007-27,carried-modified,EPOS2012-29,"bacterial lysates row retained with agent specified: 'bacterial Lysates (OM-85 BV)', direction none in both"
+T11,EPOS2007-28,dropped,,no immunomodulator row in EPOS 2012 CRSsNP block ('immunotherapy' is a distinct intervention)
+T11,EPOS2007-29,carried-modified,EPOS2012-38,"phytotherapy row re-labelled 'herbal en probiotics' in CRSsNP block, direction none in both"
+T11,EPOS2007-30,dropped,,no anti-leukotriene row in EPOS 2012 CRSsNP block (the 2012 LTRA row sits in the CRSwNP block)
+T11,EPOS2007-31,carried-modified,EPOS2012-47,"post-op short-term oral antibiotic row retained; threshold <2 weeks-><4 weeks, direction for in both"
+T11,EPOS2007-32,carried-modified,EPOS2012-49,post-op long-term antibiotic row retained; duration '~12 weeks' replaced by explicit '>=12 weeks' threshold
+T11,EPOS2007-33,carried-identical,EPOS2012-52,post-op topical antibiotics reworded 'antibiotics - topical'; direction none->against
+T11,EPOS2007-34,carried-identical,EPOS2012-44,"post-op topical steroid row as 'steroid - topical' (word order only), direction for in both"
+T11,EPOS2007-35,carried-identical,EPOS2012-51,post-op oral steroid row as 'steroid - oral'; direction for->none
+T11,EPOS2007-36,carried-modified,EPOS2012-45,"post-op 'nasal douche' reworded 'nasal saline irrigation', direction for in both"
+T11,EPOS2007-37,carried-modified,EPOS2012-55,"short-term oral antibiotics row retained; threshold <2 weeks-><4 weeks, direction none->for"
+T11,EPOS2007-38,carried-identical,EPOS2012-56,"long-term oral antibiotic >=12 weeks retained ('>'->'>=' symbol only), direction for in both"
+T11,EPOS2007-39,carried-identical,EPOS2012-63,"'topical antibiotics' verbatim, CRSwNP block, direction none in both"
+T11,EPOS2007-40,carried-identical,EPOS2012-53,"'topical steroids' verbatim, CRSwNP block, direction for in both"
+T11,EPOS2007-41,carried-identical,EPOS2012-54,"'oral steroids' verbatim, CRSwNP block, direction for in both"
+T11,EPOS2007-42,carried-modified,EPOS2012-62,"'nasal douche' reworded 'nasal saline irrigation' in CRSwNP block, direction for in both"
+T11,EPOS2007-43,carried-identical,EPOS2012-66,"'decongestant topical / oral' verbatim, direction none in both"
+T11,EPOS2007-44,carried-identical,EPOS2012-67,"'mucolytics' verbatim, CRSwNP block, direction none in both"
+T11,EPOS2007-45,carried-identical,EPOS2012-70,'antimycotics - systemic' verbatim label but direction none->against
+T11,EPOS2007-46,carried-identical,EPOS2012-69,'antimycotics - topical' verbatim label but direction none->against
+T11,EPOS2007-47,carried-identical,EPOS2012-68,'oral antihistamine in allergic patients' verbatim label but direction for->none
+T11,EPOS2007-48,carried-identical,EPOS2012-57,"'capsaicin' verbatim, CRSwNP block, direction none in both"
+T11,EPOS2007-49,carried-identical,EPOS2012-58,"'proton pump inhibitors' verbatim, CRSwNP block, direction none in both"
+T11,EPOS2007-50,dropped,,no immunomodulator row in EPOS 2012 CRSwNP block ('immunosuppressants' is a distinct drug category)
+T11,EPOS2007-51,carried-identical,EPOS2012-65,"'phytotherapy' verbatim, CRSwNP block, direction none in both"
+T11,EPOS2007-52,carried-identical,EPOS2012-71,'anti leukotrienes' verbatim label but direction none->against
+T11,EPOS2007-53,carried-modified,EPOS2012-75,"post-op short-term oral antibiotics row retained; threshold <2 weeks-><4 weeks, direction for in both"
+T11,EPOS2007-54,carried-identical,EPOS2012-77,"'oral antibiotics long term > 12 weeks' verbatim, direction for in both"
+T11,EPOS2007-55,carried-modified,EPOS2012-73,merged: post-op topical steroids after FESS and after polypectomy share the single post-op 'topical steroids' row; 'after FESS' qualifier dropped
+T11,EPOS2007-56,carried-modified,EPOS2012-73,merged: shares the single post-op 'topical steroids' row with the post-FESS item; 'after polypectomy' qualifier dropped
+T11,EPOS2007-57,carried-identical,EPOS2012-74,"'oral steroids' verbatim, post-op CRSwNP block, direction for in both"
+T11,EPOS2007-58,carried-modified,EPOS2012-80,"post-op 'nasal douche' reworded 'nasal saline irrigation', direction for in both"
+T11,EPOS2007-59,carried-modified,EPOS2012-87,"split: generic child-CRS 'oral antibiotic' split by duration in 2012; principal successor is short-term row (<4 weeks), direction for->against (long-term arm = EPOS2012-86)"
+T11,EPOS2007-60,carried-identical,EPOS2012-85,"'topical corticosteroid' verbatim, child-CRS block, direction for in both"
+T11,EPOS2007-61,carried-modified,EPOS2012-83,"'saline douching' reworded 'nasal saline irrigation' in child-CRS block, direction for in both"
+T11,EPOS2007-62,carried-identical,EPOS2012-84,'therapy for gastro-oesophageal reflux' verbatim label but direction for->none
+T12,EPOS2012-01,carried-modified,EPOS2020-30,antibiotics for the common cold retained: 'no evidence of benefit from antibiotics for the common cold... not recommended'; direction for->against
+T12,EPOS2012-02,carried-modified,EPOS2020-20,nasal corticosteroids for the common cold retained: 'does not support the use of nasal corticosteroids... common cold'; direction for->against
+T12,EPOS2012-03,dropped,,"no EPOS 2020 statement on adding topical steroid to antibiotic for the common cold/ARS (the on-top-of-antibiotics steroid statement, EPOS2020-27, is children post-viral only)"
+T12,EPOS2012-04,carried-modified,EPOS2020-21,"oral steroid adjunct survives reframed as post-viral ARS: 'Systemic corticosteroids, with or without antibiotics do not have a positive effect... advises against'; direction for->against"
+T12,EPOS2012-05,carried-modified,EPOS2020-09,"'saline irrigation' retained as 'Nasal saline irrigation possibly has benefits for relieving the symptoms of acute URTIs', direction for in both"
+T12,EPOS2012-06,carried-modified,EPOS2020-07,'Antihistamine-analgesic-decongestant combinations have some general benefit in adults and older children with common cold'; direction for->none
+T12,EPOS2012-07,carried-modified,EPOS2020-08,'ipratropium bromide is likely to be effective in ameliorating rhinorrhoea'; direction for->none
+T12,EPOS2012-08,carried-modified,EPOS2020-11,'Probiotics may be more beneficial than placebo for preventing acute URTIs'; direction for->none
+T12,EPOS2012-09,carried-modified,EPOS2020-16,'Zinc administered as zinc acetate or zinc gluconate lozenges... significantly reduces the duration of common cold'; direction none->for
+T12,EPOS2012-10,carried-modified,EPOS2020-12,'consistent effect of vitamin C on the duration and severity of colds... may be worthwhile'; direction none->for
+T12,EPOS2012-11,carried-modified,EPOS2020-15,"'Echinacea products have not been shown to provide benefits for treating colds'; direction none in both, label expanded to prose statement"
+T12,EPOS2012-12,carried-modified,EPOS2020-25,named agents carried verbatim: 'Pelargonium sidoides drops and Myrtol... capsules have significant impact on symptoms of acute postviral rhinosinusitis'; direction for->none
+T12,EPOS2012-13,carried-modified,EPOS2020-06,"NSAID row retained: 'NSAIDs do not significantly reduce the total symptom score... benefits for headache, ear pain and muscle and joint pain'; direction for->none"
+T12,EPOS2012-14,carried-modified,EPOS2020-05,'Paracetamol may help relieve nasal obstruction and rhinorrhoea'; direction for->none
+T12,EPOS2012-15,carried-modified,EPOS2020-03,"antihistamine row retained in common-cold section ('limited short-term beneficial effect... in adults'); allergic-patient restriction dropped, direction none in both"
+T12,EPOS2012-16,carried-modified,EPOS2020-10,"steam inhalation retained as 'heated, humidified air... does not show any benefits or harms'; direction against->none"
+T12,EPOS2012-17,dropped,,no cromoglycate statement anywhere in EPOS 2020
+T12,EPOS2012-18,carried-modified,EPOS2020-04,'multiple doses of decongestants may have a small positive effect on subjective measures of nasal congestion... common cold'; direction none in both
+T12,EPOS2012-19,dropped,,no mucolytic/muco-active statement for acute rhinosinusitis in EPOS 2020 (muco-active item EPOS2020-55 covers CRS only)
+T12,EPOS2012-20,carried-modified,EPOS2020-34,"split: child antibiotic advice split by ARS subtype in 2020; principal successor is the common-cold statement covering children ('in children or adults... not recommended'), direction for->against (subtype arms = EPOS2020-26, -34)"
+T12,EPOS2012-21,carried-modified,EPOS2020-27,child topical steroid retained in merged common-cold statement 'does not support the use of nasal corticosteroids for symptomatic relief from the common cold' (adults+children); direction for->against
+T12,EPOS2012-22,carried-modified,EPOS2020-27,steroid-on-antibiotic retained for children: 'Nasal corticosteroids seem to be effective in children... on top of (ineffective) antibiotics'; direction for->none
+T12,EPOS2012-23,carried-modified,EPOS2020-35,decisive shared agent: 'Erdosteine as an adjunct to antibiotic was not more effective than placebo' (children ABRS); direction against->none
+T12,EPOS2012-24,carried-modified,EPOS2020-09,'Nasal saline irrigation possibly has benefits... mainly in children... considered an option'; direction for in both
+T12,EPOS2012-25,carried-modified,EPOS2020-28,child antihistamine row retained: 'antihistamines versus placebo in addition to antibiotics in children with post-viral ARS showing no additive effect'; direction none in both
+T12,EPOS2012-26,carried-modified,EPOS2020-04,child decongestion retained in merged decongestant statement for the common cold (adults+children population); direction none in both
+T12,EPOS2012-27,carried-modified,EPOS2020-40,merged: topical steroid retained in merged CRS statement 'long term use of nasal corticosteroids is effective and safe... advises to use nasal corticosteroids in patients with CRS'; direction for in both
+T12,EPOS2012-28,carried-modified,EPOS2020-46,merged: 'Nasal irrigation with isotonic saline or Ringer's lactate has efficacy in CRS patients... advises the use of nasal saline irrigation'; direction for in both
+T12,EPOS2012-29,carried-modified,EPOS2020-62,"bacterial lysate retained under product name: 'bacterial lysate Broncho-Vaxom' (= OM-85 BV) in adult CRS; direction none in both (EPOS2020-29 is children post-viral, wrong population)"
+T12,EPOS2012-30,carried-modified,EPOS2020-36,short-term row retained as 'use of a short course of antibiotics... in adults with CRS'; direction for->none
+T12,EPOS2012-31,carried-modified,EPOS2020-38,"'use of long-term antibiotics... in adults with CRS, particularly... macrolides'; direction for->none"
+T12,EPOS2012-32,carried-modified,EPOS2020-42,oral steroid retained as 'A short course of systemic corticosteroid... reduction in total symptom score and nasal polyp score'; direction none->for
+T12,EPOS2012-33,carried-modified,EPOS2020-55,mucolytics retained as 'muco-active agents in CRS... insufficient to advise'; direction none in both
+T12,EPOS2012-34,carried-modified,EPOS2020-61,'Proton-pump inhibitors have been shown in one study to be not effective... advises against... in CRS'; direction none->against
+T12,EPOS2012-35,carried-modified,EPOS2020-45,decongestant retained: 'suggests in general not to use nasal decongestants in CRS'; direction none->against
+T12,EPOS2012-36,dropped,,no allergen-avoidance statement in the EPOS 2020 adult CRS section
+T12,EPOS2012-37,carried-modified,EPOS2020-43,antihistamine row retained: 'one study reporting on the effect of antihistamines in partly allergic patients with CRSwNP... insufficient evidence'; direction none in both
+T12,EPOS2012-38,carried-modified,EPOS2020-56,"split: combined 'herbal en probiotics' row split in 2020; principal successor is the herbal statement ('herbal treatment... cannot advise on the use of herbal medicine in CRS'), direction none in both (probiotics arm = EPOS2020-54)"
+T12,EPOS2012-39,dropped,,no allergen immunotherapy statement in the EPOS 2020 adult CRS section
+T12,EPOS2012-40,carried-modified,EPOS2020-54,'advises against the use of probiotics for the treatment of patients with CRS'; direction against in both
+T12,EPOS2012-41,carried-modified,EPOS2020-50,merged: topical and systemic antimycotics merged in 'Local and systemic antifungal treatments do not have a positive effect... advises against the use of anti-mycotics in CRS'; direction against in both
+T12,EPOS2012-42,carried-modified,EPOS2020-50,merged: shares the merged local+systemic antifungal statement EPOS2020-50; direction against in both
+T12,EPOS2012-43,carried-modified,EPOS2020-39,'Topical antibacterial therapy does not seem to be more effective than placebo in improving symptoms in patients with CRS'; direction against->none
+T12,EPOS2012-44,carried-modified,EPOS2020-40,"merged/embedded: post-op topical steroid absorbed into CRS nasal-corticosteroid statement, which covers use 'after endoscopic sinus surgery... prevent polyp recurrence'; direction for in both"
+T12,EPOS2012-45,carried-modified,EPOS2020-46,merged: post-op saline irrigation absorbed into general CRS irrigation statement EPOS2020-46; direction for in both
+T12,EPOS2012-46,carried-modified,EPOS2020-46,embedded: xylitol survives inside EPOS2020-46 ('addition of xylitol... may have a positive effect... with or without the addition of xylitol'); direction for in both
+T12,EPOS2012-47,carried-modified,EPOS2020-36,merged: post-op short-term antibiotic absorbed into 'short course of antibiotics... in adults with CRS' (no post-op-specific statement in 2020); direction for->none
+T12,EPOS2012-48,dropped,,"sodium hypochlorite disappears: EPOS2020-46 lists xylitol, sodium hyaluronate and xyloglucan as additives and advises against baby shampoo/hypertonic saline; hypochlorite is not mentioned"
+T12,EPOS2012-49,carried-modified,EPOS2020-38,merged: post-op long-term antibiotic absorbed into 'long-term antibiotics... in adults with CRS'; direction for->none
+T12,EPOS2012-50,carried-modified,EPOS2020-46,embedded: baby shampoo explicitly addressed in EPOS2020-46 ('advises against the use of baby shampoo'); direction none->against
+T12,EPOS2012-51,carried-modified,EPOS2020-42,embedded: post-op systemic steroid covered inside EPOS2020-42 ('A short course of systemic corticosteroid postoperatively does not seem to have an effect on quality of life'); item direction none->for
+T12,EPOS2012-52,carried-modified,EPOS2020-39,merged: post-op topical antibiotics absorbed into 'Topical antibacterial therapy... in patients with CRS'; direction against->none
+T12,EPOS2012-53,carried-modified,EPOS2020-40,merged: topical steroids retained in merged CRS nasal-corticosteroid statement (effect size 'larger in CRSwNP'); direction for in both
+T12,EPOS2012-54,carried-modified,EPOS2020-42,merged: 'A short course of systemic corticosteroid... reduction in total symptom score and nasal polyp score'; direction for in both
+T12,EPOS2012-55,carried-modified,EPOS2020-36,merged: short-term antibiotics retained as 'short course of antibiotics... in adults with CRS'; direction for->none
+T12,EPOS2012-56,carried-modified,EPOS2020-38,merged: 'use of long-term antibiotics has an impact on patient outcomes in adults with CRS... macrolides'; direction for->none
+T12,EPOS2012-57,carried-modified,EPOS2020-60,'Capsaicin showed a significant decrease in nasal obstruction and nasal polyp score... may be an option in treatment of CRS in patients with CRSwNP'; direction none->for
+T12,EPOS2012-58,carried-modified,EPOS2020-61,'advises against the use of proton pump inhibitors in the treatment of CRS'; direction none->against
+T12,EPOS2012-59,carried-modified,EPOS2020-47,aspirin desensitisation therapy retained as oral ATAD (aspirin therapy after desensitisation) in N-ERD: 'Oral ATAD has been shown to be significantly more effective... suggests that ATAD can be a treatment'; direction none->for
+T12,EPOS2012-60,carried-modified,EPOS2020-59,furosemide retained as 'furosemide nasal spray treated group versus placebo... cannot advise on the use of nasal furosemide'; direction none in both
+T12,EPOS2012-61,dropped,,no immunosuppressant statement in the EPOS 2020 adult CRS section
+T12,EPOS2012-62,carried-modified,EPOS2020-46,merged: CRSwNP saline irrigation absorbed into general CRS irrigation statement EPOS2020-46; direction for in both
+T12,EPOS2012-63,carried-modified,EPOS2020-39,merged: 'Topical antibacterial therapy does not seem to be more effective than placebo... in patients with CRS'; direction none in both
+T12,EPOS2012-64,carried-modified,EPOS2020-52,anti-IL5 retained as its agent mepolizumab: 'advises use of mepolizumab in patients with CRSwNP fulfilling the criteria'; direction none->for
+T12,EPOS2012-65,carried-modified,EPOS2020-56,phytotherapy retained as 'herbal treatment... cannot advise on the use of herbal medicine in CRS'; direction none in both
+T12,EPOS2012-66,carried-modified,EPOS2020-45,decongestant retained: 'suggests in general not to use nasal decongestants in CRS'; direction none->against
+T12,EPOS2012-67,carried-modified,EPOS2020-55,mucolytics retained as 'muco-active agents in CRS... insufficient to advise'; direction none in both
+T12,EPOS2012-68,carried-modified,EPOS2020-43,antihistamine row retained: statement is explicitly about 'partly allergic patients with CRSwNP'; direction none in both
+T12,EPOS2012-69,carried-modified,EPOS2020-50,merged: shares the merged local+systemic antifungal statement EPOS2020-50 ('advises against the use of anti-mycotics in CRS'); direction against in both
+T12,EPOS2012-70,carried-modified,EPOS2020-50,merged: shares the merged local+systemic antifungal statement EPOS2020-50; direction against in both
+T12,EPOS2012-71,carried-modified,EPOS2020-44,anti-leukotriene retained as its agent montelukast: 'does not recommend its use [montelukast]... does not advise adding montelukast'; direction against in both
+T12,EPOS2012-72,carried-modified,EPOS2020-51,anti-IgE retained: 'Anti-IgE (omalizumab)... data are insufficient to advise on the use of anti-IgE in CRSwNP'; direction none in both (packet listed no candidate; found in full 2020 set)
+T12,EPOS2012-73,carried-modified,EPOS2020-40,"merged/embedded: post-op topical steroids absorbed into EPOS2020-40, which covers steroids 'administered after endoscopic sinus surgery... prevent polyp recurrence'; direction for in both"
+T12,EPOS2012-74,carried-modified,EPOS2020-42,merged/embedded: post-op oral steroids absorbed into systemic-corticosteroid statement EPOS2020-42 incl. its postoperative clause; direction for in both
+T12,EPOS2012-75,carried-modified,EPOS2020-36,merged: post-op short-term antibiotics absorbed into 'short course of antibiotics... in adults with CRS'; direction for->none
+T12,EPOS2012-76,carried-modified,EPOS2020-52,merged: post-op anti-IL5 absorbed into the general CRSwNP mepolizumab statement EPOS2020-52; direction for in both
+T12,EPOS2012-77,carried-modified,EPOS2020-38,merged: post-op long-term antibiotics absorbed into 'long-term antibiotics... in adults with CRS'; direction for->none
+T12,EPOS2012-78,carried-modified,EPOS2020-43,merged: post-op antihistamines absorbed into the CRS antihistamine statement EPOS2020-43; direction none in both
+T12,EPOS2012-79,carried-modified,EPOS2020-59,merged: post-op furosemide absorbed into the nasal furosemide statement EPOS2020-59; direction none in both
+T12,EPOS2012-80,carried-modified,EPOS2020-46,merged: post-op saline irrigation absorbed into general CRS irrigation statement EPOS2020-46; direction for in both
+T12,EPOS2012-81,carried-modified,EPOS2020-44,merged: post-op anti-leukotrienes absorbed into the montelukast statement EPOS2020-44; direction against in both
+T12,EPOS2012-82,carried-modified,EPOS2020-51,merged: post-op anti-IgE absorbed into the anti-IgE (omalizumab) statement EPOS2020-51; direction none in both
+T12,EPOS2012-83,carried-modified,EPOS2020-69,'clinical trials demonstrating the efficacy of saline irrigations in paediatric patients with CRS... supportive of the use of saline'; direction for in both
+T12,EPOS2012-84,dropped,,no gastro-oesophageal reflux therapy statement in the EPOS 2020 paediatric CRS section
+T12,EPOS2012-85,carried-modified,EPOS2020-67,'no evidence regarding the efficacy of intranasal steroids in the treatment of CRS in children. Nevertheless the EPOS steering group is supportive of their use'; direction for in both
+T12,EPOS2012-86,carried-modified,EPOS2020-66,merged: long- and short-term rows merged in 'no high level evidence to support the efficacy of either short or long term antibiotics for CRS in children'; direction none in both
+T12,EPOS2012-87,carried-modified,EPOS2020-66,merged: shares the merged short/long-term antibiotic statement EPOS2020-66; direction against->none
+T12,EPOS2012-88,dropped,,intravenous antibiotics not addressed in EPOS 2020 paediatric CRS section (EPOS2020-66 covers short/long-term antibiotics without route)
+T13,ICAR2018AR-01,carried-modified,ICAR2023AR-01,Shared 'Breastfeeding ... at least 4 months ... encouraged'; 2023 extends to 4-6 months and drops the AR-prevention framing.
+T13,ICAR2018AR-02,dropped,,"No 2023 item offers management strategies to improve QOL; nearest 2023 item (-03) concerns using validated QOL measures in studies, a different action."
+T13,ICAR2018AR-03,carried-modified,ICAR2023AR-04,"Same aim 'improve sleep disturbance in patients with AR'; 2023 names the strategies (INCS, oral antihistamines, montelukast, AIT) where 2018 said 'various management strategies'; split: duplicated as -04/-05, principal -04."
+T13,ICAR2018AR-04,carried-modified,ICAR2023AR-06,"Shared 'history is essential in the diagnosis of AR'; split: physical-examination half continues as -07, principal -06."
+T13,ICAR2018AR-05,carried-modified,ICAR2023AR-08,Shared 'Nasal endoscopy may ... diagnostic' in AR evaluation; 2023 narrows to 'diagnostic adjunct in suspected AR'.
+T13,ICAR2018AR-06,carried-modified,ICAR2023AR-09,Shared 'Routine ... imaging is not recommended' for AR; 2023 drops the rule-in/out-other-conditions clause.
+T13,ICAR2018AR-07,carried-identical,ICAR2023AR-28,"Near-verbatim: 'Validated surveys may be used to screen for AR, follow treatment outcomes and as a primary outcome measure for clinical trials.'"
+T13,ICAR2018AR-08,carried-modified,ICAR2023AR-10,Near-verbatim shared tail: 'Regular use of the same SPT device ... standardized allergen extracts can further improve consistency of interpretation'; 2023 drops the lead SPT-recommendation sentence.
+T13,ICAR2018AR-09,carried-identical,ICAR2023AR-11,Near-verbatim: 'Intradermal testing may be used to determine ... allergen sensitization in individuals suspected of having AR.'
+T13,ICAR2018AR-10,carried-modified,ICAR2023AR-12,"Shared 'MQT ... determine a starting point for AIT'; 2023 reframes as 'blended skin testing techniques, such as MQT' and adds confirming sensitization."
+T13,ICAR2018AR-11,carried-modified,ICAR2023AR-14,Shared 'tIgE ... assess ... atopic status'; 2023 adds guiding/monitoring AIT efficacy.
+T13,ICAR2018AR-12,carried-modified,ICAR2023AR-15,Shared 'Serum sIgE testing may be used ... rigorous proficiency testing ... improve accuracy'; 2023 restricts to patients who cannot undergo skin testing and adds recombinants.
+T13,ICAR2018AR-13,carried-modified,ICAR2023AR-16,Shared 'nasal sIgE ... option in patients with ... LAR ... diagnosis ... guide AIT'; population reworded to non-allergic rhinitis suspected of LAR.
+T13,ICAR2018AR-14,carried-modified,ICAR2023AR-17,Shared BAT use 'when first-line/other diagnostic procedures are inconclusive/conflicting' and for monitoring AIT response.
+T13,ICAR2018AR-15,carried-modified,ICAR2023AR-29,"Shared 'Acaricides ... environmental control measures, such as air filtration ... options in the management of AR'."
+T13,ICAR2018AR-16,carried-modified,ICAR2023AR-30,"Near-verbatim shared opening: 'Combination of physical measures (such as/e.g. insecticide bait traps, house cleaning) and education-based methods'."
+T13,ICAR2018AR-17,carried-modified,ICAR2023AR-31,"Near-verbatim: 'Pet avoidance and environmental control strategies, particularly multi-modality ... among patients with diagnosed Fel d 1 sensitivity ... option for the treatment of AR'."
+T13,ICAR2018AR-18,carried-modified,ICAR2023AR-33,"Shared pollen-avoidance-as-option content ('Pollen avoidance strategies ... may have benefit ... further RCTs with larger populations needed'); split: occupational half continues as -34, principal -33."
+T13,ICAR2018AR-19,carried-modified,ICAR2023AR-35,"Shared 'Newer-generation oral antihistamines ... considered in the treatment of AR'; 2023 drops 'early in treatment', softening the stance."
+T13,ICAR2018AR-20,carried-identical,ICAR2023AR-36,Near-verbatim: 'Addition of an oral H2 antagonist to an oral H1 antagonist may improve symptom control in AR' with weak-evidence caveat both versions.
+T13,ICAR2018AR-21,carried-identical,ICAR2023AR-37,Near-verbatim: 'Intranasal antihistamines may be used as first- or second-line therapy in the treatment of AR.'
+T13,ICAR2018AR-22,carried-identical,ICAR2023AR-38,Near-verbatim long text: 'not recommended for routine use in AR ... short courses of systemic corticosteroids ... significant nasal obstruction that precludes penetration of intranasal agents'.
+T13,ICAR2018AR-23,carried-identical,ICAR2023AR-41,"Identity from the source blocks (frozen Intervention printed 'None.' in both): 2018 section IX.B.2.b Injectable corticosteroids, 'Policy Level: Recommendation against'; 2023 EBRR block 'Injectable corticosteroids' with the same against stance."
+T13,ICAR2018AR-24,carried-identical,ICAR2023AR-39,"Near-verbatim: INCS 'efficacy ... superiority over other agents, make them first line therapy in the treatment of AR'."
+T13,ICAR2018AR-25,carried-modified,ICAR2023AR-42,Shared 'pseudoephedrine can be effective in reducing nasal congestion in patients with AR ... short-term'; direction flips for->against (2023 heads it 'not recommended for routine use').
+T13,ICAR2018AR-26,dropped,,Oral phenylephrine as an AR decongestant appears in no 2023 item; the 2023 decongestant items cover pseudoephedrine (-42) and intranasal decongestants (-43) only.
+T13,ICAR2018AR-27,carried-modified,ICAR2023AR-43,Shared 'effective short-term nasal decongestion in patients with AR ... recommend against chronic use due to risk of rhinitis medicamentosa/RM'; 2023 names the class INDC.
+T13,ICAR2018AR-28,carried-identical,ICAR2023AR-44,"Near-verbatim lead: 'LTRAs should not be used as monotherapy in the treatment of AR but can be considered' when alternatives are contraindicated; duplicated as -44/-45, principal -44."
+T13,ICAR2018AR-29,carried-modified,ICAR2023AR-46,Same drug (DSCG) for AR; indication reworded from 'known triggers / cannot tolerate INCS' to second-line after INCS or intranasal antihistamine failure or pre-exposure prophylaxis.
+T13,ICAR2018AR-30,carried-modified,ICAR2023AR-47,Near-verbatim: 'IPB nasal spray may be used as an adjunct medication to INCS in AR patients with persistent/uncontrolled rhinorrhea'; PAR broadened to AR.
+T13,ICAR2018AR-31,carried-modified,ICAR2023AR-48,"Lead proposition shared: omalizumab/biologic not for AR monotherapy — 2018 'should not be used as monotherapy in AR', 2023 aggregate 'Monoclonal antibody (biologic) therapies are not currently approved for the treatment of AR'; AIT-combination aspect continues in -79."
+T13,ICAR2018AR-32,carried-identical,ICAR2023AR-49,Verbatim: 'Nasal saline is strongly recommended as part of the treatment strategy for AR.'
+T13,ICAR2018AR-33,carried-identical,ICAR2023AR-50,Near-verbatim: 'Consider adjuvant use of probiotics for patients with symptomatic seasonal or perennial AR.'
+T13,ICAR2018AR-34,carried-modified,ICAR2023AR-51,Shared combination oral antihistamine + oral decongestant efficacy with caution against chronic use; 2023 reframes as episodic-basis use.
+T13,ICAR2018AR-35,carried-modified,ICAR2023AR-52,"Same INCS + oral antihistamine add-on question; 2018 states no benefit over INCS alone, 2023 states evidence is mixed with RCTs showing no benefit over INCS alone."
+T13,ICAR2018AR-36,carried-modified,ICAR2023AR-53,Same LTRA + oral antihistamine combination; stance reverses from 'is an option' (for) to 'should not be used as first line ... can be considered' with contraindications (against).
+T13,ICAR2018AR-37,carried-identical,ICAR2023AR-54,Near-verbatim: 'Combination therapy with INCS and intranasal antihistamine may be used as second-line therapy ... when initial monotherapy ... does not provide adequate control.'
+T13,ICAR2018AR-38,carried-identical,ICAR2023AR-59,"Near-verbatim: 'In patients who wish/are interested in avoiding medications, acupuncture may be/can be suggested as a possible therapeutic adjunct.'"
+T13,ICAR2018AR-39,carried-identical,ICAR2023AR-61,"Identity from the source blocks (frozen Intervention printed 'None.' in both): 2018 section IX.B.11.b Honey, 'Policy Level: No recommendation due to inconclusive evidence'; 2023 EBRR block 'Honey' in the same complementary-therapies sequence after acupuncture."
+T13,ICAR2018AR-40,carried-identical,ICAR2023AR-62,Identity from the source blocks: 2018 section IX.B.11.c Herbal therapies with aggregate grade printed 'Uncertain.' and Intervention 'None.'; 2023 EBRR block 'Herbal therapies' likewise prints aggregate 'Uncertain.'.
+T13,ICAR2018AR-41,carried-modified,ICAR2023AR-64,"Lead intervention shared: turbinate/IT reduction in AR patients failing medical management with obstructive anatomic features; split: septoplasty component continues as -63, principal -64."
+T13,ICAR2018AR-42,carried-modified,ICAR2023AR-67,Shared SCIT criteria: inadequate relief with symptomatic therapy and benefit of 'secondary disease-modifying effects'; reworded throughout.
+T13,ICAR2018AR-43,carried-modified,ICAR2023AR-70,Shared SLIT text: 'tablet or aqueous SLIT ... seasonal and/or perennial AR ... reduce their symptoms and medication use'; split 1/4 of the 2018 per-form SLIT block mapped in order to the 2023 duplicate set -70..-73.
+T13,ICAR2018AR-44,carried-modified,ICAR2023AR-71,Shared SLIT text as -43; split 2/4 mapped in order to -71.
+T13,ICAR2018AR-45,carried-modified,ICAR2023AR-72,Shared SLIT text as -43; split 3/4 mapped in order to -72.
+T13,ICAR2018AR-46,carried-modified,ICAR2023AR-73,Shared SLIT text as -43; split 4/4 mapped in order to -73.
+T13,ICAR2018AR-47,carried-identical,ICAR2023AR-76,"Near-verbatim: transcutaneous/epicutaneous immunotherapy 'limited studies that show variable and limited effectiveness, and a significant rate of adverse reactions ... not recommended'."
+T13,ICAR2018AR-48,carried-modified,ICAR2023AR-77,"Lead topic ILIT: 2018 'further studies are needed before ILIT can be translated into routine clinical practice', 2023 'More studies are essential to establish the long-term effects of ILIT'; split: OMIT/other-route content continues in -78, principal -77."
+T13,ICAR2018AR-49,carried-identical,ICAR2023AR-79,Near-verbatim: anti-IgE/omalizumab 'as a premedication prior to induction of cluster or rush SCIT protocols ... combination therapy ... carefully selected patient with persistent symptomatic AR following AIT ... not approved by the FDA for AR'.
+T13,ICAR2018AR-50,dropped,,"Generic non-steroid pharmacotherapy recommendation for AR with coexisting asthma has no 2023 counterpart; nearest 2023 item (-55) is montelukast-specific in AR+asthma, a different recommendation."
+T13,ICAR2018AR-51,carried-modified,ICAR2023AR-38,"Merged: systemic corticosteroids 'not recommended for routine use' with short-course exceptions — 2018 scoped to AR with comorbid asthma, 2023 states it for AR generally in -38 (also the successor of -22)."
+T13,ICAR2018AR-52,dropped,,"No 2023 item recommends omalizumab/anti-IgE for IgE-mediated allergic asthma with coexistent AR; 2023 biologic items (-48, -79) address AR only and stress non-approval for AR."
+T13,ICAR2018AR-53,carried-modified,ICAR2023AR-67,Merged: AIT recommendation retained generally in -67 (shared 'disease-modifying effects' rationale); the asthma-progression-prevention clause survives in the SLIT text of -70..-73; no separate comorbid-asthma AIT item in 2023.
+T14,ICAR2016RS-01,carried-modified,ICAR2021RS-03,"Shared watchful-waiting stance for ABRS: 2016 'Withholding antibiotics with close follow-up is an option', 2021 'Consider initial watchful waiting ... antibiotic therapy if no improvement after 7 days'."
+T14,ICAR2016RS-02,carried-modified,ICAR2021RS-80,Shared agents: 'amoxicillin or amoxicillin-clavulanate may be prescribed for ABRS'; 2021 adds penicillin-allergy qualifier and ABRS case definition.
+T14,ICAR2016RS-03,carried-modified,ICAR2021RS-04,Near-verbatim: 'INCS should be ... as monotherapy in (mild to) moderate ARS or as adjuvant to antibiotic therapy in severe cases of ARS.'
+T14,ICAR2016RS-04,carried-identical,ICAR2021RS-05,"Near-verbatim: 'Systemic corticosteroids may be useful ... severe facial pain or headaches secondary to ARS, otherwise no tangible benefit.'"
+T14,ICAR2016RS-05,carried-modified,ICAR2021RS-06,Same intervention (saline in ARS/ABRS); 2021 narrows the claim to 'Saline irrigation may be used in adjunct with antibiotics for ABRS'.
+T14,ICAR2016RS-06,carried-modified,ICAR2021RS-12,"Shared RARS work-up content: allergic and immunodeficiency/immunologic evaluation ('Consider immunologic testing, allergic testing ... in patients with concern for RARS'); viral-cause clause not retained."
+T14,ICAR2016RS-07,carried-identical,ICAR2021RS-13,Near-verbatim: 'Option for use of INCS spray for ... acute exacerbations of RARS.'
+T14,ICAR2016RS-08,carried-modified,ICAR2021RS-14,Same intervention/population (ESS for RARS); stance strengthens from 'is an option' to 'ESS or BSD is recommended'.
+T14,ICAR2016RS-09,carried-identical,ICAR2021RS-19,Verbatim: 'Allergy testing and treatment are an option in CRSsNP.'
+T14,ICAR2016RS-10,carried-identical,ICAR2021RS-20,Verbatim: 'PID should be considered in patients with refractory CRS.'
+T14,ICAR2016RS-11,carried-identical,ICAR2021RS-16,Verbatim: 'Recommendation against using a symptoms-alone strategy to make the diagnosis of CRS.'
+T14,ICAR2016RS-12,carried-identical,ICAR2021RS-17,Near-verbatim: 'Nasal endoscopy is recommended in conjunction with a history and physical examination for a patient being evaluated for CRS. CT is an option for confirming CRS ... instead of nasal endoscopy.'
+T14,ICAR2016RS-13,carried-identical,ICAR2021RS-18,"Near-verbatim: 'CT scanning is recommended for all patients meeting symptom-based criteria for CRS with a lack of objective clinical findings on anterior rhinoscopy or nasal endoscopy, or for preoperative planning.'"
+T14,ICAR2016RS-14,carried-modified,ICAR2021RS-21,Same intervention (saline nasal irrigation in CRS) with volume emphasis retained: 2021 'Devices with volume greater than 60 ml bring greater benefits' vs 2016 'High-volume (>200 mL) ... strongly recommended as an adjunct'.
+T14,ICAR2016RS-15,carried-modified,ICAR2021RS-22,Shared 'Standard metered dose INCS ... used in treatment of CRSsNP'; modal softens should->could and 2021 adds rhinitis-symptom qualifier.
+T14,ICAR2016RS-16,carried-modified,ICAR2021RS-23,"Same statement (corticosteroid nasal irrigations in CRSsNP, most beneficial postoperatively); 2021 upgrades to 'recommended in postoperative patients' and replaces MAD/MAST/YAMIK detail with atomizer option / no MAST recommendation; 1st of 4 duplicate prior rows mapped in order to -23..-25 set."
+T14,ICAR2016RS-17,carried-modified,ICAR2021RS-24,Duplicate prior row of the corticosteroid-irrigation statement; mapped in order to -24 (see -16 basis).
+T14,ICAR2016RS-18,carried-modified,ICAR2021RS-25,Duplicate prior row of the corticosteroid-irrigation statement; mapped in order to -25 (see -16 basis).
+T14,ICAR2016RS-19,carried-modified,ICAR2021RS-25,"Merged: 4th duplicate prior row of the same corticosteroid-irrigation statement; the 2021 set carries three copies (-23..-25), so this row merges into -25."
+T14,ICAR2016RS-20,carried-identical,ICAR2021RS-26,Near-verbatim: 'Macrolides are an option for patients with CRSsNP' (2021 adds low-risk-of-harm qualifier).
+T14,ICAR2016RS-21,carried-identical,ICAR2021RS-27,First sentence verbatim: 'Intravenous antibiotics should not be used for routine cases of CRS'; exception clause reworded but equivalent.
+T14,ICAR2016RS-22,carried-modified,ICAR2021RS-28,Shared stance 'Topical antibiotics are not recommended for (routine) CRS'; 2021 adds 'may be beneficial in unusual circumstances'.
+T14,ICAR2016RS-23,carried-modified,ICAR2021RS-29,Shared 'Topical antifungal agents are not recommended for CRSsNP'; 2021 widens scope to 'CRSsNP or CRSwNP' (merged with -35 lineage).
+T14,ICAR2016RS-24,dropped,,"No 2021 item addresses topical-delivery technique/positioning (high-volume delivery after surgery, head-down-forward position); the delivery-technique recommendation has no counterpart."
+T14,ICAR2016RS-25,carried-modified,ICAR2021RS-20,"Treatment of immunodeficiency for recalcitrant CRS has no 2021 counterpart; 2021 retains only PID consideration/evaluation items (-20, -35), a different action."
+T14,ICAR2016RS-26,carried-modified,ICAR2021RS-34,Shared asthma screening in CRSwNP: 'Screen all patients with CRSwNP for asthma symptoms' vs 2016 'Asthma screening should be considered in all patients with CRSwNP'.
+T14,ICAR2016RS-27,dropped,,"Allergy testing/treatment for CRSwNP has no 2021 counterpart; the 2021 allergy-testing item (-19) covers CRSsNP only, and -57 concerns AFRS immunotherapy."
+T14,ICAR2016RS-28,carried-identical,ICAR2021RS-35,Verbatim: 'Patients with CRSwNP may be evaluated for the presence of an underlying PID.'
+T14,ICAR2016RS-29,carried-modified,ICAR2021RS-37,"Near-verbatim: 'Topical nasal corticosteroids (sprays or drops) are recommended for CRSwNP before or after sinus surgery'; duplicated as -37/-38, principal -37."
+T14,ICAR2016RS-30,carried-modified,ICAR2021RS-40,"Same nonstandard-delivery intervention in CRSwNP after surgery: 2016 'Nonstandard delivery of topical corticosteroids is an option ... mainly after sinus surgery', 2021 'offered corticosteroid irrigation and/or atomized delivery' postoperatively; principal of -40..-42."
+T14,ICAR2016RS-31,carried-identical,ICAR2021RS-45,Near-verbatim: 'oral corticosteroids in the short-term management of CRSwNP. Longer-term/frequent use ... is not supported by the literature and carries an increased risk of harm'.
+T14,ICAR2016RS-32,carried-identical,ICAR2021RS-46,Near-verbatim: 'Nonmacrolide/Short courses (<3 weeks) of non-macrolide antibiotics should generally not be prescribed for CRSwNP' outside acute situations.
+T14,ICAR2016RS-33,carried-modified,ICAR2021RS-48,"Shared lead: 'In CRSwNP, macrolides may be beneficial'; qualifying context changes from post-ESS polyp recurrence to neutrophil-dominant/steroid-unresponsive polyps."
+T14,ICAR2016RS-34,dropped,,"Oral antifungal prohibition in CRSwNP has no 2021 counterpart; the only 2021 oral-antifungal item (-56) is AFRS-specific and permissive, a different population and stance."
+T14,ICAR2016RS-35,carried-modified,ICAR2021RS-29,Shared 'Topical antifungal agents should not be used in routine CRSwNP treatment' within 2021's combined 'not recommended for CRSsNP or CRSwNP' (merged with -23 lineage).
+T14,ICAR2016RS-36,carried-identical,ICAR2021RS-53,Verbatim: 'Montelukast is an option for CRSwNP patients either instead of or in addition to INCS.'
+T14,ICAR2016RS-37,carried-identical,ICAR2021RS-55,Verbatim: 'Aspirin desensitization should be considered in AERD patients after surgical removal of NPs to prevent recurrence.'
+T14,ICAR2016RS-38,carried-identical,ICAR2021RS-61,"Near-verbatim AMT definition for both phenotypes (INCS, saline irrigations, single short oral corticosteroid course for CRSwNP; antibiotics for CRSsNP); phenotype order swapped only."
+T14,ICAR2016RS-39,carried-identical,ICAR2021RS-62,Near-verbatim: 'A trial of 3 to 4 weeks of AMT should be considered as the minimum.'
+T14,ICAR2016RS-40,carried-identical,ICAR2021RS-65,Near-verbatim: 'INCS are recommended in the preoperative management of / prior to ESS in CRSsNP.'
+T14,ICAR2016RS-41,carried-modified,ICAR2021RS-66,Same topic and stance: oral corticosteroids for preoperative management of CRSsNP carry no recommendation in either version (2016 policy line with dir=none; 2021 'No recommendation for oral corticosteroids').
+T14,ICAR2016RS-42,carried-identical,ICAR2021RS-67,Verbatim: 'Recommendation for the use of oral and topical corticosteroids in the preoperative management of CRSwNP.'
+T14,ICAR2016RS-43,carried-identical,ICAR2021RS-68,Near-verbatim: 'Less extensive sinus interventions are likely reasonable options in patients with minimal OMC or maxillary sinus disease.'
+T14,ICAR2016RS-44,carried-modified,ICAR2021RS-72,Shared 'Septoplasty ... performed at the time of ESS'; stance strengthens from option decided by obstruction/access to 'should be performed' for clinically relevant septal deviation.
+T14,ICAR2016RS-45,carried-identical,ICAR2021RS-73,"Verbatim: 'MT resection may be employed during ESS, especially in cases of CRSwNP.'"
+T14,ICAR2016RS-46,carried-modified,ICAR2021RS-74,Same intervention (image guidance for ESS); 2021 carries it as the terse statement 'Image-guided surgery performed at the time of ESS' in place of the 2016 option wording.
+T14,ICAR2016RS-47,carried-identical,ICAR2021RS-75,"Near-verbatim: 'When bleeding cannot be controlled, packing may help achieve hemostasis, without significant adverse effects on postoperative wound healing.'"
+T14,ICAR2016RS-48,carried-identical,ICAR2021RS-78,Verbatim: 'Corticosteroid-eluting stents can be considered in the postoperative ethmoidectomy cavity.'
+T14,ICAR2016RS-49,dropped,,"Pediatric ARS antibiotic recommendation has no 2021 counterpart; 2021 antibiotic items (-79, -80) address ARS/ABRS without a pediatric-specific recommendation."
+T15,ARIA2020-01,dropped,,The SAR either/or statement on INCS + OAH vs INCS alone has no 2025 counterpart: R2-01 concerns choosing among second-generation OAHs and R1-04 concerns INCS + intranasal decongestant.
+T15,ARIA2020-02,dropped,,The PAR recommendation of INCS alone over INCS + OAH has no 2025 counterpart; the packet 'agree' candidate R2-02 is a different comparison (OAH alone over OAH + LTRA).
+T15,ARIA2020-03,carried-modified,ARIA2025R1-07,"Same INCS + INAH vs INCS-alone comparison; the equipoise stance ('either... depends on patient preferences') was replaced by suggesting the fixed INAH+INCS combination over an INCS alone, and the SAR scope generalised to AR."
+T15,ARIA2020-04,carried-modified,ARIA2025R1-07,"Merged: the PAR twin of the same INCS + INAH vs INCS-alone either/or statement, collapsed together with the SAR item (ARIA2020-03) into the single general-AR statement R1-07 favouring the fixed combination."
+T16,AAO2014TIN-01,carried-identical,AAO2026TIN2-01,Near-verbatim: perform a targeted history and physical examination at the initial evaluation of a patient with tinnitus to identify conditions that may relieve tinnitus if promptly managed ('presumed primary' dropped).
+T16,AAO2014TIN-02A,carried-modified,AAO2026TIN2-05,"Merged: the prompt comprehensive audiologic examination for unilateral, persistent (>=6 months), or hearing-difficulty tinnitus merged with 02B into one blanket 'should obtain a comprehensive audiological evaluation' for patients with tinnitus."
+T16,AAO2014TIN-02B,carried-modified,AAO2026TIN2-05,Merged: the optional initial comprehensive audiologic examination for any patient presenting with tinnitus merged with 02A into the single blanket evaluation statement.
+T16,AAO2014TIN-03,carried-modified,AAO2026TIN2-06,"Text over numbering: same do-not-image rule with an identical exception list (unilateral, pulsatile, focal neurologic abnormalities, asymmetric hearing loss); 'imaging studies of the head and neck' narrowed to 'neuroradiologic imaging'."
+T16,AAO2014TIN-04,carried-modified,AAO2026TIN2-02,"Text over numbering: same distinguish-bothersome-from-non-bothersome action carried, with the modal softened from 'must distinguish' to 'should distinguish'."
+T16,AAO2014TIN-05,dropped,,Distinguishing bothersome tinnitus of recent onset from persistent symptoms (>=6 months) to prioritize intervention has no counterpart in the 2026 statements (2026-02 distinguishes only bothersome vs non-bothersome).
+T16,AAO2014TIN-06,carried-modified,AAO2026TIN2-07,"Education statement carried here per full-list search (packet candidates point to imaging/sound enrichment): educate patients about management strategies, population broadened from persistent bothersome tinnitus to all tinnitus patients and natural-history content added."
+T16,AAO2014TIN-07,carried-identical,AAO2026TIN2-08,"Near-verbatim (text over numbering): recommend a hearing aid evaluation for patients with hearing loss/difficulties and persistent, bothersome tinnitus."
+T16,AAO2014TIN-08,carried-identical,AAO2026TIN2-10,"Same may-recommend sound-based therapy for persistent, bothersome tinnitus; 'sound therapy' renamed 'sound enrichment'."
+T16,AAO2014TIN-09,carried-identical,AAO2026TIN2-11,"Near-verbatim (text over numbering): recommend cognitive behavioral therapy (CBT) to patients with persistent, bothersome tinnitus."
+T16,AAO2014TIN-10,carried-identical,AAO2026TIN2-12,"Verbatim (similarity 1.0; text over numbering): do not routinely recommend antidepressants, anticonvulsants, anxiolytics, or intratympanic medications for a primary indication of treating persistent, bothersome tinnitus."
+T16,AAO2014TIN-11,carried-identical,AAO2026TIN2-13,"Same do-not-recommend rule for dietary supplements (text over numbering); the named examples (Ginkgo biloba, melatonin, zinc) were generalised to the class, which 'or other dietary supplements' already covered."
+T16,AAO2014TIN-12,dropped,,The 'no recommendation can be made' statement regarding acupuncture in persistent bothersome tinnitus has no counterpart in the 2026 statement set.
+T16,AAO2014TIN-13,carried-modified,AAO2026TIN2-14A,Text over numbering: the do-not-recommend stance on transcranial magnetic stimulation retained as do not recommend rTMS; modality narrowed to repetitive TMS and the 'routine' qualifier dropped.
+T02,AAO2007SIN-09,dropped,,"No successor statement in Adult Sinusitis 2015: none of its 14 statements covers education/counselling on control measures (closest, AAO2015SIN-11, recommends saline irrigation / intranasal corticosteroids as treatment - a different action). Item admitted under Amendment v2.3 (discovered in Phase-2 extraction); parent adjudication on verbatim text; not part of the Phase-1 blind sample, which predates the discovery."

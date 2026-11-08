@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question universe — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Layer 4 · Union question universe" data-zh="第四层 · 并集问题宇宙">Layer 4 · Union question universe</p>
+  <h1 data-en="905 questions, and who answers them" data-zh="905 个问题，以及谁在回答">905 questions, and who answers them</h1>
+  <p class="lede" data-en="The frozen union universe of clinical questions built in Layer 4. A question answered by two or more guidelines is where concordance can be measured at all; most questions have exactly one voice. Open a question to see each member recommendation and its direction."
+     data-zh="第四层构建的冻结并集临床问题宇宙。一个问题被两部以上指南回答时，一致性才有从测起；大多数问题只有一个声音。展开任一问题，可见其每条成员推荐及方向。">The frozen union universe of clinical questions built in Layer 4.</p>
+  <div class="filters">
+    <label><span data-en="Search" data-zh="检索">Search</span>
+      <input type="search" id="f-q" size="26" data-en-ph="intervention, guideline, Q-number…" data-zh-ph="干预、指南、问题编号…"></label>
+    <label><span data-en="Coverage" data-zh="覆盖">Coverage</span><select id="f-cov">
+      <option value="" data-en="All questions" data-zh="全部问题">All questions</option>
+      <option value="multi" data-en="Answered by ≥2 guidelines" data-zh="≥2 部指南回答">Answered by ≥2 guidelines</option>
+      <option value="single" data-en="Single-guideline only" data-zh="仅一部指南">Single-guideline only</option>
+    </select></label>
+    <label><span data-en="Alignment grade" data-zh="对齐等级">Alignment grade</span><select id="f-grade">
+      <option value="" data-en="All" data-zh="全部">All</option>
+      <option value="FULL">FULL</option>
+      <option value="PARTIAL">PARTIAL</option>
+    </select></label>
+  </div>
+  <p class="small muted" id="count"></p>
+  <div id="list"></div>
+  <div class="pager"><button id="prev">←</button><span id="pinfo"></span><button id="next">→</button></div>
+</main>
+<script>
+var QS = null, page = 0, PER = 30;
+function areas(q) {
+  var seen = {}, out = [];
+  (q.areas || '').split(';').forEach(function (a) { a = a.trim(); if (a && !seen[a]) { seen[a] = 1; out.push(a); } });
+  return out.join(' · ');
+}
+function qHTML(q) {
+  var dirs = {};
+  q.members.forEach(function (m) { dirs[m.direction || 'none'] = 1; });
+  var clash = dirs['for'] && dirs.against;
+  var members = q.members.map(function (m) {
+    return '<tr><td><b>' + GC.esc(m.rec) + '</b></td><td>' + GC.esc(m.doc) + '</td><td>' + GC.dirHTML(m.direction) +
+      '</td><td>' + GC.esc(m.intervention || m.statement || '') + '</td></tr>';
+  }).join('');
+  return '<details class="item" id="' + q.qid + '"><summary><b>' + q.qid + '</b> · ' + GC.esc(areas(q)) + ' — ' +
+    q.n_items + ' ' + GC.t('recommendations from ', '条推荐，来自 ') + q.n_docs + GC.t(' guideline(s)', ' 部指南') +
+    ' <span class="chip' + (q.grade === 'FULL' ? ' acc' : '') + '">' + GC.esc(q.grade || '') + '</span>' +
+    (clash ? ' <span class="chip bad">' + GC.t('directions clash', '方向冲突') + '</span>' : '') +
+    '<br><span class="small muted">' + GC.esc((q.members[0].intervention || '').slice(0, 120)) + '</span></summary>' +
+    '<div class="body"><table><thead><tr><th>' + GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') +
+    '</th><th>' + GC.t('Direction', '方向') + '</th><th>' + GC.t('Intervention (as framed)', '干预（按原文框定）') +
+    '</th></tr></thead><tbody>' + members + '</tbody></table></div></details>';
+}
+function filtered() {
+  var q = document.getElementById('f-q').value.trim().toLowerCase(),
+    cov = document.getElementById('f-cov').value, gr = document.getElementById('f-grade').value;
+  return QS.filter(function (x) {
+    if (cov === 'multi' && x.n_docs < 2) return false;
+    if (cov === 'single' && x.n_docs !== 1) return false;
+    if (gr && x.grade !== gr) return false;
+    if (q) {
+      var hay = (x.qid + ' ' + x.areas + ' ' + x.members.map(function (m) { return m.rec + ' ' + m.doc + ' ' + (m.intervention || ''); }).join(' ')).toLowerCase();
+      if (hay.indexOf(q) < 0) return false;
+    }
+    return true;
+  });
+}
+function render() {
+  if (!QS) return;
+  var rows = filtered(), pages = Math.max(1, Math.ceil(rows.length / PER));
+  if (page >= pages) page = pages - 1;
+  document.getElementById('count').textContent = GC.t(rows.length + ' questions', '共 ' + rows.length + ' 个问题');
+  document.getElementById('list').innerHTML = rows.slice(page * PER, page * PER + PER).map(qHTML).join('') ||
+    '<p class="muted">' + GC.t('No questions match.', '无符合的问题。') + '</p>';
+  document.getElementById('pinfo').textContent = (page + 1) + ' / ' + pages;
+  if (location.hash) {
+    var el = document.getElementById(location.hash.slice(1));
+    if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView(); }
+  }
+}
+GC.load('questions.json').then(function (d) {
+  QS = d.slice().sort(function (a, b) { return b.n_docs - a.n_docs || b.n_items - a.n_items; });
+  ['f-q', 'f-cov', 'f-grade'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { page = 0; render(); });
+  });
+  document.getElementById('prev').addEventListener('click', function () { if (page > 0) { page--; render(); } });
+  document.getElementById('next').addEventListener('click', function () { page++; render(); });
+  if (location.hash) {
+    var target = location.hash.slice(1), idx = -1;
+    for (var i = 0; i < QS.length; i++) if (QS[i].qid === target) { idx = i; break; }
+    if (idx >= 0) page = Math.floor(idx / PER);
+  }
+  render();
+});
+window.onLangChange = render;
+</script>
+</body>
+</html>
