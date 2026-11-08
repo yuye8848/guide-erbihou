@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l4">
 <main>
   <p class="tag">Layer 4 · <span data-en="Cross-guideline concordance" data-zh="跨指南一致性">Cross-guideline concordance</span></p>
   <h1 data-en="When guidelines answer the same question, do they agree?" data-zh="指南回答同一个问题时，说法一致吗？">When guidelines answer the same question, do they agree?</h1>
@@ -39,9 +39,9 @@ function render() {
     [P.concordant + '/' + P.both_stanced, GC.t('partial-overlap pairs concordant on direction', '部分重叠配对方向一致')]
   ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
   GC.barChart(document.getElementById('chart-l4'), [
-    { label: GC.t('Full overlap', '完全重叠'), value: F.concordant / F.both_stanced, display: F.concordant + '/' + F.both_stanced + ' = ' + GC.pct(F.concordant / F.both_stanced, 0) + '  [95% CI 86.2–100]' },
-    { label: GC.t('Partial overlap', '部分重叠'), value: P.concordant / P.both_stanced, display: P.concordant + '/' + P.both_stanced + ' = ' + GC.pct(P.concordant / P.both_stanced) + '  [95% CI 77.1–93.0]' },
-    { label: GC.t('Strength concordance (both-stanced pairs)', '强度一致（双方表态配对）'), value: scParts[0] / scParts[1], display: l4.strength_concordance + ' = ' + GC.pct(scParts[0] / scParts[1]) }
+    { label: GC.t('Full overlap', '完全重叠'), value: F.concordant / F.both_stanced, display: F.concordant + '/' + F.both_stanced + ' = ' + GC.pct(F.concordant / F.both_stanced, 0) + '  [95% CI 86.2–100]', color: GC.hue('l4'), link: 'questions.html', tip: GC.t('Browse the question universe', '浏览问题宇宙') },
+    { label: GC.t('Partial overlap', '部分重叠'), value: P.concordant / P.both_stanced, display: P.concordant + '/' + P.both_stanced + ' = ' + GC.pct(P.concordant / P.both_stanced) + '  [95% CI 77.1–93.0]', color: GC.hue('l4'), link: 'questions.html', tip: GC.t('Browse the question universe', '浏览问题宇宙') },
+    { label: GC.t('Strength concordance (both-stanced pairs)', '强度一致（双方表态配对）'), value: scParts[0] / scParts[1], display: l4.strength_concordance + ' = ' + GC.pct(scParts[0] / scParts[1]), color: GC.hue('l4'), link: 'discordance.html', tip: GC.t('See the discordant pairs side by side', '并排查看相左配对') }
   ], { labelWidth: 220 });
 }
 GC.load('stats.json').then(function (s) { S = s; render(); });

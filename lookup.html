@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l3">
 <main>
   <p class="tag" data-en="Layer 3 · Citation reverse-lookup" data-zh="第三层 · 引文反查">Layer 3 · Citation reverse-lookup</p>
   <h1 data-en="Which recommendations cite this study?" data-zh="哪些推荐引用了这篇研究？">Which recommendations cite this study?</h1>
@@ -40,7 +40,7 @@ function run() {
   v.pivotal_for.forEach(function (r) { pivFor[r] = 1; });
   var rows = v.cites.map(function (r) {
     var i = ITEMS[r] || {};
-    return '<tr><td><b>' + GC.esc(r) + '</b>' + (pivFor[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') +
+    return '<tr><td><b><a href="explorer.html?item=' + GC.esc(r) + '">' + GC.esc(r) + '</a></b>' + (pivFor[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') +
       '</td><td>' + GC.esc(i.guideline || '') + '</td><td>' + GC.esc((i.statement || '').slice(0, 130)) + '</td><td>' + GC.dirHTML(i.direction) + '</td></tr>';
   }).join('');
   box.innerHTML = '<h3>' + (v.title ? GC.esc(v.title) : GC.t('(title not carried in the index)', '（索引未载标题）')) + '</h3>' +
@@ -76,7 +76,8 @@ Promise.all([GC.load('pmid_index.json'), GC.load('pmid_coverage.json'), GC.load(
   IDX = d[0]; COV = d[1];
   d[2].forEach(function (i) { ITEMS[i.rec] = i; });
   renderStatic();
-  if (location.hash) { document.getElementById('q').value = location.hash.slice(1); run(); }
+  var start = GC.qs('pmid') || (location.hash ? location.hash.slice(1) : '');
+  if (start) { document.getElementById('q').value = start; run(); }
 });
 document.getElementById('go').addEventListener('click', run);
 document.getElementById('q').addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l1">
 <main>
   <p class="tag">Layer 1 · <span data-en="Composition" data-zh="构成">Composition</span></p>
   <h1 data-en="What evidence tier does each recommendation carry?" data-zh="每条推荐带着什么证据等级？">What evidence tier does each recommendation carry?</h1>
@@ -36,9 +36,13 @@ function render() {
     ['46.7%', GC.t('drug recommendations on U1 (162/347)', '药物推荐 U1 占比（162/347)')],
     ['3.4%', GC.t('surgical recommendations on U1 (3/88)', '手术推荐 U1 占比（3/88)')]
   ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
-  var cols = { U1: '#0f766e', U2: '#3d9a8f', U3: '#94a3b8', U4: '#cbd5e1' };
+  var cols = { U1: '#0d7a6f', U2: '#4c9a90', U3: '#93b5ae', U4: '#c9d8d4' };
   GC.stackBar(document.getElementById('chart-dist'),
-    ['U1', 'U2', 'U3', 'U4'].map(function (u) { return { label: u, value: l1.dist_U[u], color: cols[u] }; }));
+    ['U1', 'U2', 'U3', 'U4'].map(function (u) {
+      return { label: u, value: l1.dist_U[u], color: cols[u],
+               link: 'explorer.html?tier=' + u,
+               tip: GC.t('Open the explorer filtered to tier ' + u, '在浏览器中只看 ' + u + ' 等级') };
+    }));
   var enMap = {};
   (window._items || []).forEach(function (i) { if (i.topic) enMap[i.topic] = i.topic_en || i.topic; });
   var topics = Object.keys(l1.strat_topic).map(function (k) {
@@ -46,7 +50,9 @@ function render() {
     var m = /([\d.]+)%/.exec(v.U1 || '');
     var share = m ? parseFloat(m[1]) / 100 : 0;
     return { label: GC.lang === 'zh' ? k : (enMap[k] || k), value: share,
-             display: v.U1 + '  / ' + v.n };
+             display: v.U1 + '  / ' + v.n, color: GC.hue('l1'),
+             link: 'explorer.html?topic=' + encodeURIComponent(k),
+             tip: GC.t('Open the explorer filtered to this intervention class', '在浏览器中只看这一干预类别') };
   }).sort(function (a, b) { return b.value - a.value; });
   GC.barChart(document.getElementById('chart-topic'), topics, { labelWidth: 150 });
   var rows = S.corpus.docs.slice().sort(function (a, b) { return a.year - b.year || a.doc.localeCompare(b.doc); }).map(function (d) {

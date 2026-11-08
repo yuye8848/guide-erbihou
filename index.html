@@ -33,6 +33,9 @@
     <div class="card"><h3 data-en="How reliable is this census?" data-zh="这份普查有多可靠？">How reliable is this census?</h3>
       <p class="small" data-en="Four rounds of independent audit, measured error rates, a full remediation — the verification record is published, not asserted." data-zh="四轮独立审计、实测的错误率、一次完整整改——核查记录是公开摆出来的，不是嘴上声称的。">Four rounds of independent audit, with measured error rates.</p>
       <p><a href="verification.html" data-en="Visit the verification centre →" data-zh="进入核查中心 →">Visit the verification centre →</a></p></div>
+    <div class="card"><h3 data-en="Citation forward search" data-zh="引文正查">Citation forward search</h3>
+      <p class="small" data-en="Know a study by title or first author? Find its PMID and see which recommendations cite it or rest on it." data-zh="只记得某篇研究的题名或第一作者？查到它的 PMID，并看哪些推荐引用它、哪些以它为关键研究。">Search the resolved citation index by title, author or year.</p>
+      <p><a href="citations.html" data-en="Search citations →" data-zh="正查引文 →">Search citations →</a></p></div>
   </div>
 
   <div class="note" data-en="How to cite this dataset: see the Downloads page. The frozen data, audit packs and correction logs are public; the protocol and all amendments were registered on OSF (10.17605/OSF.IO/9VMFJ) before the data they govern were touched."
@@ -61,7 +64,8 @@ function render() {
     ['l5.html', 'L5', GC.t('Version dynamics', '版本动态'), GC.t('When a guideline is revised, what survives — the wording, or the evidence?', '指南修订时，活下来的是措辞，还是证据？'), GC.t('Survival ', '存续率 ') + l5.survival_num + '/' + l5.survival_den + ' · ' + GC.t('pivotal persistence ', '关键研究存续 ') + l5.persistence_v25.num + '/' + l5.persistence_v25.den]
   ];
   document.getElementById('layers').innerHTML = layers.map(function (L) {
-    return '<div class="card"><p class="tag">' + L[1] + ' · ' + L[2] + '</p><p class="small">' + L[3] + '</p>' +
+    var hue = GC.hue(L[1].toLowerCase());
+    return '<div class="card" style="border-top:3px solid ' + hue + '"><p class="tag" style="color:' + hue + '">' + L[1] + ' · ' + L[2] + '</p><p class="small">' + L[3] + '</p>' +
       '<p class="big" style="font-size:16px">' + L[4] + '</p><p><a href="' + L[0] + '">' + GC.t('Layer page →', '本层页面 →') + '</a></p></div>';
   }).join('');
   var f = [

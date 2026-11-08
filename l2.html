@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l2">
 <main>
   <p class="tag">Layer 2 · <span data-en="Internal discordance" data-zh="内部不一致">Internal discordance</span></p>
   <h1 data-en="Does the strength of a recommendation match the evidence beneath it?" data-zh="推荐的强度与它脚下的证据相符吗？">Does the strength of a recommendation match the evidence beneath it?</h1>
@@ -48,18 +48,24 @@ function render() {
     '<p class="small muted">' + GC.t('As tabulated in the frozen analysis (strength-of-recommendation scale 0–3 × level-of-evidence groups). The bottom-right concentration — strong recommendations on U1 evidence — is the exception, not the pattern.', '按冻结分析的列表（推荐强度 0–3 级 × 证据等级分组）。右下角的集中——强推荐站在 U1 证据上——是例外而非常态。') + '</p>' +
     '<div class="chartbox"><h3>' + GC.t('What strong recommendations actually rest on', '强推荐实际上站在什么证据上') + '</h3><div id="chart-strong"></div></div>';
   var mix = l2.strong_LOE_mix;
+  var strongTip = function (u) { return { link: 'explorer.html?str=S&tier=' + u,
+    tip: GC.t('Open strong recommendations on tier ' + u + ' in the explorer', '在浏览器中看站在 ' + u + ' 上的强推荐') }; };
   GC.stackBar(document.getElementById('chart-strong'), [
-    { label: 'U1', value: mix['strong evidence (U1)'], color: '#0f766e' },
-    { label: 'U2', value: mix['moderate (U2)'], color: '#3d9a8f' },
-    { label: 'U3', value: mix['weak/v.weak (U3)'], color: '#94a3b8' },
-    { label: 'U4', value: mix['weak/v.weak (U4)'], color: '#cbd5e1' },
-    { label: GC.t('no rating', '无评级'), value: mix['no LOE rating'], color: '#e2e8f0' }
+    Object.assign({ label: 'U1', value: mix['strong evidence (U1)'], color: '#46689c' }, strongTip('U1')),
+    Object.assign({ label: 'U2', value: mix['moderate (U2)'], color: '#7d97bd' }, strongTip('U2')),
+    Object.assign({ label: 'U3', value: mix['weak/v.weak (U3)'], color: '#aebdcf' }, strongTip('U3')),
+    Object.assign({ label: 'U4', value: mix['weak/v.weak (U4)'], color: '#cdd7e4' }, strongTip('U4')),
+    { label: GC.t('no rating', '无评级'), value: mix['no LOE rating'], color: '#e4e9ef',
+      link: 'explorer.html?str=S', tip: GC.t('Open all strong recommendations in the explorer', '在浏览器中看全部强推荐') }
   ]);
   var d = S.l1.dist_direction;
   GC.stackBar(document.getElementById('chart-dir'), [
-    { label: GC.t('For', '支持'), value: d['for'], color: '#047857' },
-    { label: GC.t('Against', '反对'), value: d.against, color: '#b91c1c' },
-    { label: GC.t('No stance', '未表态'), value: d.none, color: '#94a3b8' }
+    { label: GC.t('For', '支持'), value: d['for'], color: '#0e7a4f', link: 'explorer.html?dir=for',
+      tip: GC.t('Open recommendations in favour in the explorer', '在浏览器中看方向为「支持」的推荐') },
+    { label: GC.t('Against', '反对'), value: d.against, color: '#b3352c', link: 'explorer.html?dir=against',
+      tip: GC.t('Open recommendations against in the explorer', '在浏览器中看方向为「反对」的推荐') },
+    { label: GC.t('No stance', '未表态'), value: d.none, color: '#8b98a3', link: 'explorer.html?dir=none',
+      tip: GC.t('Open recommendations with no stance in the explorer', '在浏览器中看未表态的推荐') }
   ]);
 }
 GC.load('stats.json').then(function (s) { S = s; render(); });

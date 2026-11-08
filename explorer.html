@@ -103,10 +103,12 @@ function itemHTML(i) {
     '<tr><th>' + GC.t('Applicability', '适用性') + '</th><td>' + GC.esc(i.applicability || '—') + '</td></tr>' +
     '<tr><th>' + GC.t('Surrogate endpoint', '替代终点') + '</th><td>' + GC.esc(i.surrogate || '—') + '</td></tr>' +
     '<tr><th>' + GC.t('L4 questions', 'L4 问题') + '</th><td>' + (i.questions.length ? i.questions.map(function (qn) {
-      return '<a href="questions.html#' + qn + '">' + qn + '</a>';
+      return '<a href="questions.html?q=' + qn + '">' + qn + '</a>';
     }).join(' · ') : '—') + '</td></tr>' +
+    '<tr><th>' + GC.t('Shareable link', '可分享链接') + '</th><td><a class="permalink" href="explorer.html?item=' + GC.esc(i.rec) + '">explorer.html?item=' + GC.esc(i.rec) + '</a> ' +
+      '<button type="button" class="copybtn" data-copy-url="?item=' + GC.esc(i.rec) + '">' + GC.t('Copy link', '复制链接') + '</button></td></tr>' +
     '</tbody></table></div>';
-  return '<details class="item"><summary><b>' + GC.esc(i.rec) + '</b> · ' + GC.esc(i.guideline) + ' — ' +
+  return '<details class="item" data-rec="' + GC.esc(i.rec) + '"><summary><b>' + GC.esc(i.rec) + '</b> · ' + GC.esc(i.guideline) + ' — ' +
     GC.esc((i.statement || '').slice(0, 110)) + ((i.statement || '').length > 110 ? '…' : '') + '<br>' + chips + '</summary>' + body + '</details>';
 }
 function render() {
@@ -118,7 +120,34 @@ function render() {
     '<p class="muted">' + GC.t('No recommendations match these filters.', '没有符合筛选条件的推荐。') + '</p>';
   document.getElementById('pinfo').textContent = GC.t('Page ', '第 ') + (page + 1) + ' / ' + pages + (GC.lang === 'zh' ? ' 页' : '');
 }
-GC.load('items.json').then(function (d) { ITEMS = d; setup(); render(); });
+/* Shareable URLs: ?item=REC opens that recommendation; ?q= ?doc= ?soc=
+   ?topic= ?tier= ?str= ?dir= ?piv= pre-set the matching cross-filters
+   (the layer-page charts link here this way). */
+var pendingOpen = null;
+function applyParams() {
+  var item = GC.qs('item');
+  if (item) {
+    var idx = -1;
+    ITEMS.forEach(function (it, k) { if (it.rec === item) idx = k; });
+    if (idx >= 0) { page = Math.floor(idx / PER); pendingOpen = item; }
+    return;
+  }
+  var map = { q: 'f-q', doc: 'f-doc', soc: 'f-soc', topic: 'f-topic', tier: 'f-tier', str: 'f-str', dir: 'f-dir', piv: 'f-piv' };
+  Object.keys(map).forEach(function (k) {
+    var v = GC.qs(k), el = document.getElementById(map[k]);
+    if (v == null || !el) return;
+    if (el.tagName === 'SELECT') {
+      for (var j = 0; j < el.options.length; j++) if (el.options[j].value === v) { el.value = v; break; }
+    } else el.value = v;
+  });
+}
+function openPending() {
+  if (!pendingOpen) return;
+  var el = document.querySelector('details.item[data-rec="' + pendingOpen + '"]');
+  pendingOpen = null;
+  if (el) { el.open = true; el.classList.add('flash'); setTimeout(function () { el.scrollIntoView({ block: 'center' }); }, 60); }
+}
+GC.load('items.json').then(function (d) { ITEMS = d; setup(); applyParams(); render(); openPending(); });
 window.onLangChange = function () { if (ITEMS) { setup(); render(); } };
 </script>
 </body>

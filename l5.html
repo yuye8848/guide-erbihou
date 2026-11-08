@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l5">
 <main>
   <p class="tag">Layer 5 · <span data-en="Version dynamics" data-zh="版本动态">Version dynamics</span></p>
   <h1 data-en="When a guideline is revised, what survives — the wording, or the evidence?" data-zh="指南修订时，活下来的是措辞，还是证据？">When a guideline is revised, what survives — the wording, or the evidence?</h1>
@@ -39,7 +39,8 @@ function render() {
   ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
   var rows = DYN.filter(function (t) { return t.transition !== 'T15' && t.prior_n > 0; }).map(function (t) {
     return { label: t.prior_name + ' (' + t.prior_doc + ' → ' + t.current_doc + ')', value: t.survival,
-             display: t.carried + '/' + t.prior_n + ' = ' + GC.pct(t.survival) };
+             display: t.carried + '/' + t.prior_n + ' = ' + GC.pct(t.survival), color: GC.hue('l5'),
+             link: 'dynamics.html', tip: GC.t('See the per-family timelines', '查看逐家族时间线') };
   }).sort(function (a, b) { return a.value - b.value; });
   GC.barChart(document.getElementById('chart-surv'), rows, { labelWidth: 300 });
   document.getElementById('kpis2').innerHTML = [

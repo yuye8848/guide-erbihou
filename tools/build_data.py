@@ -418,6 +418,67 @@ zombies = {'stratum_b': zombies_b, 'stratum_b_screened': 588,
 dump('zombies.json', zombies)
 
 # ------------------------------------------------------------------ PMID index
+# Optional completed-resolution drop-in (parallel resolution task). If
+# site/data_resolution/attachment_pmid_index.csv exists, its (doc, ref) -> PMID
+# mapping supersedes the artefact chain below, and any bibliographic columns
+# it carries (title / first_author / year / journal / design) take precedence
+# in the forward citation index. Column names are read tolerantly.
+RES_PATH = os.path.join(SITE, 'data_resolution', 'attachment_pmid_index.csv')
+res_override = {}
+res_meta = {}
+if os.path.exists(RES_PATH):
+    for r in rd(RES_PATH):
+        _pmid = (r.get('pmid') or '').strip()
+        if not _pmid:
+            continue
+        _doc = (r.get('doc') or '').strip() or doc_of((r.get('rec_id') or r.get('rec') or '').strip())
+        _ref = (r.get('ref') or r.get('ref_seq') or '').strip()
+        if _doc and _ref:
+            res_override[(_doc, _ref)] = _pmid
+        _m = res_meta.setdefault(_pmid, {})
+        for _src, _dst in (('title', 'title'), ('first_author', 'author'), ('author', 'author'),
+                           ('year', 'year'), ('journal', 'journal'), ('design', 'design')):
+            if r.get(_src) and not _m.get(_dst):
+                _m[_dst] = r[_src]
+    print('resolution drop-in loaded:', len(res_override), 'attachment mappings,',
+          len(res_meta), 'records')
+
+# Bibliographic enrichment from frozen artefacts (for the forward index):
+# printed citation strings + years from the per-document reference lists and
+# the v2.5 integrity flags; journals from the closeout retraction-screen
+# records; publication years from the closeout OpenAlex harvest.
+import glob as _glob2
+reflists = {}
+for f in _glob2.glob(os.path.join(ROOT, 'l3_production', '**', '*_reflist.json'), recursive=True):
+    base = os.path.basename(f)
+    if 'backup' in base or base.startswith('pre_') or '_pre_' in base:
+        continue
+    docname = base.replace('_reflist.json', '')
+    try:
+        _rl = json.load(open(f))
+    except Exception:
+        continue
+    if isinstance(_rl, dict):
+        for _ref, _v in _rl.items():
+            if isinstance(_v, dict):
+                reflists.setdefault((docname, str(_ref)), _v)
+flags_cite = {}
+_fp = os.path.join(ROOT, 'l3_production', 'remediation_v25', 'designs_flags.csv')
+if os.path.exists(_fp):
+    for r in rd(_fp):
+        if r.get('citation_string'):
+            flags_cite.setdefault((r['doc'], str(r['ref_seq'])), r['citation_string'])
+try:
+    _rc = json.load(open(os.path.join(ROOT, 'l3_production', 'closeout',
+                                      'retraction_check_results.json')))['results']
+except Exception:
+    _rc = {}
+try:
+    _oa = json.load(open(os.path.join(ROOT, 'l3_production', 'closeout',
+                                      'openalex_citations.json')))
+except Exception:
+    _oa = {}
+
 rosters = json.load(open(os.path.join(ROOT, 'l3_production', 'remediation_v25', 'rosters.json')))
 corrected = {}
 for r in rd(os.path.join(ROOT, 'l3_production', 'remediation_v25', 'designs_corrected.csv')):
@@ -438,13 +499,16 @@ designs_by_doc['AAO2019SHL'] = json.load(open(os.path.join(
 pmid_index = {}
 att_total_idx = 0
 att_resolved = 0
+design_votes = defaultdict(Counter)
+pmid_years = defaultdict(list)
+pmid_cite = {}
 for i in items:
     rec = i['rec']; d = i['doc']
     for entry in rosters.get(rec, []):
         ref = str(entry['ref'])
         att_total_idx += 1
-        pmid = None; title = ''
-        if entry.get('corrected'):
+        pmid = res_override.get((d, ref)); title = ''
+        if not pmid and entry.get('corrected'):
             ci = corrected.get((d, ref), '')
             m = re.match(r'PMID\s+(\d+)', ci or '')
             if m:
@@ -465,6 +529,15 @@ for i in items:
             e['cites'].add(rec)
             if i['pivotal_ref'] and ref == str(i['pivotal_ref']):
                 e['pivotal_for'].add(rec)
+            _dv = entry.get('design_corr') or entry.get('design_prod') or ''
+            if _dv:
+                design_votes[pmid][_dv] += 1
+            _rlv = reflists.get((d, ref), {})
+            if _rlv.get('year'):
+                pmid_years[pmid].append(_rlv['year'])
+            _cs = _rlv.get('cite') or flags_cite.get((d, ref), '')
+            if _cs and pmid not in pmid_cite:
+                pmid_cite[pmid] = _cs
 pmid_out = {p: {'pmid': p, 'title': e['title'], 'cites': sorted(e['cites']),
                 'pivotal_for': sorted(e['pivotal_for'])}
             for p, e in pmid_index.items()}
@@ -473,6 +546,84 @@ pmid_coverage = {'attachments_total': att_total_idx, 'attachments_resolved': att
                  'unique_pmids': len(pmid_out),
                  'share': round(att_resolved / att_total_idx, 4) if att_total_idx else 0}
 print('PMID index coverage:', pmid_coverage)
+
+# ------------------------------------------------------------------ forward citation index
+# One record per resolved study: bibliographic identity (title / first author
+# / year / journal, all from the frozen artefacts or the resolution drop-in —
+# never invented), its frozen design class (majority of the per-attachment
+# corrected designs), and the recommendations citing it / resting on it.
+import html as _html
+def clean_title(t):
+    return _html.unescape(re.sub(r'<[^>]+>', '', t or '')).strip()
+def first_author(cite):
+    if not cite:
+        return ''
+    m = re.match(r"^([A-Z\u00c0-\u00de][A-Za-z\u00c0-\u00ff'\u2019\-]+)\s+([A-Z]{1,3})\b", cite.strip())
+    if m:
+        return m.group(1) + ' ' + m.group(2)
+    head = cite.split('. ')[0]
+    if ',' in head and len(head) < 60:
+        return head.split(',')[0].strip()
+    return ''
+citations = []
+for pmid, e in pmid_out.items():
+    meta = res_meta.get(pmid, {})
+    rec_rc = (_rc.get(pmid) or {}).get('record') or {}
+    title = clean_title(meta.get('title') or e['title'] or rec_rc.get('title') or '')
+    author = (meta.get('author') or first_author(pmid_cite.get(pmid, '')) or '')
+    year = num(meta.get('year'))
+    if year is None and pmid_years.get(pmid):
+        year = Counter(pmid_years[pmid]).most_common(1)[0][0]
+    if year is None:
+        year = num((_oa.get(pmid) or {}).get('publication_year'))
+    journal = meta.get('journal') or rec_rc.get('journal') or ''
+    design = meta.get('design') or ''
+    if not design and design_votes.get(pmid):
+        design = design_votes[pmid].most_common(1)[0][0]
+    citations.append({'pmid': pmid, 'title': title, 'author': author,
+                      'year': year, 'journal': journal, 'design': design,
+                      'cites': e['cites'], 'pivotal_for': e['pivotal_for'],
+                      'n_cites': len(e['cites']), 'n_pivotal': len(e['pivotal_for'])})
+citations.sort(key=lambda c: (-c['n_pivotal'], -c['n_cites'], c['pmid']))
+dump('citations.json', citations)
+pmid_coverage['forward_records'] = len(citations)
+pmid_coverage['records_with_title'] = sum(1 for c in citations if c['title'])
+pmid_coverage['records_with_author'] = sum(1 for c in citations if c['author'])
+pmid_coverage['records_with_year'] = sum(1 for c in citations if c['year'])
+pmid_coverage['resolution_source'] = ('completed resolution file (data_resolution/)'
+                                      if res_override or res_meta
+                                      else 'frozen production artefacts')
+print('forward index:', pmid_coverage['forward_records'], 'records; with title',
+      pmid_coverage['records_with_title'], '| author', pmid_coverage['records_with_author'],
+      '| year', pmid_coverage['records_with_year'])
+
+# ------------------------------------------------------------------ guideline-pair comparison (L4)
+def pair_doc(side):
+    return side.split(':', 1)[0].strip()
+cmp_map = {}
+for r in pairs:
+    sides = r['pair'].split(' x ')
+    if len(sides) != 2:
+        continue
+    da, db = pair_doc(sides[0]), pair_doc(sides[1])
+    if not da or not db or da == db:
+        continue
+    key = tuple(sorted((da, db)))
+    e = cmp_map.setdefault(key, {'a': key[0], 'b': key[1], 'pairs': 0,
+                                 'both_stanced': 0, 'concordant': 0, 'discordant': 0})
+    e['pairs'] += 1
+    if r['dir_a'] in ('for', 'against') and r['dir_b'] in ('for', 'against'):
+        e['both_stanced'] += 1
+        if r['class'] == 'concordant':
+            e['concordant'] += 1
+        else:
+            e['discordant'] += 1
+compare = sorted(cmp_map.values(), key=lambda e: (-e['pairs'], e['a'], e['b']))
+for e in compare:
+    e['name_a'] = docs.get(e['a'], {}).get('guideline', e['a'])
+    e['name_b'] = docs.get(e['b'], {}).get('guideline', e['b'])
+dump('compare.json', compare)
+print('compare pairs:', len(compare))
 
 # ------------------------------------------------------------------ verification centre
 proto_dir = os.path.join(ROOT, 'protocol')

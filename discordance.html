@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l4">
 <main>
   <p class="tag" data-en="Layer 4 · Deep dive" data-zh="第四层 · 深挖">Layer 4 · Deep dive</p>
   <h1 data-en="The 27 pairs where guidelines point in opposite directions" data-zh="27 对方向相反的指南配对">The 27 pairs where guidelines point in opposite directions</h1>
@@ -16,11 +16,19 @@
   <div class="filters">
     <label><span data-en="Pair cluster (shared items)" data-zh="配对簇（共享条目）">Pair cluster (shared items)</span><select id="f-q"></select></label>
   </div>
+  <h2 data-en="Compare two guidelines" data-zh="两部指南对位">Compare two guidelines</h2>
+  <p class="small muted" data-en="Pick any two documents that were aligned in Layer 4: how many recommendation pairs touch the same question, how often both take a stance, and how often they agree. Their discordant pairs (if any) are listed below."
+     data-zh="任选两部在第四层被对齐过的文件：有多少对推荐触及同一问题、双方表态多少次、方向一致多少次。它们之间的相左配对（如有）列在下方。">Pick two aligned documents to compare their agreement profile.</p>
+  <div class="filters">
+    <label><span data-en="Guideline A" data-zh="指南 A">Guideline A</span><select id="cmp-a"></select></label>
+    <label><span data-en="Guideline B" data-zh="指南 B">Guideline B</span><select id="cmp-b"></select></label>
+  </div>
+  <div id="cmp-summary"></div>
   <p class="small muted" id="count"></p>
   <div id="list"></div>
 </main>
 <script>
-var PAIRS = null, CLUSTERS = [];
+var PAIRS = null, CLUSTERS = [], CMP = null, cmpPair = null;
 function sideHTML(s) {
   return '<div class="side"><p class="tag">' + GC.esc(s.doc || '') + (s.guideline ? ' · ' + GC.esc(s.guideline) : '') + '</p>' +
     '<p style="margin:4px 0"><b>' + GC.esc(s.item) + '</b> · ' + GC.dirHTML(s.direction) + '</p>' +
@@ -55,10 +63,38 @@ function buildClusters() {
     p._cluster = CLUSTERS.filter(function (c) { return c.pairs.indexOf(p) >= 0; })[0].id;
   });
 }
+function renderCompare() {
+  var box = document.getElementById('cmp-summary');
+  var a = document.getElementById('cmp-a').value, b = document.getElementById('cmp-b').value;
+  cmpPair = null;
+  if (!a || !b || a === b || !CMP) { box.innerHTML = ''; return; }
+  var e = null;
+  CMP.forEach(function (c) {
+    if ((c.a === a && c.b === b) || (c.a === b && c.b === a)) e = c;
+  });
+  if (!e) {
+    box.innerHTML = '<div class="note">' + GC.t('No aligned pairs between these two documents in Layer 4.', '这两部文件在第四层没有对齐配对。') + '</div>';
+    return;
+  }
+  cmpPair = { a: e.a, b: e.b };
+  var stat = function (v, k) { return '<div class="stat"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>'; };
+  box.innerHTML = '<div class="comparebar">' +
+    stat(e.pairs, GC.t('aligned pairs on shared questions', '同问题对齐配对')) +
+    stat(e.both_stanced, GC.t('pairs where both take a stance', '双方均表态的配对')) +
+    stat(e.concordant + (e.both_stanced ? ' (' + GC.pct(e.concordant / e.both_stanced) + ')' : ''), GC.t('concordant on direction', '方向一致')) +
+    stat(e.discordant, GC.t('discordant — listed below', '方向相左——列于下方')) +
+    '</div><p class="small muted">' + GC.esc(e.name_a) + ' × ' + GC.esc(e.name_b) + '</p>';
+}
 function render() {
   if (!PAIRS) return;
   var q = document.getElementById('f-q').value;
-  var rows = PAIRS.filter(function (p) { return !q || p._cluster === q; });
+  var rows = PAIRS.filter(function (p) {
+    if (cmpPair) {
+      var da = p.a.doc, db = p.b.doc;
+      return (da === cmpPair.a && db === cmpPair.b) || (da === cmpPair.b && db === cmpPair.a);
+    }
+    return !q || p._cluster === q;
+  });
   document.getElementById('count').textContent = GC.t(rows.length + ' discordant pairs', '共 ' + rows.length + ' 对相左配对');
   document.getElementById('list').innerHTML = rows.map(function (p) {
     return '<div style="margin:22px 0"><p class="small muted" style="margin:0 0 6px">' +
@@ -67,15 +103,25 @@ function render() {
       '<div class="vs">' + sideHTML(p.a) + '<div class="mid">≠</div>' + sideHTML(p.b) + '</div></div>';
   }).join('') || '<p class="muted">' + GC.t('No pairs in this cluster.', '该簇无配对。') + '</p>';
 }
-GC.load('discordant.json').then(function (d) {
-  PAIRS = d;
+Promise.all([GC.load('discordant.json'), GC.load('compare.json')]).then(function (d) {
+  PAIRS = d[0]; CMP = d[1];
   buildClusters();
   document.getElementById('f-q').innerHTML = '<option value="">' + GC.t('All clusters', '全部簇') + '</option>' +
     CLUSTERS.map(function (c) { return '<option value="' + c.id + '">' + GC.esc(c.label) + ' (' + c.pairs.length + ')</option>'; }).join('');
-  document.getElementById('f-q').addEventListener('input', render);
+  document.getElementById('f-q').addEventListener('input', function () { render(); });
+  var names = {};
+  CMP.forEach(function (c) { names[c.a] = c.name_a; names[c.b] = c.name_b; });
+  var opts = '<option value="">' + GC.t('— choose —', '— 请选择 —') + '</option>' + Object.keys(names).sort().map(function (doc) {
+    return '<option value="' + GC.esc(doc) + '">' + GC.esc(names[doc]) + ' (' + GC.esc(doc) + ')</option>';
+  }).join('');
+  document.getElementById('cmp-a').innerHTML = opts;
+  document.getElementById('cmp-b').innerHTML = opts;
+  ['cmp-a', 'cmp-b'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { renderCompare(); render(); });
+  });
   render();
 });
-window.onLangChange = render;
+window.onLangChange = function () { renderCompare(); render(); };
 </script>
 </body>
 </html>

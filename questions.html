@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l4">
 <main>
   <p class="tag" data-en="Layer 4 · Union question universe" data-zh="第四层 · 并集问题宇宙">Layer 4 · Union question universe</p>
   <h1 data-en="905 questions, and who answers them" data-zh="905 个问题，以及谁在回答">905 questions, and who answers them</h1>
@@ -51,7 +51,9 @@ function qHTML(q) {
     ' <span class="chip' + (q.grade === 'FULL' ? ' acc' : '') + '">' + GC.esc(q.grade || '') + '</span>' +
     (clash ? ' <span class="chip bad">' + GC.t('directions clash', '方向冲突') + '</span>' : '') +
     '<br><span class="small muted">' + GC.esc((q.members[0].intervention || '').slice(0, 120)) + '</span></summary>' +
-    '<div class="body"><table><thead><tr><th>' + GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') +
+    '<div class="body"><p class="small" style="margin:6px 0"><a class="permalink" href="questions.html?q=' + q.qid + '">' +
+    GC.t('Permalink to this question', '本问题固定链接') + '</a> <button type="button" class="copybtn" data-copy-url="?q=' + q.qid + '">' +
+    GC.t('Copy link', '复制链接') + '</button></p><table><thead><tr><th>' + GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') +
     '</th><th>' + GC.t('Direction', '方向') + '</th><th>' + GC.t('Intervention (as framed)', '干预（按原文框定）') +
     '</th></tr></thead><tbody>' + members + '</tbody></table></div></details>';
 }
@@ -89,12 +91,17 @@ GC.load('questions.json').then(function (d) {
   });
   document.getElementById('prev').addEventListener('click', function () { if (page > 0) { page--; render(); } });
   document.getElementById('next').addEventListener('click', function () { page++; render(); });
-  if (location.hash) {
-    var target = location.hash.slice(1), idx = -1;
+  var target = GC.qs('q') || (location.hash ? location.hash.slice(1) : '');
+  if (target) {
+    var idx = -1;
     for (var i = 0; i < QS.length; i++) if (QS[i].qid === target) { idx = i; break; }
     if (idx >= 0) page = Math.floor(idx / PER);
   }
   render();
+  if (target) {
+    var el = document.getElementById(target);
+    if (el && el.tagName === 'DETAILS') { el.open = true; el.classList.add('flash'); el.scrollIntoView({ block: 'center' }); }
+  }
 });
 window.onLangChange = render;
 </script>

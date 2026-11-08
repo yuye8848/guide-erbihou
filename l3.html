@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js"></script>
 </head>
-<body>
+<body data-layer="l3">
 <main>
   <p class="tag">Layer 3 · <span data-en="Citation archaeology" data-zh="引文考古">Citation archaeology</span></p>
   <h1 data-en="Which single study actually carries each recommendation?" data-zh="到底是哪一篇研究在撑着每条推荐？">Which single study actually carries each recommendation?</h1>
@@ -22,7 +22,8 @@
      data-zh="当一条推荐的关键研究只是单篇随机试验、或样本量不足 400 人时（预设复合标准），它即属脆弱。在本普查中，这不是例外，而是接近所有带关键研究推荐的一半。">A recommendation is fragile when its pivotal is a single RCT, or any pivotal with fewer than 400 participants.</p>
   <div class="kpis" id="kpis2"></div>
   <p><a href="thin-ice.html" data-en="Browse the fragile set →" data-zh="浏览脆弱集 →">Browse the fragile set →</a> ·
-     <a href="lookup.html" data-en="Reverse-lookup a study by PMID →" data-zh="按 PMID 反查研究 →">Reverse-lookup a study by PMID →</a></p>
+     <a href="lookup.html" data-en="Reverse-lookup a study by PMID →" data-zh="按 PMID 反查研究 →">Reverse-lookup a study by PMID →</a> ·
+     <a href="citations.html" data-en="Search a study by title / author →" data-zh="按题名 / 作者正查研究 →">Search a study by title / author →</a></p>
   <h2 data-en="Per-guideline pivotal anatomy" data-zh="逐指南关键研究解剖">Per-guideline pivotal anatomy</h2>
   <div id="doc-table"></div>
   <div class="note" data-en="Layer 3 is the most heavily audited layer of the census: an independent audit found errors, a full remediation re-resolved every flagged citation under frozen strict gates, a second blind re-check passed within pre-stated limits, and every numeric pivotal sample size was then swept value by value. See the verification centre." data-zh="第三层是本普查被审计最重的层：独立审计查出错误，完整整改在冻结的严格门槛下逐条重解了每个被标记的引文，第二次盲法复检在预设限内通过，随后每一个关键研究样本量都逐值扫查。见核查中心。">Layer 3 is the most heavily audited layer of the census.</div>
@@ -42,10 +43,14 @@ function render() {
   ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
   var pc = l3.pivotal_composition;
   GC.stackBar(document.getElementById('chart-piv'), [
-    { label: GC.t('Systematic review / meta-analysis', '系统综述 / 荟萃分析'), value: pc['SR/MA'], color: '#0f766e' },
-    { label: GC.t('Randomised trial', '随机试验'), value: pc['RCT'], color: '#3d9a8f' },
-    { label: GC.t('Other primary study', '其他原始研究'), value: pc.primary, color: '#94a3b8' },
-    { label: GC.t('No pivotal', '无关键研究'), value: pc.none, color: '#cbd5e1' }
+    { label: GC.t('Systematic review / meta-analysis', '系统综述 / 荟萃分析'), value: pc['SR/MA'], color: '#9c6b24',
+      link: 'explorer.html?piv=' + encodeURIComponent('SR/MA'), tip: GC.t('Open recommendations resting on an SR/MA in the explorer', '在浏览器中看关键研究为综述的推荐') },
+    { label: GC.t('Randomised trial', '随机试验'), value: pc['RCT'], color: '#bd8f3e',
+      link: 'explorer.html?piv=RCT', tip: GC.t('Open recommendations resting on an RCT in the explorer', '在浏览器中看关键研究为随机试验的推荐') },
+    { label: GC.t('Other primary study', '其他原始研究'), value: pc.primary, color: '#d3b578',
+      link: 'explorer.html?piv=primary', tip: GC.t('Open recommendations resting on a primary study in the explorer', '在浏览器中看关键研究为原始研究的推荐') },
+    { label: GC.t('No pivotal', '无关键研究'), value: pc.none, color: '#e6dfca',
+      link: 'explorer.html?piv=none', tip: GC.t('Open recommendations with no pivotal study in the explorer', '在浏览器中看没有关键研究的推荐') }
   ]);
   document.getElementById('kpis2').innerHTML = [
     [l3.fragile_n, GC.t('fragile recommendations (composite)', '脆弱推荐（复合标准）')],

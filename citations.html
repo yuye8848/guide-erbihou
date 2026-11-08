@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citation forward search — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body data-layer="l3">
+<main>
+  <p class="tag" data-en="Layer 3 · Citation forward search" data-zh="第三层 · 引文正查">Layer 3 · Citation forward search</p>
+  <h1 data-en="Find a study by title, author or year" data-zh="按题名、作者或年份找一篇研究">Find a study by title, author or year</h1>
+  <p class="lede" data-en="The reverse of the PMID lookup: start from a study you half-remember — a title fragment, the first author, a year — and land on its PubMed ID, its design class, and the recommendations that cite it or rest on it as their pivotal study. Every hit deep-links into the recommendations explorer."
+     data-zh="PMID 反查的另一面：从一篇你只记得大概的研究出发——题名片段、第一作者、年份——落到它的 PubMed 编号、设计类别，以及引用它或以它为关键研究的推荐。每条结果都深链到推荐浏览器。">Search the resolved citation index by title fragment, first author or year.</p>
+  <div id="coverage"></div>
+  <div class="filters">
+    <label><span data-en="Title / author / journal" data-zh="题名 / 作者 / 期刊">Title / author / journal</span>
+      <input type="search" id="f-q" size="30" data-en-ph="e.g. intranasal corticosteroid, Smith…" data-zh-ph="例：题名片段、作者姓…"></label>
+    <label><span data-en="Year" data-zh="年份">Year</span>
+      <input type="number" id="f-year" min="1950" max="2026" style="width:96px" data-en-ph="e.g. 2019" data-zh-ph="例：2019"></label>
+    <label><span data-en="Design" data-zh="设计">Design</span><select id="f-design">
+      <option value="" data-en="All designs" data-zh="全部设计">All designs</option>
+      <option value="SR/MA">SR/MA</option>
+      <option value="RCT">RCT</option>
+      <option value="other" data-en="Other design" data-zh="其他设计">Other design</option>
+    </select></label>
+    <label><span data-en="Sort" data-zh="排序">Sort</span><select id="f-sort">
+      <option value="pivotal" data-en="Most pivotal first" data-zh="关键于最多推荐在前">Most pivotal first</option>
+      <option value="cited" data-en="Most cited first" data-zh="被引最多在前">Most cited first</option>
+      <option value="ydesc" data-en="Newest first" data-zh="最新在前">Newest first</option>
+      <option value="yasc" data-en="Oldest first" data-zh="最早在前">Oldest first</option>
+    </select></label>
+    <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="f-pivonly">
+      <span data-en="Pivotal for ≥1 recommendation only" data-zh="仅看至少为一条推荐之关键研究者">Pivotal for ≥1 recommendation only</span></label>
+  </div>
+  <p class="small muted" id="count"></p>
+  <div id="list"></div>
+  <div class="pager"><button id="prev">←</button><span id="pinfo"></span><button id="next">→</button></div>
+  <p class="small muted" data-en="Looking for the other direction — a PMID you already have? Use the reverse lookup." data-zh="反过来，手里已有 PMID？请用反查。">Looking for the other direction?
+    <a href="lookup.html" data-en="PMID reverse lookup →" data-zh="PMID 反查 →">PMID reverse lookup →</a></p>
+</main>
+<script>
+var CITS = null, COV = null, page = 0, PER = 25;
+function designLabel(d) {
+  if (d === 'SR/MA') return 'SR/MA';
+  if (d === 'RCT') return 'RCT';
+  return GC.t('Other design', '其他设计');
+}
+function citHTML(c) {
+  var meta = [c.author, c.journal, c.year].filter(function (x) { return x; }).join(' · ');
+  var piv = {};
+  c.pivotal_for.forEach(function (r) { piv[r] = 1; });
+  var citing = c.cites.map(function (r) {
+    return '<div style="margin:3px 0"><a href="explorer.html?item=' + GC.esc(r) + '"><b>' + GC.esc(r) + '</b></a>' +
+      (piv[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') + '</div>';
+  }).join('');
+  return '<div class="citrow">' +
+    '<div class="ttl"><a href="https://pubmed.ncbi.nlm.nih.gov/' + c.pmid + '/" target="_blank" rel="noopener">' +
+      GC.esc(c.title || GC.t('(title not carried in the index)', '（索引未载标题）')) + '</a></div>' +
+    (meta ? '<div class="meta">' + GC.esc(meta) + '</div>' : '') +
+    '<div><span class="chip layer">' + designLabel(c.design) + '</span>' +
+      '<span class="chip acc">PMID ' + c.pmid + '</span>' +
+      '<a class="small" href="lookup.html?pmid=' + c.pmid + '">' + GC.t('Reverse view', '反查视图') + '</a></div>' +
+    '<div class="counts">' + GC.t('Cited by ', '被引用于 ') + '<b>' + c.n_cites + '</b>' + GC.t(' recommendations', ' 条推荐') +
+      (c.n_pivotal ? GC.t('; pivotal for ', '；为其中 ') + '<b>' + c.n_pivotal + '</b>' : '') + '</div>' +
+    (c.cites.length ? '<details><summary>' + GC.t('Show the citing recommendations', '展开引用它的推荐') + '</summary>' + citing + '</details>' : '') +
+    '</div>';
+}
+function filtered() {
+  var toks = document.getElementById('f-q').value.trim().toLowerCase().split(/\s+/).filter(Boolean),
+    yr = document.getElementById('f-year').value.trim(),
+    des = document.getElementById('f-design').value,
+    pivOnly = document.getElementById('f-pivonly').checked,
+    sort = document.getElementById('f-sort').value;
+  var rows = CITS.filter(function (c) {
+    if (yr && String(c.year || '') !== yr) return false;
+    if (des && c.design !== des) return false;
+    if (pivOnly && !c.n_pivotal) return false;
+    if (toks.length) {
+      var hay = (c.title + ' ' + c.author + ' ' + c.journal + ' ' + c.pmid).toLowerCase();
+      for (var k = 0; k < toks.length; k++) if (hay.indexOf(toks[k]) < 0) return false;
+    }
+    return true;
+  });
+  rows.sort(function (a, b) {
+    if (sort === 'cited') return b.n_cites - a.n_cites || b.n_pivotal - a.n_pivotal;
+    if (sort === 'ydesc') return (b.year || 0) - (a.year || 0) || b.n_pivotal - a.n_pivotal;
+    if (sort === 'yasc') return (a.year || 9999) - (b.year || 9999) || b.n_pivotal - a.n_pivotal;
+    return b.n_pivotal - a.n_pivotal || b.n_cites - a.n_cites;
+  });
+  return rows;
+}
+function render() {
+  if (!CITS) return;
+  var rows = filtered(), pages = Math.max(1, Math.ceil(rows.length / PER));
+  if (page >= pages) page = pages - 1;
+  document.getElementById('count').textContent = GC.t(rows.length + ' studies match', '共 ' + rows.length + ' 篇研究符合条件');
+  document.getElementById('list').innerHTML = rows.slice(page * PER, page * PER + PER).map(citHTML).join('') ||
+    '<p class="muted">' + GC.t('No studies match. Try fewer words, or check the coverage note above — unresolved citations are not searchable here.', '没有符合的研究。可减少关键词，或看上方覆盖说明——未定名的引文不在此可检索。') + '</p>';
+  document.getElementById('pinfo').textContent = GC.t('Page ', '第 ') + (page + 1) + ' / ' + pages + (GC.lang === 'zh' ? ' 页' : '');
+}
+function renderCoverage() {
+  if (!COV) return;
+  document.getElementById('coverage').innerHTML = '<div class="note">' +
+    GC.t('Index coverage, stated honestly: this search runs over the ', '索引覆盖，如实说明：本检索覆盖已定名的 ') +
+    '<b>' + COV.unique_pmids.toLocaleString() + '</b>' +
+    GC.t(' unique studies resolved from ', ' 篇独立研究，定名自 ') +
+    '<b>' + COV.attachments_resolved.toLocaleString() + ' / ' + COV.attachments_total.toLocaleString() + ' (' + GC.pct(COV.share) + ')</b>' +
+    GC.t(' citation attachments (source: ' + COV.resolution_source + '). Titles are carried for ' + COV.records_with_title.toLocaleString() + ' records, a first author for ' + COV.records_with_author.toLocaleString() + ', and a year for ' + COV.records_with_year.toLocaleString() + '. The remaining attachments — concentrated in the ICAR consensus documents — could not be resolved to a PMID from the frozen artefacts, so studies cited only there cannot be found here; absence is not proof a study is uncited.',
+         ' 条引文附件（来源：' + (COV.resolution_source === 'frozen production artefacts' ? '冻结的生产工件' : '已完成的定名文件') + '）。其中载有题名者 ' + COV.records_with_title.toLocaleString() + ' 篇、第一作者 ' + COV.records_with_author.toLocaleString() + ' 篇、年份 ' + COV.records_with_year.toLocaleString() + ' 篇。其余附件——集中于 ICAR 共识文件——无法从冻结工件定名到 PMID，因此仅被它们引用的研究在此查不到；查不到不等于未被引用。') + '</div>';
+}
+function applyParams() {
+  var q = GC.qs('q'), yr = GC.qs('year'), des = GC.qs('design');
+  if (q) document.getElementById('f-q').value = q;
+  if (yr) document.getElementById('f-year').value = yr;
+  if (des) document.getElementById('f-design').value = des;
+}
+Promise.all([GC.load('citations.json'), GC.load('pmid_coverage.json')]).then(function (d) {
+  CITS = d[0]; COV = d[1];
+  ['f-q', 'f-year', 'f-design', 'f-sort', 'f-pivonly'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () { page = 0; render(); });
+  });
+  document.getElementById('prev').addEventListener('click', function () { if (page > 0) { page--; render(); } });
+  document.getElementById('next').addEventListener('click', function () { page++; render(); });
+  applyParams();
+  renderCoverage();
+  render();
+});
+window.onLangChange = function () { renderCoverage(); render(); };
+</script>
+</body>
+</html>
