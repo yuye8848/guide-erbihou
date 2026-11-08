@@ -56,7 +56,7 @@ function citHTML(c) {
       (piv[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') + '</div>';
   }).join('');
   return '<div class="citrow">' +
-    '<div class="ttl"><a href="https://pubmed.ncbi.nlm.nih.gov/' + c.pmid + '/" target="_blank" rel="noopener">' +
+    '<div class="ttl"><a href="citation.html?pmid=' + c.pmid + '">' +
       GC.esc(c.title || GC.t('(title not carried in the index)', '（索引未载标题）')) + '</a></div>' +
     (meta ? '<div class="meta">' + GC.esc(meta) + '</div>' : '') +
     '<div><span class="chip layer">' + designLabel(c.design) + '</span>' +

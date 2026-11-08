@@ -98,7 +98,7 @@ function itemHTML(i) {
       ' (' + i.srma_n + ' SR/MA · ' + i.rct_n + ' RCT)</td></tr>' +
     '<tr><th>' + GC.t('Pivotal study', '关键研究') + '</th><td>' +
       (i.pivotal_design ? GC.esc(i.pivotal_design) + GC.t(', reference #', '，指南文献表第 ') + GC.esc(i.pivotal_ref || '—') + GC.t(' in the guideline\u2019s list', ' 条') : GC.t('(no on-question pivotal)', '（无对题关键研究）')) +
-      (i.pivotal_pmid ? ' · <a href="https://pubmed.ncbi.nlm.nih.gov/' + i.pivotal_pmid + '/" target="_blank" rel="noopener">PMID ' + i.pivotal_pmid + '</a>' : '') + '</td></tr>' +
+      (i.pivotal_pmid ? ' · <a href="citation.html?pmid=' + i.pivotal_pmid + '">PMID ' + i.pivotal_pmid + '</a>' : '') + '</td></tr>' +
     '<tr><th>' + GC.t('Pivotal sample size', '关键研究样本量') + '</th><td>' + GC.esc(pivN(i)) + '</td></tr>' +
     '<tr><th>' + GC.t('Applicability', '适用性') + '</th><td>' + GC.esc(i.applicability || '—') + '</td></tr>' +
     '<tr><th>' + GC.t('Surrogate endpoint', '替代终点') + '</th><td>' + GC.esc(i.surrogate || '—') + '</td></tr>' +

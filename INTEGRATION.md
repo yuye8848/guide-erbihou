@@ -54,3 +54,50 @@ assertions in the build — carries over unchanged. After loading, re-point
 `GC.resolveData`, redeploy the static shell, and the static layer remains the
 fallback: every page must keep working if the API is unreachable (serve the
 last generated `data/*.json` alongside).
+
+## v2 additions
+
+The v1 worker (`worker/guide-api-mini.js`, live) serves `/v1/health`,
+`/v1/stats`, `/v1/by-pmid`, `/v1/citation-search`, `/v1/item` and
+`/v1/question` from the D1 tables `items / questions / citations / links`,
+seeded from this site's own `data/*.json` via the internal seed route.
+`worker/guide-api-v2.js` is a drop-in replacement (same routes, same seed
+behaviour, same CORS) that adds four read endpoints:
+
+| Endpoint | Returns |
+|---|---|
+| `GET /v1/guidelines` | `[{doc, guideline, society, year, n_items}]` for the 31 documents, sorted by `doc` |
+| `GET /v1/search?q=` | `{q, items[≤40], citations[≤40], questions[≤40]}` — items match on `rec = q` or a `LIKE` over the record JSON; citations on `pmid = q` or title/author/journal `LIKE`; questions on a `LIKE` over the question JSON. Empty `q` returns three empty lists. |
+| `GET /v1/citation?pmid=` | `{citation, citing: [{rec, doc, guideline, year, direction, tier, pivotal}], counts: {cites, pivotal, docs}}` — `links ⋈ items` for the citing side |
+| `GET /v1/compare?a=&b=` | Question-level comparison over the union universe: `{a, b, counts: {questions_total, covered_a, covered_b, shared, agree, disagree}, shared[≤300]}`. Per shared question, each side's direction set is its members' distinct directions excluding `''`/`'none'`; the verdict is `agree` iff both sets are non-empty and equal, `disagree` iff both are non-empty and unequal, otherwise `null`. `truncated: true` is added when the shared list is capped. |
+
+Three pages consume them, each through the `GC.d1(path)` helper in
+`assets/app.js` (`fetch` against `https://api.guide.erbihou.org`, parsed JSON
+on success, `null` on any failure — HTTP error, network error or bad JSON):
+
+- `search.html` — `GC.d1('/v1/search?q=…')`; on `null`, loads
+  `items.json / citations.json / questions.json` and filters client-side
+  (items: statement/guideline/rec/topic_en/doc; citations:
+  title/author/journal/pmid; questions: any member intervention/statement or
+  the qid — all case-insensitive substring).
+- `citation.html` — `GC.d1('/v1/citation?pmid=…')`; on `null`, rebuilds the
+  same dossier from `citations.json ⋈ items.json`. A PMID present in
+  `pmid_index.json` but absent from `citations.json` is reported as
+  "indexed but unresolved", never as unknown.
+- `compare.html` — guideline lists from `GC.d1('/v1/guidelines')` (fallback:
+  derived from `items.json`); the comparison from
+  `GC.d1('/v1/compare?a=&b=')` (fallback: the identical algorithm run over
+  `questions.json` in the page — a Node harness verified worker and fallback
+  produce byte-identical `shared` arrays on the frozen data). The frozen
+  pair-level adjudicated aggregates in `compare.json` are displayed
+  alongside, clearly labelled as a different unit.
+
+`api.html` documents all ten endpoints publicly. Inbound links: citation
+titles in `citations.html`, the looked-up title in `lookup.html` and pivotal
+PMIDs in `explorer.html` now point at `citation.html?pmid=…`; `l4.html` and
+`discordance.html` link to `compare.html`; `framework.html` and
+`downloads.html` link to `api.html`.
+
+`GC.resolveData` is deliberately unchanged: the v2 endpoints are additive
+and each consuming page owns its fallback, so the static layer keeps working
+verbatim whether the v1 or the v2 worker is deployed.

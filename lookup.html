@@ -43,7 +43,7 @@ function run() {
     return '<tr><td><b><a href="explorer.html?item=' + GC.esc(r) + '">' + GC.esc(r) + '</a></b>' + (pivFor[r] ? ' <span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') +
       '</td><td>' + GC.esc(i.guideline || '') + '</td><td>' + GC.esc((i.statement || '').slice(0, 130)) + '</td><td>' + GC.dirHTML(i.direction) + '</td></tr>';
   }).join('');
-  box.innerHTML = '<h3>' + (v.title ? GC.esc(v.title) : GC.t('(title not carried in the index)', '（索引未载标题）')) + '</h3>' +
+  box.innerHTML = '<h3>' + (v.title ? '<a href="citation.html?pmid=' + q + '">' + GC.esc(v.title) + '</a>' : GC.t('(title not carried in the index)', '（索引未载标题）')) + '</h3>' +
     '<p class="small">' + GC.t('Cited by ', '被引用于 ') + '<b>' + v.cites.length + '</b>' + GC.t(' recommendations; pivotal for ', ' 条推荐；为其中 ') + '<b>' + v.pivotal_for.length + '</b>' + GC.t('.', ' 条的关键研究。') +
     ' <a href="https://pubmed.ncbi.nlm.nih.gov/' + q + '/" target="_blank" rel="noopener">PubMed ↗</a></p>' +
     '<table><thead><tr><th>' + GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') + '</th><th>' + GC.t('Statement', '陈述') + '</th><th>' + GC.t('Direction', '方向') + '</th></tr></thead><tbody>' + rows + '</tbody></table>';

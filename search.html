@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site-wide search — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Search" data-zh="全站搜索">Search</p>
+  <h1 data-en="Search recommendations, studies and questions" data-zh="搜索推荐、研究与问题">Search recommendations, studies and questions</h1>
+  <p class="lede" data-en="One box over the whole census: a drug, a procedure, a PMID, a title fragment, a guideline name or a recommendation ID — matched live against the 805 recommendations, the resolved citation library and the 905-question universe."
+     data-zh="一个框搜全站普查：药名、术式、PMID、题名片段、指南名或推荐编号——实时匹配 805 条推荐、已定名引文文库与 905 问宇宙。">One box over the whole census.</p>
+  <form class="filters" id="sform">
+    <label><span data-en="Search" data-zh="检索">Search</span>
+      <input type="search" id="q" size="34" data-en-ph="e.g. immunotherapy, 28493631, AAO2024AIT-KAS01…" data-zh-ph="例：immunotherapy、28493631、指南名…"></label>
+    <button class="btn" type="submit" data-en="Search" data-zh="搜索">Search</button>
+  </form>
+  <p class="small muted" data-en="Results come from the live D1-backed API when it is reachable, and otherwise from this site's frozen static copy of the same data."
+     data-zh="结果在接口可达时来自 D1 实时 API，否则来自本站同一数据的冻结静态副本。">Results come from the live API when reachable, otherwise from the frozen static copy.</p>
+  <p class="small muted" id="srcline"></p>
+  <div id="results"></div>
+</main>
+<script>
+var LAST = null, LASTSRC = '';
+function trunc(s, n) { s = s || ''; return s.length > n ? s.slice(0, n) + '…' : s; }
+function capNote(n) {
+  return n >= 40 ? '<p class="small muted">' + GC.t('First 40 shown — narrow the query to see more.', '仅显示前 40 条——请缩小检索范围查看更多。') + '</p>' : '';
+}
+function render(res, src) {
+  LAST = res; LASTSRC = src || LASTSRC;
+  var box = document.getElementById('results');
+  document.getElementById('srcline').textContent = res ? (LASTSRC === 'api'
+    ? GC.t('Source: live D1 API', '来源：D1 实时 API')
+    : GC.t('Source: frozen static copy (API unreachable)', '来源：冻结静态副本（API 不可达）')) : '';
+  if (!res) { box.innerHTML = ''; return; }
+  var total = res.items.length + res.citations.length + res.questions.length;
+  if (!res.q) {
+    box.innerHTML = '<p class="muted">' + GC.t('Type a query above and press Search.', '在上方输入检索词并点搜索。') + '</p>';
+    return;
+  }
+  if (!total) {
+    box.innerHTML = '<div class="warnbox">' + GC.t('No matches for “' + res.q + '”. Try a shorter fragment, a different spelling, or a PMID.', '没有与“' + res.q + '”匹配的结果。可试更短的片段、其他拼写或 PMID。') + '</div>';
+    return;
+  }
+  var h = '';
+  if (res.items.length) {
+    h += '<h2>' + GC.t('Recommendations', '推荐') + ' (' + res.items.length + ')</h2>' + res.items.map(function (i) {
+      return '<div class="citrow"><div class="ttl"><a href="explorer.html?item=' + GC.esc(i.rec) + '">' + GC.esc(i.rec) + '</a></div>' +
+        '<div class="meta">' + GC.esc(i.guideline || '') + (i.year ? ' · ' + i.year : '') + ' · ' + GC.dirHTML(i.direction) + '</div>' +
+        '<div class="counts">' + GC.esc(trunc(i.statement, 150)) + '</div></div>';
+    }).join('') + capNote(res.items.length);
+  }
+  if (res.citations.length) {
+    h += '<h2>' + GC.t('Studies', '研究') + ' (' + res.citations.length + ')</h2>' + res.citations.map(function (c) {
+      var meta = [c.author, c.journal, c.year].filter(function (x) { return x; }).join(' · ');
+      return '<div class="citrow"><div class="ttl"><a href="citation.html?pmid=' + GC.esc(c.pmid) + '">' +
+        GC.esc(c.title || GC.t('(title not carried in the index)', '（索引未载标题）')) + '</a></div>' +
+        (meta ? '<div class="meta">' + GC.esc(meta) + '</div>' : '') +
+        '<div><span class="chip layer">' + GC.esc(c.design || '') + '</span><span class="chip acc">PMID ' + GC.esc(c.pmid) + '</span></div>' +
+        '<div class="counts">' + GC.t('Cited by ', '被引用于 ') + '<b>' + (c.n_cites != null ? c.n_cites : (c.cites || []).length) + '</b>' + GC.t(' recommendations', ' 条推荐') +
+        (c.n_pivotal ? GC.t('; pivotal for ', '；为其中 ') + '<b>' + c.n_pivotal + '</b>' : '') + '</div></div>';
+    }).join('') + capNote(res.citations.length);
+  }
+  if (res.questions.length) {
+    h += '<h2>' + GC.t('Questions', '问题') + ' (' + res.questions.length + ')</h2>' + res.questions.map(function (q) {
+      var first = (q.members && q.members[0]) || {};
+      return '<div class="citrow"><div class="ttl"><a href="questions.html?q=' + GC.esc(q.qid) + '">' + GC.esc(q.qid) + '</a>' +
+        ' <span class="chip' + (q.grade === 'FULL' ? ' acc' : '') + '">' + GC.esc(q.grade || '') + '</span></div>' +
+        '<div class="meta">' + q.n_items + ' ' + GC.t('recommendations from ', '条推荐，来自 ') + q.n_docs + GC.t(' guideline(s)', ' 部指南') + '</div>' +
+        '<div class="counts">' + GC.esc(trunc(first.intervention || first.statement, 130)) + '</div></div>';
+    }).join('') + capNote(res.questions.length);
+  }
+  box.innerHTML = h;
+}
+function staticSearch(q) {
+  return Promise.all([GC.load('items.json'), GC.load('citations.json'), GC.load('questions.json')]).then(function (d) {
+    var ql = q.toLowerCase();
+    function has(s) { return String(s || '').toLowerCase().indexOf(ql) >= 0; }
+    var items = d[0].filter(function (i) {
+      return has(i.statement) || has(i.guideline) || has(i.rec) || has(i.topic_en) || has(i.doc);
+    }).slice(0, 40);
+    var citations = d[1].filter(function (c) {
+      return has(c.title) || has(c.author) || has(c.journal) || has(c.pmid);
+    }).slice(0, 40);
+    var questions = d[2].filter(function (x) {
+      if (has(x.qid)) return true;
+      return (x.members || []).some(function (m) { return has(m.intervention) || has(m.statement); });
+    }).slice(0, 40);
+    return { q: q, items: items, citations: citations, questions: questions };
+  });
+}
+function run(q) {
+  q = (q || '').trim();
+  if (!q) { render({ q: '', items: [], citations: [], questions: [] }); return; }
+  document.getElementById('results').innerHTML = '<p class="muted">' + GC.t('Searching…', '检索中…') + '</p>';
+  GC.d1('/v1/search?q=' + encodeURIComponent(q)).then(function (r) {
+    if (r) { render(r, 'api'); return; }
+    staticSearch(q).then(function (r2) { render(r2, 'static'); });
+  });
+}
+document.getElementById('sform').addEventListener('submit', function (e) {
+  e.preventDefault();
+  run(document.getElementById('q').value);
+});
+var start = GC.qs('q');
+if (start) { document.getElementById('q').value = start; run(start); }
+window.onLangChange = function () { if (LAST) render(LAST); };
+</script>
+</body>
+</html>

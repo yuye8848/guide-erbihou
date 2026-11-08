@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="API" data-zh="公开接口">API</p>
+  <h1 data-en="The GuideCensus API" data-zh="GuideCensus 接口">The GuideCensus API</h1>
+  <p class="lede" data-en="The frozen census is queryable over a public, read-only REST API backed by a Cloudflare D1 database — the same records this website displays, as JSON, for your own scripts and checks. No key, no sign-up; responses carry the frozen data of 2026-11-08."
+     data-zh="冻结普查可通过一个公开、只读的 REST 接口查询，后端是 Cloudflare D1 数据库——与本站展示的是同一批记录，以 JSON 形式供您的脚本与核查使用。无需密钥、无需注册；响应内容为 2026-11-08 的冻结数据。">The frozen census is queryable over a public, read-only REST API.</p>
+  <div class="card">
+    <p style="margin:4px 0"><span data-en="Base URL" data-zh="基地址">Base URL</span>: <span class="mono" style="font-size:14px">https://api.guide.erbihou.org/v1</span></p>
+    <p class="small muted" style="margin:4px 0" data-en="All endpoints are GET and return JSON. Unknown records return an {&quot;error&quot;} object with a 404 status. Data: CC-BY-4.0; framework code: MIT. Please cite the OSF registration (DOI 10.17605/OSF.IO/9VMFJ) and https://guide.erbihou.org."
+       data-zh="全部端点均为 GET 并返回 JSON。查不到的记录返回带 404 状态的 {&quot;error&quot;} 对象。数据：CC-BY-4.0；框架代码：MIT。引用时请注明 OSF 注册（DOI 10.17605/OSF.IO/9VMFJ）与 https://guide.erbihou.org。">All endpoints are GET and return JSON.</p>
+    <p class="small muted" style="margin:4px 0" data-en="Endpoints marked v2 activate with the v2 worker deployment; the website's pages use them when live and otherwise fall back to the frozen static copy."
+       data-zh="标为 v2 的端点随 v2 版 Worker 部署后生效；本站页面在接口可用时使用它，否则回退到冻结静态副本。">Endpoints marked v2 activate with the v2 worker deployment.</p>
+  </div>
+
+  <h2 data-en="Endpoints" data-zh="端点一览">Endpoints</h2>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/health</span></h3>
+  <p data-en="Liveness check." data-zh="存活检查。">Liveness check.</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/health" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/health</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"ok":true}</pre>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/stats</span></h3>
+  <p data-en="Row counts of the four database tables: recommendations, union questions, resolved citations, and citation↔recommendation links."
+     data-zh="四张数据库表的行数：推荐、并集问题、已定名引文、引文↔推荐关联。">Row counts of the four database tables.</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/stats" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/stats</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"items":805,"questions":905,"citations":4511,"links":6463}</pre>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/by-pmid?pmid=</span></h3>
+  <p data-en="Reverse lookup: the resolved bibliographic record for one PMID, plus every recommendation that cites it — flagged where the study is the recommendation's pivotal study."
+     data-zh="反查：一个 PMID 的已定名书目记录，加上引用它的全部推荐——并标出以它为关键研究的推荐。">Reverse lookup for one PMID.</p>
+  <p class="small muted" data-en="Parameter: pmid (required)." data-zh="参数：pmid（必填）。">Parameter: pmid (required).</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/by-pmid?pmid=28493631" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/by-pmid?pmid=28493631</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"pmid":"28493631","citation":{"pmid":"28493631","title":"Allergen immunotherapy for allergic rhinoconjunctivitis: A systematic review and meta-analysis.","author":"Dhami S","year":2017,"journal":"Allergy","design":"SR/MA","cites":["AAO2024AIT-KAS01","AAO2024AIT-KAS05","AAO2024AIT-KAS12",…],"pivotal_for":["AAO2024AIT-KAS01","EAACI2018-01","EAACI2018-02",…],"n_cites":51,"n_pivotal":42},"citing":[{"rec":"AAO2024AIT-KAS01","pivotal":true},{"rec":"AAO2024AIT-KAS05","pivotal":false},{"rec":"AAO2024AIT-KAS12","pivotal":false},…]}</pre>
+  <p class="small muted" data-en="Excerpt — arrays trimmed; the full response lists all 51 citing recommendations." data-zh="节选——数组已截短；完整响应列出全部 51 条引用推荐。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/citation-search?q=&amp;year=&amp;design=</span></h3>
+  <p data-en="Forward search over the resolved citation library: a fragment matched against title, first author and journal, with optional exact year and design filters. Newest first, at most 200 results."
+     data-zh="正查：在已定名引文文库中以片段匹配题名、第一作者与期刊，可附加确切年份与设计过滤。按年份倒序，至多 200 条。">Forward search over the citation library.</p>
+  <p class="small muted" data-en="Parameters: q (fragment), year (optional), design (optional: SR/MA, RCT, other)." data-zh="参数：q（片段）、year（可选）、design（可选：SR/MA、RCT、other）。">Parameters: q, year, design.</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/citation-search?q=immunotherapy" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/citation-search?q=immunotherapy</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"count":200,"results":[{"pmid":"33929726","title":"Subcutaneous Versus Sublingual Immunotherapy for Adults with Allergic Rhinitis: A Systematic Review with Meta-Analyses.","author":"Tie K","year":"2022","journal":"Laryngoscope","design":"SR/MA","cites":["AAO2024AIT-KAS04"],"pivotal_for":[],"n_cites":1,"n_pivotal":0},…]}</pre>
+  <p class="small muted" data-en="Excerpt — the result list is capped at 200 (count is the returned length)." data-zh="节选——结果列表上限 200 条（count 为返回长度）。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/item?id=</span></h3>
+  <p data-en="One recommendation record in full, with all of its resolved citation links (pivotal study first)."
+     data-zh="一条推荐的完整记录，附其全部已定名引文关联（关键研究在前）。">One recommendation record with its citation links.</p>
+  <p class="small muted" data-en="Parameter: id — the recommendation ID, e.g. AAO2024AIT-KAS01." data-zh="参数：id——推荐编号，如 AAO2024AIT-KAS01。">Parameter: id.</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/item?id=AAO2024AIT-KAS01" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/item?id=AAO2024AIT-KAS01</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"item":{"rec":"AAO2024AIT-KAS01","doc":"AAO2024AIT","guideline":"Allergen Immunotherapy for Inhalant Allergy","society":"AAO-HNSF","year":2024,"statement":"Clinicians should offer or refer to a clinician who can offer AIT for patients with AR with or without AA if t…","direction":"for","tier":"Recommendation","grade":"Grade A","pivotal_design":"SR/MA","pivotal_pmid":"28493631","U":"U1","S":"M",…},"citations":[{"pmid":"28493631","pivotal":true,"title":"Allergen immunotherapy for allergic rhinoconjunctivitis: A systematic review and meta-analysis.","author":"Dhami S","year":2017,"journal":"Allergy","design":"SR/MA"},{"pmid":"23557834","pivotal":false,"title":"Subcutaneous and sublingual immunotherapy for seasonal allergic rhinitis: a systematic review and indirect comparison.","author":"Dretzke J","year":2013,"journal":"J Allergy Clin Immunol","design":"SR/MA"},…]}</pre>
+  <p class="small muted" data-en="Excerpt — some fields omitted; the full response carries the complete record and all 12 linked citations." data-zh="节选——略去部分字段；完整响应含完整记录与全部 12 条关联引文。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/question?id=</span></h3>
+  <p data-en="One union question of the Layer-4 universe, with every member recommendation (document, ID, direction, intervention as framed)."
+     data-zh="第四层宇宙中的一个并集问题，附其全部成员推荐（文件、编号、方向、按原文框定的干预）。">One union question with its members.</p>
+  <p class="small muted" data-en="Parameter: id — the question ID, e.g. Q0001." data-zh="参数：id——问题编号，如 Q0001。">Parameter: id.</p>
+  <p class="small"><a href="https://api.guide.erbihou.org/v1/question?id=Q0001" target="_blank" rel="noopener">https://api.guide.erbihou.org/v1/question?id=Q0001</a></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"question":{"qid":"Q0001","n_items":24,"n_docs":3,"areas":"ait;allergic_rhinitis;allergic_rhinitis","grade":"PARTIAL","members":[{"doc":"AAO2024AIT","rec":"AAO2024AIT-06","direction":"for","statement":"","intervention":"Pre-/co-seasonal immunotherapy schedule for SLIT (schedule framing as stated; route fixed to SLIT by the statement)"},{"doc":"EAACI2018","rec":"EAACI2018-11","direction":"for","statement":"Pre-/co-seasonal SLIT is recommended for seasonal ARs for short-term benefit","intervention":"Pre-/co-seasonal SLIT"},…]}}</pre>
+  <p class="small muted" data-en="Excerpt — Q0001 has 24 member recommendations in full." data-zh="节选——Q0001 完整响应含 24 条成员推荐。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/guidelines</span> <span class="chip warn">v2</span></h3>
+  <p data-en="The census documents — ID, title, society, year and recommendation count — sorted by document ID."
+     data-zh="普查文件清单——编号、题名、学会、年份与推荐数——按文件编号排序。">The census documents with their recommendation counts.</p>
+  <p class="small"><span class="mono">https://api.guide.erbihou.org/v1/guidelines</span></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">[{"doc":"AAO2013BELL","guideline":"Bell's Palsy","society":"AAO-HNSF","year":2013,"n_items":13},{"doc":"AAO2013VOICE","guideline":"Voice Outcomes after Thyroid Surgery","society":"AAO-HNSF","year":2013,"n_items":13},…]</pre>
+  <p class="small muted" data-en="Excerpt — 31 documents in full." data-zh="节选——完整响应共 31 部文件。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/search?q=</span> <span class="chip warn">v2</span></h3>
+  <p data-en="Site-wide search behind the search page: matched against recommendations (statement, guideline, ID, topic, document), citations (title, author, journal, PMID) and questions (member interventions and statements). At most 40 per group."
+     data-zh="全站搜索页背后的接口：匹配推荐（陈述、指南、编号、主题、文件）、引文（题名、作者、期刊、PMID）与问题（成员干预与陈述）。每组至多 40 条。">Site-wide search across recommendations, citations and questions.</p>
+  <p class="small muted" data-en="Parameter: q (required; an empty q returns three empty lists)." data-zh="参数：q（必填；空 q 返回三个空列表）。">Parameter: q.</p>
+  <p class="small"><span class="mono">https://api.guide.erbihou.org/v1/search?q=immunotherapy</span></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"q":"immunotherapy","items":[{"rec":"AAO2015AR-KAS11",…},…26 records],"citations":[{"pmid":"28493631","title":"Allergen immunotherapy for allergic rhinoconjunctivitis: A systematic review and meta-analysis.",…},…40 records (the per-group cap)],"questions":[{"qid":"Q0001",…},…15 questions]}</pre>
+  <p class="small muted" data-en="Excerpt — real response to q=immunotherapy, arrays trimmed to their first record." data-zh="节选——q=immunotherapy 的真实响应，数组截短至首条。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/citation?pmid=</span> <span class="chip warn">v2</span></h3>
+  <p data-en="The dossier behind the citation page: the bibliographic record, every citing recommendation with its guideline, year, direction and stated tier, and the counts of citing / pivotal-for / guidelines."
+     data-zh="文献档案页背后的接口：书目记录、每条引用推荐及其指南、年份、方向与原文等级，以及被引数 / 关键于数 / 涉及指南数。">The citation dossier.</p>
+  <p class="small muted" data-en="Parameter: pmid (required)." data-zh="参数：pmid（必填）。">Parameter: pmid.</p>
+  <p class="small"><span class="mono">https://api.guide.erbihou.org/v1/citation?pmid=28493631</span></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"citation":{"pmid":"28493631","title":"Allergen immunotherapy for allergic rhinoconjunctivitis: A systematic review and meta-analysis.",…},"citing":[{"rec":"AAO2024AIT-KAS01","doc":"AAO2024AIT","guideline":"Allergen Immunotherapy for Inhalant Allergy","year":2024,"direction":"for","tier":"Recommendation","pivotal":true},…],"counts":{"cites":51,"pivotal":42,"docs":3}}</pre>
+  <p class="small muted" data-en="Excerpt — the citing list is trimmed to its first row." data-zh="节选——引用列表截短至首行。">Excerpt.</p>
+
+  <h3><span class="chip acc">GET</span> <span class="mono">/v1/compare?a=&amp;b=</span> <span class="chip warn">v2</span></h3>
+  <p data-en="Live question-level comparison of two documents over the union universe: how many questions each covers, which they share, and — per shared question — whether their direction sets agree (a side's set is its members' distinct directions, ignoring unstanced members). At most 300 shared questions are listed. This is a question-level computation, distinct from the frozen pair-level adjudicated concordance."
+     data-zh="对两部文件在并集宇宙上做实时的问题级对比：各自覆盖多少问题、共同问题有哪些、每个共同问题上双方方向集合是否一致（一方集合 = 其成员的不同方向，忽略未表态成员）。共同问题至多列 300 个。此乃问题级计算，与冻结的配对级裁定一致性不同。">Live question-level comparison of two documents.</p>
+  <p class="small muted" data-en="Parameters: a, b — document IDs, e.g. a=EAACI2018, b=ICAR2023AR." data-zh="参数：a、b——文件编号，如 a=EAACI2018、b=ICAR2023AR。">Parameters: a, b.</p>
+  <p class="small"><span class="mono">https://api.guide.erbihou.org/v1/compare?a=EAACI2018&amp;b=ICAR2023AR</span></p>
+  <pre class="mono" style="white-space:pre-wrap;background:var(--chip);padding:10px 12px;border-radius:8px">{"a":"EAACI2018","b":"ICAR2023AR","counts":{"questions_total":905,"covered_a":38,"covered_b":63,"shared":2,"agree":0,"disagree":2},"shared":[{"qid":"Q0001","grade":"PARTIAL","a_dirs":["against","for"],"b_dirs":["for"],"a":[{"rec":"EAACI2018-11","direction":"for","intervention":"Pre-/co-seasonal SLIT"},…],"b":[{"rec":"ICAR2023AR-69","direction":"for","intervention":"Cluster SCIT"},…],"verdict":"disagree"},…]}</pre>
+  <p class="small muted" data-en="Excerpt — member lists trimmed. EAACI 2018 takes both directions inside Q0001, so its direction set differs from ICAR 2023's — the comparator reports the set-level verdict exactly as computed."
+     data-zh="节选——成员列表已截短。EAACI 2018 在 Q0001 内部两个方向都有，故其方向集合与 ICAR 2023 不同——对比器如实报告集合级裁定。">Excerpt.</p>
+
+  <h2 data-en="Used by this site" data-zh="本站的使用方式">Used by this site</h2>
+  <p data-en="The search, citation-dossier and comparator pages call these endpoints first and fall back to the site's frozen static copy whenever the API is unreachable — the numbers never differ, only the plumbing."
+     data-zh="本站的搜索、文献档案与对比页面优先调用这些接口，接口不可达时回退到本站的冻结静态副本——数字永不不同，只是管道不同。">The site's pages call these endpoints first and fall back to the frozen static copy.</p>
+  <p><a href="search.html" data-en="Site-wide search →" data-zh="全站搜索 →">Site-wide search →</a> ·
+     <a href="compare.html" data-en="Compare two guidelines →" data-zh="对比两部指南 →">Compare two guidelines →</a> ·
+     <a href="framework.html" data-en="The GuideCensus framework →" data-zh="GuideCensus 框架 →">The GuideCensus framework →</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citation dossier — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body data-layer="l3">
+<main>
+  <p class="tag" data-en="Layer 3 · Citation dossier" data-zh="第三层 · 文献档案">Layer 3 · Citation dossier</p>
+  <div id="head"></div>
+  <div id="tiles"></div>
+  <div id="body"></div>
+</main>
+<script>
+var PMID = (GC.qs('pmid') || '').replace(/\D/g, ''), LAST = null;
+function designLabel(d) {
+  if (d === 'SR/MA') return 'SR/MA';
+  if (d === 'RCT') return 'RCT';
+  return GC.t('Other design', '其他设计');
+}
+function render(res) {
+  LAST = res;
+  var head = document.getElementById('head'), tiles = document.getElementById('tiles'), body = document.getElementById('body');
+  tiles.innerHTML = ''; body.innerHTML = '';
+  if (!res) { head.innerHTML = '<p class="muted">' + GC.t('Loading…', '载入中…') + '</p>'; return; }
+  if (res.state === 'missing') {
+    head.innerHTML = '<h1>' + GC.t('No citation specified', '未指定引文') + '</h1><p class="muted">' +
+      GC.t('Open this page with ?pmid=<PMID> — for example from the citation search or the PMID lookup.', '请以 ?pmid=<PMID> 打开本页——例如从引文正查或 PMID 反查进入。') + '</p>';
+    return;
+  }
+  if (res.state === 'unresolved') {
+    head.innerHTML = '<h1>PMID ' + GC.esc(PMID) + '</h1><div class="warnbox">' +
+      GC.t('This PMID is in the citation index, but its bibliographic record could not be resolved from the frozen artefacts, so no dossier can be shown. It is cited by ' + res.n + ' recommendation(s) — see the reverse lookup.', '该 PMID 在引文索引中，但其书目记录无法从冻结工件定名，故无法展示档案。它被 ' + res.n + ' 条推荐引用——见反查。') +
+      ' <a href="lookup.html?pmid=' + PMID + '">' + GC.t('Reverse lookup →', '反查 →') + '</a></div>';
+    return;
+  }
+  if (res.state === 'notfound') {
+    head.innerHTML = '<h1>PMID ' + GC.esc(PMID) + '</h1><div class="warnbox">' +
+      GC.t('This PMID is not in the resolved citation library: no current recommendation in the census cites it under this ID, or the ID is mistyped.', '该 PMID 不在已定名引文文库中：普查中没有现行推荐以此编号引用它，或编号输入有误。') + '</div>';
+    return;
+  }
+  var c = res.citation;
+  var meta = [c.author, c.journal, c.year].filter(function (x) { return x; }).join(' · ');
+  head.innerHTML = '<h1>' + GC.esc(c.title || GC.t('(title not carried in the index)', '（索引未载标题）')) + '</h1>' +
+    (meta ? '<p class="lede" style="font-size:16px">' + GC.esc(meta) + '</p>' : '') +
+    '<p><span class="chip layer">' + designLabel(c.design) + '</span>' +
+    '<span class="chip acc">PMID ' + GC.esc(c.pmid) + '</span>' +
+    '<a class="small" href="https://pubmed.ncbi.nlm.nih.gov/' + GC.esc(c.pmid) + '/" target="_blank" rel="noopener">PubMed ↗</a> · ' +
+    '<a class="small" href="lookup.html?pmid=' + GC.esc(c.pmid) + '">' + GC.t('Reverse lookup view', '反查视图') + '</a></p>';
+  var k = function (v, label) { return '<div class="kpi"><div class="v">' + v + '</div><div class="k">' + label + '</div></div>'; };
+  tiles.innerHTML = '<div class="kpis">' +
+    k(res.counts.cites, GC.t('recommendations cite this study', '条推荐引用了本研究')) +
+    k(res.counts.pivotal, GC.t('of them rest on it as their pivotal study', '条以它为关键研究')) +
+    k(res.counts.docs, GC.t('guidelines involved', '涉及指南数')) + '</div>';
+  if (!res.citing.length) {
+    body.innerHTML = '<p class="muted">' + GC.t('No citing recommendations in the resolved index.', '已定名索引中无引用它的推荐。') + '</p>';
+    return;
+  }
+  body.innerHTML = '<h2>' + GC.t('The citing recommendations', '引用它的推荐') + '</h2><table><thead><tr><th>' +
+    GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') + '</th><th>' + GC.t('Direction', '方向') +
+    '</th><th>' + GC.t('Tier (as stated)', '等级（原文）') + '</th><th></th></tr></thead><tbody>' +
+    res.citing.map(function (r) {
+      return '<tr><td><b><a href="explorer.html?item=' + GC.esc(r.rec) + '">' + GC.esc(r.rec) + '</a></b></td>' +
+        '<td>' + GC.esc(r.guideline || '') + (r.year ? ' (' + r.year + ')' : '') + '</td>' +
+        '<td>' + GC.dirHTML(r.direction) + '</td><td>' + GC.esc(r.tier || '—') + '</td>' +
+        '<td>' + (r.pivotal ? '<span class="chip bad">' + GC.t('PIVOTAL', '关键研究') + '</span>' : '') + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+function fallback() {
+  return Promise.all([GC.load('citations.json'), GC.load('items.json'), GC.load('pmid_index.json')]).then(function (d) {
+    var cit = null;
+    d[0].forEach(function (c) { if (c.pmid === PMID) cit = c; });
+    var byRec = {};
+    d[1].forEach(function (i) { byRec[i.rec] = i; });
+    if (!cit) {
+      var ix = d[2][PMID];
+      if (ix) return { state: 'unresolved', n: (ix.cites || []).length };
+      return { state: 'notfound' };
+    }
+    var piv = {};
+    (cit.pivotal_for || []).forEach(function (r) { piv[r] = 1; });
+    var citing = [], docs = {};
+    (cit.cites || []).forEach(function (rec) {
+      var i = byRec[rec];
+      if (!i) return;
+      docs[i.doc] = 1;
+      citing.push({ rec: i.rec, doc: i.doc, guideline: i.guideline, year: i.year, direction: i.direction, tier: i.tier, pivotal: !!piv[rec] });
+    });
+    citing.sort(function (a, b) { return a.rec < b.rec ? -1 : 1; });
+    return {
+      state: 'ok', citation: cit, citing: citing,
+      counts: { cites: citing.length, pivotal: citing.filter(function (r) { return r.pivotal; }).length, docs: Object.keys(docs).length }
+    };
+  });
+}
+if (!PMID) { render({ state: 'missing' }); }
+else {
+  render(null);
+  GC.d1('/v1/citation?pmid=' + encodeURIComponent(PMID)).then(function (r) {
+    if (r && r.citation) { r.state = 'ok'; render(r); return; }
+    if (r && !r.citation) {
+      // API reachable but no record: distinguish unresolved vs unknown via the static index.
+      GC.load('pmid_index.json').then(function (ix) {
+        render(ix[PMID] ? { state: 'unresolved', n: (ix[PMID].cites || []).length } : { state: 'notfound' });
+      });
+      return;
+    }
+    fallback().then(render);
+  });
+}
+window.onLangChange = function () { if (LAST) render(LAST); };
+</script>
+</body>
+</html>

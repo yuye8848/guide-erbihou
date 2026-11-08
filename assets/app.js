@@ -10,8 +10,10 @@
     ['l4.html', 'L4 Concordance', 'L4 跨指南一致性', 'l4'],
     ['l5.html', 'L5 Dynamics', 'L5 版本动态', 'l5'],
     ['explorer.html', 'Explorer', '推荐浏览器'],
+    ['search.html', 'Search', '全站搜索'],
     ['thin-ice.html', 'Thin ice', '薄冰推荐', 'l3'],
     ['discordance.html', 'Discordance', '分歧对位', 'l4'],
+    ['compare.html', 'Compare', '指南对比', 'l4'],
     ['dynamics.html', 'Versions', '版本变迁', 'l5'],
     ['zombies.html', 'Zombie watch', '僵尸观察', 'l5'],
     ['lookup.html', 'PMID lookup', 'PMID 反查', 'l3'],
@@ -19,6 +21,7 @@
     ['questions.html', 'Questions', '问题查询', 'l4'],
     ['verification.html', 'Verification', '核查中心'],
     ['framework.html', 'Framework', '框架'],
+    ['api.html', 'API', 'API 文档'],
     ['downloads.html', 'Downloads', '下载']
   ];
   /* Fixed layer colour code — mirrors assets/style.css (--l1..--l5). */
@@ -98,6 +101,14 @@
   GC.resolveData = function (name) { return 'data/' + name; };
   GC.load = function (name) {
     return fetch(GC.resolveData(name)).then(function (r) { return r.json(); });
+  };
+  /* Live D1 API (see INTEGRATION.md): returns the parsed JSON, or null on
+     ANY failure — callers must fall back to the static GC.load data. */
+  GC.d1 = function (path) {
+    return fetch('https://api.guide.erbihou.org' + path).then(function (r) {
+      if (!r.ok) throw 0;
+      return r.json();
+    }).catch(function () { return null; });
   };
   GC.api = {
     items: function () { return GC.load('items.json'); },
