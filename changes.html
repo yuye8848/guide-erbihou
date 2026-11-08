@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What changed — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body data-layer="l5">
+<main>
+  <p class="tag" data-en="Layer 5 · What changed" data-zh="第五层 · 临床变更">Layer 5 · What changed</p>
+  <h1 data-en="The recommendations that flipped or vanished" data-zh="翻转或消失的推荐">The recommendations that flipped or vanished</h1>
+  <p class="lede" data-en="Across the sixteen guideline updates aligned in Layer 5, most recommendations survive into the next version — identical or edited, but pointing the same way. The exceptions are the clinically important ones: a small number reversed direction outright, and some were dropped with no successor at all. All of them are listed on this page, old wording against new."
+     data-zh="在第五层对齐的十六次指南更新中，绝大多数推荐都活到了下一版——原样或经修改，但方向不变。例外者才具临床重要性：少数推荐方向彻底反转，还有一些被删除且没有任何后继。本页把它们全部列出，旧说法与新说法对照。">Across sixteen guideline updates, most recommendations survive; the ones that flipped or vanished are listed here.</p>
+  <div class="kpis" id="kpis"></div>
+  <h2 data-en="Direction flips" data-zh="方向翻转">Direction flips</h2>
+  <p class="small muted" data-en="Carried recommendation pairs where the prior version and the current version take opposite stances (for vs against). ARIA is excluded here and reported in its own section below, as everywhere in this census."
+     data-zh="被带入新版的推荐配对中，前版与现版立场相反（支持 vs 反对）。ARIA 一如本普查全程，在此排除、于下方单独成节。">Carried pairs whose direction reversed between versions.</p>
+  <div id="flips"></div>
+  <h2 data-en="Dropped with no successor" data-zh="被删除且无后继">Dropped with no successor</h2>
+  <p class="small muted" data-en="Prior recommendations for which the current version carries no counterpart — the alignment found nothing to pair them with. ARIA's two dropped items are in the ARIA section below."
+     data-zh="前版推荐在现行版本中找不到任何对应条目——对齐时无从配对。ARIA 的两条删除条目见下方 ARIA 节。">Prior recommendations with no counterpart in the current version.</p>
+  <div id="dropped"></div>
+  <h2 data-en="ARIA — reported separately" data-zh="ARIA——单独报告">ARIA — reported separately</h2>
+  <p data-en="ARIA is a partial lineage: the 2020 side has no item-level apparatus and the 2025 side has two documents, so this transition is never pooled with the other fifteen. Of its four ruled items, two were carried over (both modified) and two were dropped; none flipped direction."
+     data-zh="ARIA 是部分谱系：2020 侧没有条目级装置，2025 侧有两部文件，因此这次更替从不与另外十五次合并计算。其 4 条裁定条目中，2 条被带入（均为修改），2 条被删除；无方向翻转。">ARIA is a partial lineage and is never pooled with the other transitions.</p>
+  <div id="aria"></div>
+  <p class="small muted" id="srcnote"></p>
+</main>
+<script>
+var CH = null;
+function sideHTML(s, isPrior) {
+  return '<div class="side"><p class="tag">' + GC.esc(s.doc) + ' · ' + GC.esc(s.name) + ' (' + s.year + ')</p>' +
+    '<p style="margin:4px 0"><b>' + GC.esc(s.rec) + '</b> · ' + GC.dirHTML(s.direction) + '</p>' +
+    '<p class="stmt">' + GC.esc(s.statement) + '</p>' +
+    '<p class="small muted">' + GC.t('Strength: ', '强度：') + GC.esc(s.tier || '—') +
+    ' · ' + GC.t('Grade: ', '等级：') + GC.esc(s.grade || '—') + '</p></div>';
+}
+function flipCard(f) {
+  var cur = { rec: f.current_rec, doc: f.current_doc, name: f.current_name, year: f.current_year,
+              statement: f.current_statement, direction: f.current_direction,
+              tier: f.current_tier, grade: f.current_grade };
+  var pri = { rec: f.prior_rec, doc: f.prior_doc, name: f.prior_name, year: f.prior_year,
+              statement: f.prior_statement, direction: f.prior_direction,
+              tier: f.prior_tier, grade: f.prior_grade };
+  var link = f.current_rec_site
+    ? '<p class="small" style="margin:6px 0 0"><a href="explorer.html?item=' + GC.esc(f.current_rec_site) + '">' +
+      GC.t('See the current recommendation in the Explorer →', '在推荐浏览器中查看现行推荐 →') + '</a></p>' : '';
+  return '<div class="card" style="margin:12px 0"><h3 style="margin:0 0 6px">' + GC.esc(f.family) + '</h3>' +
+    '<p class="small" style="margin:0 0 8px"><span class="chip">' + GC.esc(f.prior_doc) + ' (' + f.prior_year + ')</span> → ' +
+    '<span class="chip acc">' + GC.esc(f.current_doc) + ' (' + f.current_year + ')</span> <span class="muted">' + f.transition + '</span></p>' +
+    '<div class="vs">' + sideHTML(pri, true) + '<div class="mid">→</div>' + sideHTML(cur, false) + '</div>' + link + '</div>';
+}
+function droppedTable(rows) {
+  if (!rows.length) return '<p class="muted">' + GC.t('None.', '无。') + '</p>';
+  return '<table><thead><tr><th>' + GC.t('Guideline (prior)', '指南（前版）') + '</th><th>' +
+    GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Direction', '方向') + '</th><th>' +
+    GC.t('Strength', '强度') + '</th><th>' + GC.t('Statement', '陈述') + '</th></tr></thead><tbody>' +
+    rows.map(function (d) {
+      return '<tr><td><b>' + GC.esc(d.prior_name) + '</b> (' + d.prior_year + ')<br><span class="small muted">' +
+        GC.esc(d.prior_doc) + ' · ' + GC.esc(d.transition) + '</span></td>' +
+        '<td class="mono">' + GC.esc(d.prior_rec) + '</td><td>' + GC.dirHTML(d.prior_direction) + '</td>' +
+        '<td>' + GC.esc(d.prior_tier || '—') + '</td><td class="stmt">' + GC.esc(d.prior_statement) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+function render() {
+  if (!CH) return;
+  var t = CH.totals, ts = CH.tier_summary;
+  document.getElementById('kpis').innerHTML = [
+    [t.survival_num + '/' + t.survival_den + ' (' + t.survival_pct + '%)', GC.t('recommendations survive an update (15 transitions, ARIA excluded)', '推荐在更新后存续（15 次更替，不含 ARIA）')],
+    [t.flips + ' / ' + t.flips_den, GC.t('direction flips among both-stanced carried pairs', '双方表态的存续配对中的方向翻转')],
+    [t.dropped, GC.t('dropped with no successor (31 + 2 ARIA)', '被删除且无后继（31 + ARIA 的 2 条）')],
+    ['↑ ' + ts.U.up + ' · ↓ ' + ts.U.down, GC.t('evidence-tier movements among carried pairs (n=' + ts.U.n + ')', '存续配对的证据等级变动（n=' + ts.U.n + '）')],
+    ['↑ ' + ts.S.strengthened + ' · ↓ ' + ts.S.weakened, GC.t('strength movements among carried pairs (n=' + ts.S.n + ')', '存续配对的强度变动（n=' + ts.S.n + '）')]
+  ].map(function (k) { return '<div class="kpi"><div class="v">' + k[0] + '</div><div class="k">' + k[1] + '</div></div>'; }).join('');
+  document.getElementById('flips').innerHTML = CH.flips.map(flipCard).join('');
+  document.getElementById('dropped').innerHTML = droppedTable(CH.dropped);
+  document.getElementById('aria').innerHTML = droppedTable(CH.aria.dropped);
+  document.getElementById('srcnote').innerHTML =
+    GC.t('Generated from the frozen Layer-5 alignment and the frozen L1/L2 dataset; every count on this page is recomputed by the build script and asserted against the L5 freeze report. Full per-transition dynamics: ',
+         '由冻结的第五层对齐与冻结的 L1/L2 数据集生成；本页每个数字都由构建脚本重算并与 L5 冻结报告断言核对。逐次更替的完整动态：') +
+    '<a href="dynamics.html">' + GC.t('Version dynamics →', '版本动态 →') + '</a> · <a href="downloads.html">' +
+    GC.t('Frozen L5 dataset →', '冻结的 L5 数据集 →') + '</a>';
+}
+GC.load('changes.json').then(function (d) { CH = d; render(); });
+window.onLangChange = render;
+</script>
+</body>
+</html>

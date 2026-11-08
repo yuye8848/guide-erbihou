@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disease panorama — GuideCensus</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js"></script>
+</head>
+<body>
+<main>
+  <p class="tag" data-en="Cross-layer · Disease panorama" data-zh="跨层 · 病种全景">Cross-layer · Disease panorama</p>
+  <h1 data-en="The evidence landscape, disease by disease" data-zh="按病种看证据全景">The evidence landscape, disease by disease</h1>
+  <p class="lede" data-en="The five layers of this census are organised by guideline; clinicians think by disease. This page re-slices everything by the twenty disease areas of the Layer-4 question universe: for each area, the questions asked, the current recommendations that answer them, how fragile their pivotal evidence is, and whether the latest revisions flipped or dropped anything."
+     data-zh="本普查的五层按指南组织；临床医生按病种思考。本页把一切按第四层问题宇宙的二十个病种领域重新切片：每个领域问了哪些问题、现行推荐如何作答、其关键证据有多脆弱、以及最近的修订有没有翻转或删掉什么。">The census re-sliced by the twenty disease areas of the question universe.</p>
+  <div class="filters" style="align-items:center"><span class="small muted" data-en="Disease area:" data-zh="病种领域：">Disease area:</span><span id="chips"></span></div>
+  <div id="out"></div>
+</main>
+<script>
+var DIS = null, CUR = null;
+function areaName(a) { return GC.lang === 'zh' ? a.name_zh : a.name_en; }
+function pick(slug) {
+  if (!DIS) return;
+  var a = null;
+  DIS.areas.forEach(function (x) { if (x.slug === slug) a = x; });
+  if (!a) a = DIS.areas[0];
+  CUR = a;
+  history.replaceState(null, '', '?area=' + encodeURIComponent(a.slug));
+  renderChips();
+  render();
+}
+function renderChips() {
+  if (!DIS) return;
+  document.getElementById('chips').innerHTML = DIS.areas.map(function (a) {
+    var on = CUR && a.slug === CUR.slug;
+    return '<button type="button" class="btn' + (on ? '' : ' ghost') + '" style="margin:2px;padding:5px 12px;font-size:13.5px" data-area="' +
+      GC.esc(a.slug) + '">' + GC.esc(areaName(a)) + ' · ' + a.n_questions + '</button>';
+  }).join('');
+  document.querySelectorAll('#chips [data-area]').forEach(function (b) {
+    b.addEventListener('click', function () { pick(b.getAttribute('data-area')); });
+  });
+}
+function render() {
+  if (!CUR) return;
+  var a = CUR;
+  var tile = function (v, k) { return '<div class="kpi"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>'; };
+  var h = '<h2 style="margin-top:18px">' + GC.esc(areaName(a)) + '</h2><div class="kpis">' +
+    tile(a.n_questions, GC.t('union clinical questions', '并集临床问题')) +
+    tile(a.n_items, GC.t('current recommendations answering them', '作答这些问题的现行推荐')) +
+    tile(a.n_docs, GC.t('guidelines involved', '涉及的指南')) +
+    tile(a.fragile_n, GC.t('fragile pivotal evidence (thin ice)', '关键证据脆弱（薄冰）')) +
+    tile(a.single_coverage_questions, GC.t('questions answered by a single guideline', '只有一部指南作答的问题')) +
+    '</div>';
+  if (a.unjoined_n) {
+    h += '<p class="small muted">' + GC.t(
+      a.n_member_recs + ' member recommendations in total; ' + a.unjoined_n + ' of them are prior-version or NICE recommendations that sit outside the current-version item set, so they count toward coverage but not toward the item-level statistics below.',
+      '成员推荐共 ' + a.n_member_recs + ' 条；其中 ' + a.unjoined_n + ' 条属前版或 NICE 推荐，不在现行版本条目集内，因此计入覆盖但不计入下方的条目级统计。') + '</p>';
+  }
+  var dc = a.direction_counts, designs = a.pivotal_design_counts;
+  h += '<div class="grid2"><div class="chartbox"><h3>' + GC.t('Direction of current recommendations', '现行推荐的方向') + '</h3><div id="ch-dir"></div></div>' +
+    '<div class="chartbox"><h3>' + GC.t('Pivotal-study design', '关键研究的设计类型') + '</h3><div id="ch-des"></div></div></div>';
+  h += '<p>' + GC.t('Version changes touching this area: ', '触及本领域的版本变更：') +
+    '<b>' + a.flips_n + '</b> ' + GC.t('direction flips, ', '次方向翻转、') +
+    '<b>' + a.dropped_n + '</b> ' + GC.t('dropped recommendations — ', '条被删除的推荐——') +
+    '<a href="changes.html">' + GC.t('see What changed →', '查看临床变更 →') + '</a></p>';
+  if (a.items.length) {
+    h += '<h3>' + GC.t('Current recommendations', '现行推荐') + '</h3><table><thead><tr><th>' +
+      GC.t('Recommendation', '推荐') + '</th><th>' + GC.t('Guideline', '指南') + '</th><th>' +
+      GC.t('Direction', '方向') + '</th><th>' + GC.t('Strength', '强度') + '</th><th></th></tr></thead><tbody>' +
+      a.items.map(function (i) {
+        return '<tr><td class="mono"><a href="explorer.html?item=' + GC.esc(i.rec) + '">' + GC.esc(i.rec) + '</a></td>' +
+          '<td>' + GC.esc(i.guideline) + ' (' + i.year + ')</td><td>' + GC.dirHTML(i.direction) + '</td>' +
+          '<td>' + GC.esc(i.tier || '—') + '</td>' +
+          '<td>' + (i.fragile ? '<span class="chip bad">' + GC.t('Fragile', '脆弱') + '</span>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  } else {
+    h += '<div class="note">' + GC.t(
+      'No current-version census recommendation answers this area\u2019s questions — in the union universe they are carried by NICE guidelines, which participate at direction level only.',
+      '没有现行版本普查推荐作答本领域的问题——在并集宇宙中它们由 NICE 指南承载，而 NICE 仅以方向层级参与。') + '</div>';
+  }
+  var qshow = a.qids.slice(0, 20);
+  h += '<h3>' + GC.t('Questions in this area', '本领域的问题') + '</h3><p>' +
+    qshow.map(function (q) { return '<a class="chip" href="questions.html?q=' + GC.esc(q) + '">' + GC.esc(q) + '</a>'; }).join(' ') +
+    (a.qids.length > 20 ? ' <span class="small muted">' + GC.t('+ ' + (a.qids.length - 20) + ' more — ', '另有 ' + (a.qids.length - 20) + ' 个——') +
+      '<a href="questions.html">' + GC.t('browse the question universe →', '浏览问题宇宙 →') + '</a></span>' : '') + '</p>';
+  document.getElementById('out').innerHTML = h;
+  var drows = [
+    { label: GC.t('For', '支持'), value: dc['for'] || 0, display: String(dc['for'] || 0), color: '#0e7a4f' },
+    { label: GC.t('Against', '反对'), value: dc['against'] || 0, display: String(dc['against'] || 0), color: '#b3352c' },
+    { label: GC.t('No stance', '未表态'), value: dc['none'] || 0, display: String(dc['none'] || 0), color: '#8491b4' }
+  ];
+  GC.barChart(document.getElementById('ch-dir'), drows, { labelWidth: 120 });
+  var order = ['SR/MA', 'RCT', 'primary', 'none'];
+  var dkeys = order.filter(function (k) { return designs[k]; })
+    .concat(Object.keys(designs).filter(function (k) { return order.indexOf(k) < 0; }));
+  var labels = { 'SR/MA': 'SR/MA', 'RCT': 'RCT', 'primary': GC.t('Primary study', '原始研究'), 'none': GC.t('No pivotal', '无关键研究') };
+  GC.barChart(document.getElementById('ch-des'), dkeys.map(function (k) {
+    return { label: labels[k] || k, value: designs[k], display: String(designs[k]), color: '#9c6b24' };
+  }), { labelWidth: 120 });
+}
+GC.load('diseases.json').then(function (d) {
+  DIS = d;
+  pick(GC.qs('area') || d.areas[0].slug);
+});
+window.onLangChange = function () { renderChips(); render(); };
+</script>
+</body>
+</html>

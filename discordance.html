@@ -24,9 +24,12 @@
     <label><span data-en="Guideline B" data-zh="指南 B">Guideline B</span><select id="cmp-b"></select></label>
   </div>
   <div id="cmp-summary"></div>
-  <p class="small muted"><a href="compare.html" data-en="Compare any two guidelines live, question by question →" data-zh="任选两部指南实时逐问题对比 →">Compare any two guidelines live, question by question →</a></p>
   <p class="small muted" id="count"></p>
   <div id="list"></div>
+  <h2 data-en="Frozen L4 adjudicated pair concordance — all aligned document pairs" data-zh="冻结的 L4 裁定配对一致性——全部对齐文件配对">Frozen L4 adjudicated pair concordance — all aligned document pairs</h2>
+  <p class="small muted" data-en="Every document pair that Layer 4 aligned, with the pre-registered pair-level adjudicated counts. These frozen aggregates are the concordance of record; they are a different unit from the question-level counts elsewhere on the site."
+     data-zh="第四层对齐过的每一个文件配对，及其预先注册的配对级裁定计数。这些冻结汇总是有据可查的一致性记录；与本站其他位置的问题级计数单位不同。">Every aligned document pair with its frozen adjudicated counts.</p>
+  <div id="pairtable"></div>
 </main>
 <script>
 var PAIRS = null, CLUSTERS = [], CMP = null, cmpPair = null;
@@ -104,9 +107,26 @@ function render() {
       '<div class="vs">' + sideHTML(p.a) + '<div class="mid">≠</div>' + sideHTML(p.b) + '</div></div>';
   }).join('') || '<p class="muted">' + GC.t('No pairs in this cluster.', '该簇无配对。') + '</p>';
 }
+function renderPairTable() {
+  var box = document.getElementById('pairtable');
+  if (!box || !CMP) return;
+  var rows = CMP.slice().sort(function (x, y) { return y.pairs - x.pairs; });
+  box.innerHTML = '<table><thead><tr><th>' + GC.t('Guideline A', '指南 A') + '</th><th>' +
+    GC.t('Guideline B', '指南 B') + '</th><th class="num">' + GC.t('Aligned pairs', '对齐配对') + '</th><th class="num">' +
+    GC.t('Both stanced', '双方表态') + '</th><th class="num">' + GC.t('Concordant', '方向一致') + '</th><th class="num">' +
+    GC.t('Discordant', '方向相左') + '</th><th class="num">' + GC.t('Concordance', '一致率') + '</th></tr></thead><tbody>' +
+    rows.map(function (e) {
+      return '<tr><td><b>' + GC.esc(e.name_a) + '</b><br><span class="small muted">' + GC.esc(e.a) + '</span></td>' +
+        '<td><b>' + GC.esc(e.name_b) + '</b><br><span class="small muted">' + GC.esc(e.b) + '</span></td>' +
+        '<td class="num">' + e.pairs + '</td><td class="num">' + e.both_stanced + '</td>' +
+        '<td class="num">' + e.concordant + '</td><td class="num">' + e.discordant + '</td>' +
+        '<td class="num">' + (e.both_stanced ? GC.pct(e.concordant / e.both_stanced) : '—') + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
 Promise.all([GC.load('discordant.json'), GC.load('compare.json')]).then(function (d) {
   PAIRS = d[0]; CMP = d[1];
   buildClusters();
+  renderPairTable();
   document.getElementById('f-q').innerHTML = '<option value="">' + GC.t('All clusters', '全部簇') + '</option>' +
     CLUSTERS.map(function (c) { return '<option value="' + c.id + '">' + GC.esc(c.label) + ' (' + c.pairs.length + ')</option>'; }).join('');
   document.getElementById('f-q').addEventListener('input', function () { render(); });
@@ -122,7 +142,7 @@ Promise.all([GC.load('discordant.json'), GC.load('compare.json')]).then(function
   });
   render();
 });
-window.onLangChange = function () { renderCompare(); render(); };
+window.onLangChange = function () { renderCompare(); render(); renderPairTable(); };
 </script>
 </body>
 </html>

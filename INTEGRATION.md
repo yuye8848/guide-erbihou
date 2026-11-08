@@ -101,3 +101,37 @@ PMIDs in `explorer.html` now point at `citation.html?pmid=…`; `l4.html` and
 `GC.resolveData` is deliberately unchanged: the v2 endpoints are additive
 and each consuming page owns its fallback, so the static layer keeps working
 verbatim whether the v1 or the v2 worker is deployed.
+
+## Page changes (2026-11-08, user decision)
+
+- `compare.html` **replaced** by `changes.html` ("What changed" — the L5
+  direction flips and dropped recommendations, old wording against new;
+  ARIA in its own section). The comparator was judged to carry no clinical
+  meaning as a page. `compare.html` is now a redirect stub. The worker's
+  `GET /v1/compare` endpoint and its `api.html` documentation are untouched
+  (API surface only). The frozen pair-aggregate block that the comparator
+  displayed now lives on `discordance.html` as a full table of
+  `data/compare.json` (all 27 aligned document pairs), and the
+  "compare any two guidelines live" link lines in `discordance.html` and
+  `l4.html` were removed.
+- `diseases.html` **added** ("Disease panorama"): the census re-sliced by
+  the 20 disease areas of the L4 question universe — per area, question
+  counts, current recommendations (joined from `items.json` via the frozen
+  `parse_key` normalisation; prior-version / NICE member recs are counted
+  as `unjoined_n`, never silently dropped), direction and pivotal-design
+  breakdowns, fragile counts, and the area's L5 flips/dropped counts.
+- New generated payloads, same frozen-data discipline (build scripts with
+  assertions, no hand-typed statistics):
+  - `data/changes.json` ← `tools/build_changes.py`, from
+    `analysis/frozen_l5/phase1_alignment_final.csv` +
+    `analysis/frozen_dataset_l1l2.csv` +
+    `analysis/frozen_l5/l5_added_item_v23.csv`. The script recomputes the
+    L5 Phase-1 headlines and asserts them against
+    `analysis/frozen_l5/L5_freeze_report.md` (survival 359/390 = 92.1%
+    excl. ARIA; flips 7/267; U up 58 / down 18 / same 246, n = 322;
+    S strengthened 33 / weakened 4 / same 179, n = 216 — the tier summary
+    is generated from the frozen grade/strength fields, not transcribed).
+  - `data/diseases.json` ← `tools/build_diseases.py`, from
+    `data/questions.json` + `data/items.json` + `data/changes.json`;
+    per-area question counts are asserted against the frozen L4 coverage
+    counts (20 areas).

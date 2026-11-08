@@ -3,164 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Compare any two guidelines — GuideCensus</title>
+<meta http-equiv="refresh" content="0; url=changes.html">
+<title>What changed — GuideCensus</title>
+<link rel="canonical" href="changes.html">
 <link rel="stylesheet" href="assets/style.css">
-<script src="assets/app.js"></script>
 </head>
-<body data-layer="l4">
+<body>
 <main>
-  <p class="tag" data-en="Layer 4 · Live comparator" data-zh="第四层 · 实时对比器">Layer 4 · Live comparator</p>
-  <h1 data-en="Compare any two guidelines, question by question" data-zh="任选两部指南，逐问题对比">Compare any two guidelines, question by question</h1>
-  <p class="lede" data-en="Pick any two documents of the census. Their coverage of the 905-question union universe is placed side by side — computed live from the question alignments — and every shared question is listed with the direction each side takes."
-     data-zh="任选普查中的两部文件。它们对 905 问并集宇宙的覆盖被并排放在一起——由问题对齐实时算出——每个共同问题都列出双方各自的方向。">Pick any two documents and compare their coverage of the question universe.</p>
-  <div class="filters">
-    <label><span data-en="Guideline A" data-zh="指南 A">Guideline A</span><select id="sel-a"></select></label>
-    <button class="btn" type="button" id="swap" title="Swap A and B">⇄</button>
-    <label><span data-en="Guideline B" data-zh="指南 B">Guideline B</span><select id="sel-b"></select></label>
-    <button class="btn" type="button" id="go" data-en="Compare" data-zh="对比">Compare</button>
-  </div>
-  <div id="out"></div>
+  <h1>What changed</h1>
+  <p>This page has moved. The live two-guideline comparator was replaced (user
+  decision, 2026-11-08) by <a href="changes.html">What changed — the
+  recommendations that flipped or vanished between guideline versions</a>.
+  The frozen Layer-4 adjudicated pair concordance is tabulated on the
+  <a href="discordance.html">discordance page</a>, and the comparison
+  endpoint remains part of the public <a href="api.html">API</a>
+  (<span class="mono">GET /v1/compare</span>).</p>
 </main>
-<script>
-var DOCS = null, FROZEN = null, LAST = null, LASTA = '', LASTB = '';
-/* The fallback below mirrors the /v1/compare worker algorithm exactly:
-   direction set per side = distinct member directions excluding '' and
-   'none'; a shared question agrees iff both sets are non-empty and equal. */
-function compareQuestions(qs, A, B) {
-  function dirs(ms) {
-    var s = {};
-    ms.forEach(function (m) { if (m.direction && m.direction !== 'none') s[m.direction] = 1; });
-    return Object.keys(s).sort();
-  }
-  var ca = 0, cb = 0, sc = 0, ag = 0, dg = 0, sh = [];
-  qs.forEach(function (q) {
-    var ma = q.members.filter(function (m) { return m.doc === A; });
-    var mb = q.members.filter(function (m) { return m.doc === B; });
-    if (ma.length) ca++;
-    if (mb.length) cb++;
-    if (!ma.length || !mb.length) return;
-    sc++;
-    var da = dirs(ma), db = dirs(mb), v = null;
-    if (da.length && db.length) v = da.join() === db.join() ? 'agree' : 'disagree';
-    if (v === 'agree') ag++; else if (v) dg++;
-    if (sh.length < 300) sh.push({
-      qid: q.qid, grade: q.grade, a_dirs: da, b_dirs: db,
-      a: ma.map(function (m) { return { rec: m.rec, direction: m.direction, intervention: m.intervention }; }),
-      b: mb.map(function (m) { return { rec: m.rec, direction: m.direction, intervention: m.intervention }; }),
-      verdict: v
-    });
-  });
-  var o = { a: A, b: B, counts: { questions_total: qs.length, covered_a: ca, covered_b: cb, shared: sc, agree: ag, disagree: dg }, shared: sh };
-  if (sc > 300) o.truncated = true;
-  return o;
-}
-function docName(doc) {
-  var d = (DOCS || []).filter(function (x) { return x.doc === doc; })[0];
-  return d ? d.guideline + ' (' + d.year + ')' : doc;
-}
-function membersHTML(ms) {
-  return ms.map(function (m) {
-    var iv = m.intervention || '';
-    return '<div style="margin:3px 0">' + GC.dirHTML(m.direction) + ' <span class="small">' + GC.esc(iv.length > 95 ? iv.slice(0, 95) + '…' : iv) +
-      '</span> <span class="small muted">' + GC.esc(m.rec) + '</span></div>';
-  }).join('');
-}
-function verdictHTML(v) {
-  if (v === 'agree') return '<span class="chip acc">' + GC.t('Agree', '一致') + '</span>';
-  if (v === 'disagree') return '<span class="chip bad">' + GC.t('Disagree', '相左') + '</span>';
-  return '<span class="chip">' + GC.t('No directed stance', '未表态') + '</span>';
-}
-function render(res) {
-  LAST = res;
-  var box = document.getElementById('out');
-  if (!res) { box.innerHTML = '<p class="muted">' + GC.t('Computing…', '计算中…') + '</p>'; return; }
-  var c = res.counts, denom = c.agree + c.disagree;
-  var stat = function (v, k) { return '<div class="stat"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>'; };
-  var h = '<div class="comparebar">' +
-    stat(c.covered_a, GC.t('questions covered by A', 'A 覆盖的问题') + '<br>' + GC.esc(docName(res.a))) +
-    stat(c.covered_b, GC.t('questions covered by B', 'B 覆盖的问题') + '<br>' + GC.esc(docName(res.b))) +
-    stat(c.shared, GC.t('shared questions', '共同问题')) +
-    stat(c.agree + '/' + denom + (denom ? ' (' + GC.pct(c.agree / denom) + ')' : ''), GC.t('direction agreement on shared, directed questions', '共同且双方表态问题上的方向一致')) +
-    '</div>';
-  var fz = null;
-  (FROZEN || []).forEach(function (e) {
-    if ((e.a === res.a && e.b === res.b) || (e.a === res.b && e.b === res.a)) fz = e;
-  });
-  if (fz) {
-    h += '<div class="note"><b>' + GC.t('Frozen L4 adjudicated pair concordance', '冻结的 L4 裁定配对一致性') + '</b> — ' +
-      GC.esc(fz.name_a) + ' × ' + GC.esc(fz.name_b) + ': ' +
-      '<b>' + fz.pairs + '</b> ' + GC.t('aligned pairs, ', '对对齐配对，') +
-      '<b>' + fz.both_stanced + '</b> ' + GC.t('where both take a stance, ', '对双方均表态，') +
-      '<b>' + fz.concordant + '</b> ' + GC.t('concordant and ', '对方向一致、') +
-      '<b>' + fz.discordant + '</b> ' + GC.t('discordant on direction. These are the pre-registered, pair-level adjudicated numbers from the frozen Layer-4 analysis — a different unit from the live question-level computation above, so the two need not match.', '对方向相左。这是冻结的第四层分析中预先注册的配对级裁定数字——与上方实时的问题级计算单位不同，两者不必相等。') + '</div>';
-  }
-  if (res.truncated) h += '<p class="small muted">' + GC.t('Showing the first 300 shared questions.', '仅显示前 300 个共同问题。') + '</p>';
-  if (!res.shared.length) {
-    h += '<p class="muted">' + GC.t('These two guidelines share no question in the union universe.', '这两部指南在并集宇宙中没有共同问题。') + '</p>';
-  } else {
-    h += '<table><thead><tr><th>' + GC.t('Question', '问题') + '</th><th>' + GC.t('Grade', '重叠级') + '</th><th>' +
-      GC.esc(res.a) + '</th><th>' + GC.esc(res.b) + '</th><th>' + GC.t('Verdict', '裁定') + '</th></tr></thead><tbody>' +
-      res.shared.map(function (s) {
-        return '<tr><td><b><a href="questions.html?q=' + GC.esc(s.qid) + '">' + GC.esc(s.qid) + '</a></b></td>' +
-          '<td><span class="chip' + (s.grade === 'FULL' ? ' acc' : '') + '">' + GC.esc(s.grade || '') + '</span></td>' +
-          '<td>' + membersHTML(s.a) + '</td><td>' + membersHTML(s.b) + '</td>' +
-          '<td>' + verdictHTML(s.verdict) + '</td></tr>';
-      }).join('') + '</tbody></table>';
-  }
-  box.innerHTML = h;
-}
-function run() {
-  var A = document.getElementById('sel-a').value, B = document.getElementById('sel-b').value;
-  var box = document.getElementById('out');
-  if (!A || !B) return;
-  if (A === B) {
-    LAST = null;
-    box.innerHTML = '<div class="warnbox">' + GC.t('Pick two different guidelines.', '请选择两部不同的指南。') + '</div>';
-    return;
-  }
-  LASTA = A; LASTB = B;
-  history.replaceState(null, '', '?a=' + encodeURIComponent(A) + '&b=' + encodeURIComponent(B));
-  render(null);
-  GC.d1('/v1/compare?a=' + encodeURIComponent(A) + '&b=' + encodeURIComponent(B)).then(function (r) {
-    if (r) { render(r); return; }
-    GC.load('questions.json').then(function (qs) { render(compareQuestions(qs, A, B)); });
-  });
-}
-function fillSelects() {
-  var opts = DOCS.map(function (d) {
-    return '<option value="' + GC.esc(d.doc) + '">' + GC.esc(d.guideline) + ' (' + d.year + ') · ' + GC.esc(d.doc) + ' · ' + d.n_items + '</option>';
-  }).join('');
-  document.getElementById('sel-a').innerHTML = opts;
-  document.getElementById('sel-b').innerHTML = opts;
-  var A = GC.qs('a') || 'EAACI2018', B = GC.qs('b') || 'ICAR2023AR';
-  var has = function (v) { return DOCS.some(function (d) { return d.doc === v; }); };
-  document.getElementById('sel-a').value = has(A) ? A : DOCS[0].doc;
-  document.getElementById('sel-b').value = has(B) ? B : DOCS[Math.min(1, DOCS.length - 1)].doc;
-}
-function deriveDocs(items) {
-  var m = {};
-  items.forEach(function (i) {
-    var d = m[i.doc] || (m[i.doc] = { doc: i.doc, guideline: i.guideline, society: i.society, year: i.year, n_items: 0 });
-    d.n_items++;
-  });
-  return Object.keys(m).sort().map(function (k) { return m[k]; });
-}
-document.getElementById('swap').addEventListener('click', function () {
-  var a = document.getElementById('sel-a'), b = document.getElementById('sel-b'), t = a.value;
-  a.value = b.value; b.value = t; run();
-});
-document.getElementById('go').addEventListener('click', run);
-GC.d1('/v1/guidelines').then(function (g) {
-  if (g && g.length) { DOCS = g; fillSelects(); run(); return; }
-  GC.load('items.json').then(function (items) { DOCS = deriveDocs(items); fillSelects(); run(); });
-});
-GC.load('compare.json').then(function (d) { FROZEN = d; if (LAST) render(LAST); });
-window.onLangChange = function () { if (DOCS) fillSelectsKeep(); if (LAST) render(LAST); };
-function fillSelectsKeep() {
-  var a = document.getElementById('sel-a').value, b = document.getElementById('sel-b').value;
-  fillSelects();
-  document.getElementById('sel-a').value = a; document.getElementById('sel-b').value = b;
-}
-</script>
 </body>
 </html>
