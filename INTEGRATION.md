@@ -18,7 +18,7 @@ GC.api = { items(), stats(), questions(), discordant(), compare(),
 ```
 
 To cut over, change `GC.resolveData` to map each file to its API endpoint,
-e.g. `return 'https://api.guide.erbihou.org/v1/' + name.replace(/\.json$/, '')`,
+e.g. `return 'https://guide-api.erbihou.org/v1/' + name.replace(/\.json$/, '')`,
 optionally with a static-file fallback on fetch failure. Pages call only
 `GC.load(...)` / `GC.api.*()`, so signatures and payload shapes stay identical.
 
@@ -72,7 +72,7 @@ behaviour, same CORS) that adds four read endpoints:
 | `GET /v1/compare?a=&b=` | Question-level comparison over the union universe: `{a, b, counts: {questions_total, covered_a, covered_b, shared, agree, disagree}, shared[≤300]}`. Per shared question, each side's direction set is its members' distinct directions excluding `''`/`'none'`; the verdict is `agree` iff both sets are non-empty and equal, `disagree` iff both are non-empty and unequal, otherwise `null`. `truncated: true` is added when the shared list is capped. |
 
 Three pages consume them, each through the `GC.d1(path)` helper in
-`assets/app.js` (`fetch` against `https://api.guide.erbihou.org`, parsed JSON
+`assets/app.js` (`fetch` against `https://guide-api.erbihou.org`, parsed JSON
 on success, `null` on any failure — HTTP error, network error or bad JSON):
 
 - `search.html` — `GC.d1('/v1/search?q=…')`; on `null`, loads
@@ -135,3 +135,21 @@ verbatim whether the v1 or the v2 worker is deployed.
     `data/questions.json` + `data/items.json` + `data/changes.json`;
     per-area question counts are asserted against the frozen L4 coverage
     counts (20 areas).
+
+## API hostname change (2026-11-09)
+
+The `api.` custom domain never became reachable: its Advanced Certificate
+stayed in "Pending Validation (Error)" (TXT validation, Google Trust
+Services), so the edge had no valid certificate for the two-level hostname
+`api.guide.erbihou.org` (the Universal certificate covers only one-level
+`*.erbihou.org`). Removing and re-adding the custom domain on 2026-11-09 did
+not clear the certificate state. By user decision the API hostname moved to
+the one-level subdomain **`guide-api.erbihou.org`**, attached to the same
+Worker `guide-api` as an additional custom domain (the `api.` domain remains
+attached, unused). External acceptance on 2026-11-09 (parent-verified by
+curl): `/v1/health` 200 `{"ok":true}`; `/v1/stats` items 805 / questions 905
+/ citations 6,942 / links 10,243; `/v1/by-pmid`, `/v1/citation-search`,
+`/v1/item`, `/v1/question` all 200 on live records. `GC.d1` in
+`assets/app.js` and the endpoint examples in `api.html` now use the new
+host; `GC.resolveData` remains static by design, and every `GC.d1` caller
+keeps its static fallback.

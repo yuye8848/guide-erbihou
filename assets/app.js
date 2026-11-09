@@ -97,7 +97,7 @@
   /* ---- data access -------------------------------------------------------
      Every page reads data ONLY through GC.load / GC.api. GC.resolveData is
      the single swap point: when the D1-backed API (see INTEGRATION.md) goes
-     live, it alone changes — e.g. return 'https://api.guide.erbihou.org/v1/'
+     live, it alone changes — e.g. return 'https://guide-api.erbihou.org/v1/'
      + name.replace(/\.json$/, '') — and no page code changes. */
   GC.resolveData = function (name) { return 'data/' + name; };
   GC.load = function (name) {
@@ -106,7 +106,7 @@
   /* Live D1 API (see INTEGRATION.md): returns the parsed JSON, or null on
      ANY failure — callers must fall back to the static GC.load data. */
   GC.d1 = function (path) {
-    return fetch('https://api.guide.erbihou.org' + path).then(function (r) {
+    return fetch('https://guide-api.erbihou.org' + path).then(function (r) {
       if (!r.ok) throw 0;
       return r.json();
     }).catch(function () { return null; });
