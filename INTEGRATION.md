@@ -153,3 +153,16 @@ curl): `/v1/health` 200 `{"ok":true}`; `/v1/stats` items 805 / questions 905
 `assets/app.js` and the endpoint examples in `api.html` now use the new
 host; `GC.resolveData` remains static by design, and every `GC.d1` caller
 keeps its static fallback.
+
+## Worker v2 deployed (2026-11-09)
+
+`worker/guide-api-v2.js` was pasted into the Cloudflare editor and deployed
+by the user on 2026-11-09, replacing the v1 mini worker on the same
+`guide-api` service (D1 binding unchanged, no reseed). Parent acceptance
+from outside against `https://guide-api.erbihou.org`: all ten endpoints
+return 200 — the six v1 routes unchanged (stats 805 / 905 / 6,942 /
+10,243) and the four v2 routes live (`/v1/guidelines`, `/v1/search`,
+`/v1/citation` — PMID 28493631 dossier counts 51 cites / 42 pivotal /
+3 guidelines, matching the static record — and `/v1/compare`). The three
+consuming pages (search, citation dossier, API docs) now run on live D1
+queries with the static fallback intact.
